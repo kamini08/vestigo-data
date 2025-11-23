@@ -12,10 +12,25 @@ from datetime import datetime
 
 # Configuration
 GHIDRA_HOME = os.getenv("GHIDRA_HOME")
+
+# Auto-detect Ghidra if not set
+if not GHIDRA_HOME:
+    common_paths = ["/opt/ghidra", "/usr/local/ghidra", os.path.expanduser("~/ghidra")]
+    for path in common_paths:
+        if os.path.exists(os.path.join(path, "support", "analyzeHeadless")):
+            GHIDRA_HOME = path
+            print(f"Auto-detected Ghidra at: {GHIDRA_HOME}")
+            break
+    
+    if not GHIDRA_HOME:
+        print("ERROR: GHIDRA_HOME not set and Ghidra not found in common locations.")
+        print("Please set GHIDRA_HOME environment variable or install Ghidra.")
+        exit(1)
+
 BINARY_DIR = "dataset_binaries"
 OUTPUT_DIR = "ghidra_output"
 PROJECT_DIR = "/tmp/ghidra_batch_project"
-PROJECT_NAME = "batch_extraction"
+PROJECT_NAME = f"batch_extraction_{int(time.time())}"
 SCRIPT_PATH = "ghidra/extract.py"
 BATCH_SIZE = 10  # Process in batches to show progress
 TIMEOUT_PER_BINARY = 180  # 3 minutes per binary
@@ -26,6 +41,7 @@ def run_ghidra_on_binary(binary_path):
     binary_name = os.path.basename(binary_path)
     
     os.makedirs(PROJECT_DIR, exist_ok=True)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     
     cmd = [
         analyzer_bin,
@@ -45,16 +61,12 @@ def run_ghidra_on_binary(binary_path):
             timeout=TIMEOUT_PER_BINARY
         )
         
-        # Check for output
-        output_file = os.path.join(PROJECT_DIR, binary_name + ".json")
+        # Check for output in ghidra_output directory
+        output_file = os.path.join(OUTPUT_DIR, binary_name + ".json")
         
         if os.path.exists(output_file):
-            # Move to final location
-            final_path = os.path.join(OUTPUT_DIR, binary_name + ".json")
-            os.rename(output_file, final_path)
-            
-            # Validate
-            with open(final_path, 'r') as f:
+            # Validate JSON
+            with open(output_file, 'r') as f:
                 data = json.load(f)
             
             return True, len(data.get('functions', []))

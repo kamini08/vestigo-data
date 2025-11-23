@@ -1,0 +1,3629 @@
+{
+  "functions": [
+    {
+      "address": "000103ec", 
+      "graph_level": {
+        "strongly_connected_components": 2, 
+        "average_block_size": 3.0, 
+        "num_edges": 1, 
+        "branch_density": 0.0, 
+        "num_basic_blocks": 1, 
+        "num_entry_exit_paths": 1, 
+        "loop_count": 0, 
+        "loop_depth": 0, 
+        "cyclomatic_complexity": 2
+      }, 
+      "edge_level": [
+        {
+          "dst": "00010494", 
+          "src": "000103ec", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }
+      ], 
+      "node_level": [
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000103ec", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 3, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.3157894736842105, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.21052631578947367, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.10526315789473684
+          }, 
+          "bitwise_op_density": 0.10526315789473684, 
+          "opcode_histogram": {
+            "CALL": 1, 
+            "LOAD": 2, 
+            "COPY": 4, 
+            "INT_AND": 2, 
+            "RETURN": 1, 
+            "INT_NOTEQUAL": 1, 
+            "STORE": 2, 
+            "INT_SUB": 3, 
+            "INT_ADD": 3
+          }, 
+          "branch_condition_complexity": 10
+        }
+      ], 
+      "crypto_signatures": {
+        "has_aes_sbox": 0, 
+        "rsa_bigint_detected": 0, 
+        "has_aes_rcon": 0, 
+        "has_sha_constants": 0
+      }, 
+      "data_references": {
+        "rodata_refs_count": 0, 
+        "string_refs_count": 0, 
+        "stack_frame_size": 0
+      }, 
+      "op_category_counts": {
+        "bitwise_ops": 2, 
+        "crypto_like_ops": 0, 
+        "arithmetic_ops": 6, 
+        "mem_ops_ratio": 0.21052631578947367
+      }, 
+      "label": "Non-Crypto", 
+      "instruction_sequence": {
+        "unique_ngram_count": 2, 
+        "top_5_bigrams": [
+          "bl ldmia", 
+          "stmdb bl"
+        ]
+      }, 
+      "entropy_metrics": {
+        "function_byte_entropy": 3.2516291673878226, 
+        "opcode_entropy": 3.010570934268484, 
+        "cyclomatic_complexity_density": 0.6666666666666666
+      }, 
+      "name": "_init"
+    }, 
+    {
+      "address": "00010460", 
+      "graph_level": {
+        "strongly_connected_components": 3, 
+        "average_block_size": 15.0, 
+        "num_edges": 2, 
+        "branch_density": 0.06666666666666667, 
+        "num_basic_blocks": 1, 
+        "num_entry_exit_paths": 1, 
+        "loop_count": 0, 
+        "loop_depth": 0, 
+        "cyclomatic_complexity": 3
+      }, 
+      "edge_level": [
+        {
+          "dst": "0001040c", 
+          "src": "00010460", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010454", 
+          "src": "00010460", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }
+      ], 
+      "node_level": [
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010460", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 15, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.13043478260869565, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.10869565217391304, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.043478260869565216
+          }, 
+          "bitwise_op_density": 0.043478260869565216, 
+          "opcode_histogram": {
+            "INT_SLESS": 3, 
+            "CALL": 2, 
+            "LOAD": 2, 
+            "COPY": 25, 
+            "INT_OR": 2, 
+            "STORE": 3, 
+            "INT_EQUAL": 3, 
+            "INT_ADD": 3, 
+            "INT_SUB": 3
+          }, 
+          "branch_condition_complexity": 20
+        }
+      ], 
+      "crypto_signatures": {
+        "has_aes_sbox": 0, 
+        "rsa_bigint_detected": 0, 
+        "has_aes_rcon": 0, 
+        "has_sha_constants": 0
+      }, 
+      "data_references": {
+        "rodata_refs_count": 0, 
+        "string_refs_count": 0, 
+        "stack_frame_size": 0
+      }, 
+      "op_category_counts": {
+        "bitwise_ops": 2, 
+        "crypto_like_ops": 0, 
+        "arithmetic_ops": 6, 
+        "mem_ops_ratio": 0.10869565217391304
+      }, 
+      "label": "Non-Crypto", 
+      "instruction_sequence": {
+        "unique_ngram_count": 14, 
+        "top_5_bigrams": [
+          "mov push", 
+          "ldr.w adr", 
+          "blx blx", 
+          "adr add", 
+          "ldr.w blx"
+        ]
+      }, 
+      "entropy_metrics": {
+        "function_byte_entropy": 4.644106550888952, 
+        "opcode_entropy": 2.3524566896399377, 
+        "cyclomatic_complexity_density": 0.2
+      }, 
+      "name": "_start"
+    }, 
+    {
+      "address": "00010494", 
+      "graph_level": {
+        "strongly_connected_components": 4, 
+        "average_block_size": 3.3333333333333335, 
+        "num_edges": 3, 
+        "branch_density": 0.0, 
+        "num_basic_blocks": 3, 
+        "num_entry_exit_paths": 1, 
+        "loop_count": 0, 
+        "loop_depth": 0, 
+        "cyclomatic_complexity": 2
+      }, 
+      "edge_level": [
+        {
+          "dst": "00022014", 
+          "src": "0001043c", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "0001043c", 
+          "src": "000104ac", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "000104ac", 
+          "src": "00010494", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }
+      ], 
+      "node_level": [
+        {
+          "immediate_entropy": 0.0, 
+          "address": "0001043c", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 3, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.1, 
+            "rotate_ratio": 0.05, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.05, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.1
+          }, 
+          "bitwise_op_density": 0.15, 
+          "opcode_histogram": {
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "LOAD": 1, 
+            "COPY": 2, 
+            "INT_AND": 2, 
+            "SUBPIECE": 1, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "BRANCHIND": 1, 
+            "INT_EQUAL": 2, 
+            "INT_CARRY": 1, 
+            "INT_ADD": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 14
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000104ac", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.0, 
+          "opcode_histogram": {
+            "BRANCH": 1
+          }, 
+          "branch_condition_complexity": 0
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010494", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 6, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.11764705882352941, 
+            "rotate_ratio": 0.029411764705882353, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.08823529411764706, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.058823529411764705
+          }, 
+          "bitwise_op_density": 0.08823529411764706, 
+          "opcode_histogram": {
+            "INT_SLESS": 2, 
+            "INT_RIGHT": 1, 
+            "BOOL_AND": 2, 
+            "LOAD": 3, 
+            "CBRANCH": 1, 
+            "COPY": 6, 
+            "INT_AND": 2, 
+            "INT_LESSEQUAL": 1, 
+            "RETURN": 1, 
+            "SUBPIECE": 1, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 3, 
+            "INT_CARRY": 1, 
+            "INT_EQUAL": 3, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 22
+        }
+      ], 
+      "crypto_signatures": {
+        "has_aes_sbox": 0, 
+        "rsa_bigint_detected": 0, 
+        "has_aes_rcon": 0, 
+        "has_sha_constants": 0
+      }, 
+      "data_references": {
+        "rodata_refs_count": 1, 
+        "string_refs_count": 0, 
+        "stack_frame_size": 0
+      }, 
+      "op_category_counts": {
+        "bitwise_ops": 4, 
+        "crypto_like_ops": 2, 
+        "arithmetic_ops": 6, 
+        "mem_ops_ratio": 0.07272727272727272
+      }, 
+      "label": "Non-Crypto", 
+      "instruction_sequence": {
+        "unique_ngram_count": 7, 
+        "top_5_bigrams": [
+          "ldr ldr", 
+          "add ldr", 
+          "bxeq b", 
+          "adr add", 
+          "ldr add"
+        ]
+      }, 
+      "entropy_metrics": {
+        "function_byte_entropy": 4.5964393446710154, 
+        "opcode_entropy": 4.072738468960348, 
+        "cyclomatic_complexity_density": 0.2
+      }, 
+      "name": "call_weak_fn"
+    }, 
+    {
+      "address": "000104b8", 
+      "graph_level": {
+        "strongly_connected_components": 5, 
+        "average_block_size": 3.25, 
+        "num_edges": 5, 
+        "branch_density": 0.15384615384615385, 
+        "num_basic_blocks": 4, 
+        "num_entry_exit_paths": 2, 
+        "loop_count": 0, 
+        "loop_depth": 0, 
+        "cyclomatic_complexity": 3
+      }, 
+      "edge_level": [
+        {
+          "dst": "000104d0", 
+          "src": "000104b8", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000104c8", 
+          "src": "000104b8", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000104d0", 
+          "src": "000104c8", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000104ce", 
+          "src": "000104c8", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00022008", 
+          "src": "000104ce", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }
+      ], 
+      "node_level": [
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000104d0", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.4
+          }, 
+          "bitwise_op_density": 0.4, 
+          "opcode_histogram": {
+            "COPY": 1, 
+            "INT_AND": 2, 
+            "RETURN": 1, 
+            "INT_NOTEQUAL": 1
+          }, 
+          "branch_condition_complexity": 4
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000104b8", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 8, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.35, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.0, 
+          "opcode_histogram": {
+            "INT_SLESS": 1, 
+            "CBRANCH": 1, 
+            "COPY": 7, 
+            "INT_LESSEQUAL": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_SBORROW": 1, 
+            "INT_ADD": 6, 
+            "INT_SUB": 1, 
+            "INT_EQUAL": 1
+          }, 
+          "branch_condition_complexity": 15
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000104c8", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 3, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.2, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.2, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.0, 
+          "opcode_histogram": {
+            "LOAD": 1, 
+            "CBRANCH": 1, 
+            "COPY": 1, 
+            "INT_ADD": 1, 
+            "INT_EQUAL": 1
+          }, 
+          "branch_condition_complexity": 3
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000104ce", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.4
+          }, 
+          "bitwise_op_density": 0.4, 
+          "opcode_histogram": {
+            "COPY": 1, 
+            "INT_AND": 2, 
+            "INT_NOTEQUAL": 1, 
+            "BRANCHIND": 1
+          }, 
+          "branch_condition_complexity": 4
+        }
+      ], 
+      "crypto_signatures": {
+        "has_aes_sbox": 0, 
+        "rsa_bigint_detected": 0, 
+        "has_aes_rcon": 0, 
+        "has_sha_constants": 0
+      }, 
+      "data_references": {
+        "rodata_refs_count": 1, 
+        "string_refs_count": 0, 
+        "stack_frame_size": 0
+      }, 
+      "op_category_counts": {
+        "bitwise_ops": 4, 
+        "crypto_like_ops": 0, 
+        "arithmetic_ops": 8, 
+        "mem_ops_ratio": 0.02857142857142857
+      }, 
+      "label": "Non-Crypto", 
+      "instruction_sequence": {
+        "unique_ngram_count": 9, 
+        "top_5_bigrams": [
+          "ldr ldr", 
+          "add add", 
+          "ldr add", 
+          "ldr cbz", 
+          "beq ldr"
+        ]
+      }, 
+      "entropy_metrics": {
+        "function_byte_entropy": 4.209867121904035, 
+        "opcode_entropy": 3.1399786482181, 
+        "cyclomatic_complexity_density": 0.23076923076923078
+      }, 
+      "name": "deregister_tm_clones"
+    }, 
+    {
+      "address": "000104e4", 
+      "graph_level": {
+        "strongly_connected_components": 5, 
+        "average_block_size": 4.0, 
+        "num_edges": 5, 
+        "branch_density": 0.125, 
+        "num_basic_blocks": 4, 
+        "num_entry_exit_paths": 2, 
+        "loop_count": 0, 
+        "loop_depth": 0, 
+        "cyclomatic_complexity": 3
+      }, 
+      "edge_level": [
+        {
+          "dst": "00010504", 
+          "src": "000104e4", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000104fc", 
+          "src": "000104e4", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010504", 
+          "src": "000104fc", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010502", 
+          "src": "000104fc", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "0002201c", 
+          "src": "00010502", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }
+      ], 
+      "node_level": [
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000104e4", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 11, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.1774193548387097, 
+            "rotate_ratio": 0.0967741935483871, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.04838709677419355
+          }, 
+          "bitwise_op_density": 0.14516129032258066, 
+          "opcode_histogram": {
+            "INT_SLESS": 4, 
+            "INT_RIGHT": 3, 
+            "BOOL_AND": 4, 
+            "CBRANCH": 1, 
+            "COPY": 15, 
+            "INT_AND": 3, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 1, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 5, 
+            "INT_SBORROW": 1, 
+            "INT_SRIGHT": 3, 
+            "INT_ADD": 7, 
+            "INT_SUB": 4, 
+            "INT_EQUAL": 6, 
+            "INT_CARRY": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 46
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000104fc", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 3, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.2, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.2, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.0, 
+          "opcode_histogram": {
+            "LOAD": 1, 
+            "CBRANCH": 1, 
+            "COPY": 1, 
+            "INT_ADD": 1, 
+            "INT_EQUAL": 1
+          }, 
+          "branch_condition_complexity": 3
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010502", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.4
+          }, 
+          "bitwise_op_density": 0.4, 
+          "opcode_histogram": {
+            "COPY": 1, 
+            "INT_AND": 2, 
+            "INT_NOTEQUAL": 1, 
+            "BRANCHIND": 1
+          }, 
+          "branch_condition_complexity": 4
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010504", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.4
+          }, 
+          "bitwise_op_density": 0.4, 
+          "opcode_histogram": {
+            "COPY": 1, 
+            "INT_AND": 2, 
+            "RETURN": 1, 
+            "INT_NOTEQUAL": 1
+          }, 
+          "branch_condition_complexity": 4
+        }
+      ], 
+      "crypto_signatures": {
+        "has_aes_sbox": 0, 
+        "rsa_bigint_detected": 0, 
+        "has_aes_rcon": 0, 
+        "has_sha_constants": 0
+      }, 
+      "data_references": {
+        "rodata_refs_count": 1, 
+        "string_refs_count": 0, 
+        "stack_frame_size": 0
+      }, 
+      "op_category_counts": {
+        "bitwise_ops": 7, 
+        "crypto_like_ops": 6, 
+        "arithmetic_ops": 12, 
+        "mem_ops_ratio": 0.012987012987012988
+      }, 
+      "label": "Non-Crypto", 
+      "instruction_sequence": {
+        "unique_ngram_count": 13, 
+        "top_5_bigrams": [
+          "ldr add", 
+          "ldr ldr", 
+          "add ldr", 
+          "ldr cbz", 
+          "asrs beq"
+        ]
+      }, 
+      "entropy_metrics": {
+        "function_byte_entropy": 4.6534955617749425, 
+        "opcode_entropy": 3.7275283797403787, 
+        "cyclomatic_complexity_density": 0.1875
+      }, 
+      "name": "register_tm_clones"
+    }, 
+    {
+      "address": "00010518", 
+      "graph_level": {
+        "strongly_connected_components": 7, 
+        "average_block_size": 4.0, 
+        "num_edges": 8, 
+        "branch_density": 0.2, 
+        "num_basic_blocks": 5, 
+        "num_entry_exit_paths": 2, 
+        "loop_count": 0, 
+        "loop_depth": 0, 
+        "cyclomatic_complexity": 5
+      }, 
+      "edge_level": [
+        {
+          "dst": "00010418", 
+          "src": "0001052c", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010536", 
+          "src": "0001052c", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010542", 
+          "src": "00010518", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010526", 
+          "src": "00010518", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000104b8", 
+          "src": "00010536", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010542", 
+          "src": "00010536", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010536", 
+          "src": "00010526", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "0001052c", 
+          "src": "00010526", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }
+      ], 
+      "node_level": [
+        {
+          "immediate_entropy": 0.0, 
+          "address": "0001052c", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 4, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.3333333333333333, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.1111111111111111, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.1111111111111111
+          }, 
+          "bitwise_op_density": 0.1111111111111111, 
+          "opcode_histogram": {
+            "CALL": 1, 
+            "LOAD": 1, 
+            "COPY": 3, 
+            "INT_OR": 1, 
+            "INT_ADD": 3
+          }, 
+          "branch_condition_complexity": 4
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010542", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.18181818181818182, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.18181818181818182, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.18181818181818182
+          }, 
+          "bitwise_op_density": 0.18181818181818182, 
+          "opcode_histogram": {
+            "LOAD": 2, 
+            "COPY": 3, 
+            "INT_AND": 2, 
+            "RETURN": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_ADD": 2
+          }, 
+          "branch_condition_complexity": 6
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010518", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 7, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.4117647058823529, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.17647058823529413, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.0, 
+          "opcode_histogram": {
+            "INT_ZEXT": 1, 
+            "LOAD": 1, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_NOTEQUAL": 1, 
+            "STORE": 2, 
+            "INT_SUB": 2, 
+            "INT_ADD": 5
+          }, 
+          "branch_condition_complexity": 9
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010536", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.2, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.06666666666666667, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.06666666666666667
+          }, 
+          "bitwise_op_density": 0.06666666666666667, 
+          "opcode_histogram": {
+            "INT_SLESS": 1, 
+            "CALL": 1, 
+            "COPY": 6, 
+            "SUBPIECE": 1, 
+            "INT_OR": 1, 
+            "STORE": 1, 
+            "INT_EQUAL": 1, 
+            "INT_ADD": 3
+          }, 
+          "branch_condition_complexity": 8
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010526", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 3, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.2, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.2, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.0, 
+          "opcode_histogram": {
+            "LOAD": 1, 
+            "CBRANCH": 1, 
+            "COPY": 1, 
+            "INT_ADD": 1, 
+            "INT_EQUAL": 1
+          }, 
+          "branch_condition_complexity": 3
+        }
+      ], 
+      "crypto_signatures": {
+        "has_aes_sbox": 0, 
+        "rsa_bigint_detected": 0, 
+        "has_aes_rcon": 0, 
+        "has_sha_constants": 0
+      }, 
+      "data_references": {
+        "rodata_refs_count": 0, 
+        "string_refs_count": 0, 
+        "stack_frame_size": 0
+      }, 
+      "op_category_counts": {
+        "bitwise_ops": 4, 
+        "crypto_like_ops": 0, 
+        "arithmetic_ops": 16, 
+        "mem_ops_ratio": 0.14035087719298245
+      }, 
+      "label": "Non-Crypto", 
+      "instruction_sequence": {
+        "unique_ngram_count": 17, 
+        "top_5_bigrams": [
+          "ldr add", 
+          "ldr ldr", 
+          "ldrb cbnz", 
+          "ldr cbz", 
+          "add ldr"
+        ]
+      }, 
+      "entropy_metrics": {
+        "function_byte_entropy": 4.680689288944334, 
+        "opcode_entropy": 3.145971326679435, 
+        "cyclomatic_complexity_density": 0.25
+      }, 
+      "name": "__do_global_dtors_aux"
+    }, 
+    {
+      "address": "0001055c", 
+      "graph_level": {
+        "strongly_connected_components": 17, 
+        "average_block_size": 6.478260869565218, 
+        "num_edges": 67, 
+        "branch_density": 0.0738255033557047, 
+        "num_basic_blocks": 46, 
+        "num_entry_exit_paths": 2, 
+        "loop_count": 21, 
+        "loop_depth": 2, 
+        "cyclomatic_complexity": 23
+      }, 
+      "edge_level": [
+        {
+          "dst": "00010578", 
+          "src": "0001055c", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "000109d4", 
+          "src": "000109d0", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "0001070c", 
+          "src": "00010708", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "000106bc", 
+          "src": "000106b8", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "000105e0", 
+          "src": "000105b8", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "00010920", 
+          "src": "0001091c", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "00010994", 
+          "src": "000109b4", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000109c8", 
+          "src": "000109b4", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010794", 
+          "src": "00010790", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "000108c8", 
+          "src": "000108b8", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "000105e0", 
+          "src": "000106d8", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010708", 
+          "src": "000106d8", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000108b8", 
+          "src": "0001081c", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000108a4", 
+          "src": "0001081c", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000109d4", 
+          "src": "000109d4", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000109e8", 
+          "src": "000109d4", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "0001068c", 
+          "src": "00010664", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "00010744", 
+          "src": "00010740", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "00010790", 
+          "src": "00010784", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "00010784", 
+          "src": "000108fc", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010910", 
+          "src": "000108fc", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000106b8", 
+          "src": "00010640", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010664", 
+          "src": "00010640", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010740", 
+          "src": "00010760", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010774", 
+          "src": "00010760", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010994", 
+          "src": "00010948", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "0001081c", 
+          "src": "000107bc", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "000106bc", 
+          "src": "000106bc", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000106d8", 
+          "src": "000106bc", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010744", 
+          "src": "00010744", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010760", 
+          "src": "00010744", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010920", 
+          "src": "00010920", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010938", 
+          "src": "00010920", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "0001070c", 
+          "src": "00010724", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010738", 
+          "src": "00010724", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "0001062c", 
+          "src": "000105e0", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "0001068c", 
+          "src": "0001068c", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000106a4", 
+          "src": "0001068c", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000109d0", 
+          "src": "000109e8", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000109fc", 
+          "src": "000109e8", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "0001081c", 
+          "src": "000108a4", 
+          "is_loop_edge": true, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "000108c8", 
+          "src": "000108e8", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000108fc", 
+          "src": "000108e8", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000109d0", 
+          "src": "000109c8", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "000108cc", 
+          "src": "000108c8", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "0001062c", 
+          "src": "0001062c", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010640", 
+          "src": "0001062c", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010710", 
+          "src": "0001070c", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "000106b8", 
+          "src": "000106a4", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "00010784", 
+          "src": "00010774", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "00010998", 
+          "src": "00010994", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "00010578", 
+          "src": "00010578", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000105b8", 
+          "src": "00010578", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010710", 
+          "src": "00010710", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010724", 
+          "src": "00010710", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010794", 
+          "src": "00010794", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000107ac", 
+          "src": "00010794", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010740", 
+          "src": "00010738", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "0001091c", 
+          "src": "00010938", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010948", 
+          "src": "00010938", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000108cc", 
+          "src": "000108cc", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000108e8", 
+          "src": "000108cc", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "0001091c", 
+          "src": "00010910", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "00010998", 
+          "src": "00010998", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000109b4", 
+          "src": "00010998", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010790", 
+          "src": "000107ac", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "000107bc", 
+          "src": "000107ac", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }
+      ], 
+      "node_level": [
+        {
+          "immediate_entropy": 0.0, 
+          "address": "0001055c", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 7, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.18292682926829268, 
+            "rotate_ratio": 0.06097560975609756, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.12195121951219512, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.06097560975609756, 
+          "opcode_histogram": {
+            "INT_RIGHT": 5, 
+            "INT_SLESS": 5, 
+            "BOOL_AND": 10, 
+            "COPY": 5, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 5, 
+            "INT_SCARRY": 2, 
+            "INT_NOTEQUAL": 5, 
+            "INT_NEGATE": 1, 
+            "STORE": 10, 
+            "INT_SBORROW": 1, 
+            "INT_SUB": 11, 
+            "INT_ADD": 4, 
+            "INT_EQUAL": 10, 
+            "INT_CARRY": 2, 
+            "BOOL_OR": 5
+          }, 
+          "branch_condition_complexity": 57
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000109d0", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "COPY": 3, 
+            "SUBPIECE": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_EQUAL": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 8
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010708", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "COPY": 3, 
+            "SUBPIECE": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_EQUAL": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 8
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000106b8", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "COPY": 3, 
+            "SUBPIECE": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_EQUAL": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 8
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000105b8", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 10, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.038461538461538464, 
+            "rotate_ratio": 0.07692307692307693, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.009615384615384616, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07692307692307693, 
+          "opcode_histogram": {
+            "INT_RIGHT": 8, 
+            "INT_SLESS": 9, 
+            "BOOL_AND": 16, 
+            "LOAD": 1, 
+            "COPY": 19, 
+            "SUBPIECE": 8, 
+            "INT_SCARRY": 3, 
+            "INT_NOTEQUAL": 8, 
+            "INT_EQUAL": 17, 
+            "INT_CARRY": 3, 
+            "INT_ADD": 4, 
+            "BOOL_OR": 8
+          }, 
+          "branch_condition_complexity": 72
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "0001091c", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "COPY": 3, 
+            "SUBPIECE": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_EQUAL": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 8
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000109b4", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.07407407407407407, 
+            "rotate_ratio": 0.07407407407407407, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07407407407407407, 
+          "opcode_histogram": {
+            "INT_RIGHT": 4, 
+            "INT_SLESS": 4, 
+            "BOOL_AND": 8, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 4, 
+            "INT_SCARRY": 3, 
+            "INT_NOTEQUAL": 4, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_EQUAL": 8, 
+            "INT_CARRY": 3, 
+            "INT_ADD": 3, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 4
+          }, 
+          "branch_condition_complexity": 38
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010790", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "COPY": 3, 
+            "SUBPIECE": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_EQUAL": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 8
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000108b8", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 4, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.07407407407407407, 
+            "rotate_ratio": 0.07407407407407407, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.037037037037037035, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07407407407407407, 
+          "opcode_histogram": {
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 1, 
+            "COPY": 4, 
+            "SUBPIECE": 2, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "INT_ADD": 2, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 18
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000106d8", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 12, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.11224489795918367, 
+            "rotate_ratio": 0.07142857142857142, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.04081632653061224, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07142857142857142, 
+          "opcode_histogram": {
+            "INT_RIGHT": 7, 
+            "INT_SLESS": 7, 
+            "BOOL_AND": 14, 
+            "LOAD": 4, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 7, 
+            "INT_SCARRY": 6, 
+            "INT_NOTEQUAL": 7, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 10, 
+            "INT_EQUAL": 14, 
+            "INT_CARRY": 6, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 7
+          }, 
+          "branch_condition_complexity": 69
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "0001081c", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 34, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.08181818181818182, 
+            "logical": 0.0, 
+            "add_ratio": 0.07272727272727272, 
+            "rotate_ratio": 0.08181818181818182, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.022727272727272728, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.05454545454545454
+          }, 
+          "bitwise_op_density": 0.21818181818181817, 
+          "opcode_histogram": {
+            "INT_RIGHT": 14, 
+            "INT_SLESS": 25, 
+            "BOOL_AND": 4, 
+            "LOAD": 1, 
+            "INT_LEFT": 4, 
+            "INT_XOR": 18, 
+            "CBRANCH": 1, 
+            "COPY": 66, 
+            "INT_SEXT": 4, 
+            "INT_AND": 12, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 14, 
+            "INT_SCARRY": 2, 
+            "INT_NOTEQUAL": 2, 
+            "INT_SBORROW": 1, 
+            "STORE": 4, 
+            "INT_EQUAL": 27, 
+            "INT_CARRY": 2, 
+            "INT_ADD": 7, 
+            "INT_SUB": 9, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 156
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000109d4", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.10810810810810811, 
+            "rotate_ratio": 0.08108108108108109, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.05405405405405406, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08108108108108109, 
+          "opcode_histogram": {
+            "INT_ZEXT": 1, 
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 1, 
+            "INT_LEFT": 1, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "STORE": 1, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 3, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 22
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010664", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 10, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.23076923076923078, 
+            "rotate_ratio": 0.02564102564102564, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.23076923076923078, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.02564102564102564, 
+          "opcode_histogram": {
+            "INT_ZEXT": 6, 
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "LOAD": 6, 
+            "COPY": 3, 
+            "SUBPIECE": 4, 
+            "INT_NOTEQUAL": 1, 
+            "STORE": 3, 
+            "INT_ADD": 9, 
+            "INT_EQUAL": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 17
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010740", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "COPY": 3, 
+            "SUBPIECE": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_EQUAL": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 8
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010784", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 3, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.07692307692307693, 
+            "rotate_ratio": 0.07692307692307693, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.038461538461538464, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07692307692307693, 
+          "opcode_histogram": {
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "BOOL_AND": 4, 
+            "COPY": 3, 
+            "SUBPIECE": 2, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "STORE": 1, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "INT_ADD": 2, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 18
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000109fc", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 2, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.2702702702702703, 
+            "rotate_ratio": 0.02702702702702703, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.24324324324324326, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.05405405405405406
+          }, 
+          "bitwise_op_density": 0.08108108108108109, 
+          "opcode_histogram": {
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "LOAD": 9, 
+            "COPY": 3, 
+            "INT_AND": 2, 
+            "RETURN": 1, 
+            "SUBPIECE": 1, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "INT_EQUAL": 2, 
+            "INT_CARRY": 1, 
+            "INT_ADD": 10, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 22
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000108fc", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.09090909090909091, 
+            "rotate_ratio": 0.06818181818181818, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.022727272727272728, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.06818181818181818, 
+          "opcode_histogram": {
+            "INT_RIGHT": 3, 
+            "INT_SLESS": 3, 
+            "BOOL_AND": 6, 
+            "LOAD": 1, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 2, 
+            "INT_NOTEQUAL": 3, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 3, 
+            "INT_EQUAL": 6, 
+            "INT_CARRY": 2, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 3
+          }, 
+          "branch_condition_complexity": 30
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010640", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 9, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.01639344262295082, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.11475409836065574, 
+            "rotate_ratio": 0.13114754098360656, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.01639344262295082, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.08196721311475409
+          }, 
+          "bitwise_op_density": 0.21311475409836064, 
+          "opcode_histogram": {
+            "INT_ZEXT": 2, 
+            "INT_SLESS": 5, 
+            "INT_RIGHT": 5, 
+            "BOOL_AND": 2, 
+            "LOAD": 1, 
+            "INT_LEFT": 3, 
+            "CBRANCH": 1, 
+            "COPY": 8, 
+            "INT_AND": 4, 
+            "INT_LESSEQUAL": 2, 
+            "INT_MULT": 1, 
+            "SUBPIECE": 6, 
+            "INT_SCARRY": 1, 
+            "INT_OR": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_SBORROW": 2, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 2, 
+            "INT_EQUAL": 6, 
+            "INT_SUB": 5, 
+            "INT_CARRY": 1, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 40
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010760", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.07407407407407407, 
+            "rotate_ratio": 0.07407407407407407, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07407407407407407, 
+          "opcode_histogram": {
+            "INT_RIGHT": 4, 
+            "INT_SLESS": 4, 
+            "BOOL_AND": 8, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 4, 
+            "INT_SCARRY": 3, 
+            "INT_NOTEQUAL": 4, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_EQUAL": 8, 
+            "INT_CARRY": 3, 
+            "INT_ADD": 3, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 4
+          }, 
+          "branch_condition_complexity": 38
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010948", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 19, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.18, 
+            "rotate_ratio": 0.07, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.14, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.02
+          }, 
+          "bitwise_op_density": 0.09, 
+          "opcode_histogram": {
+            "INT_ZEXT": 6, 
+            "INT_RIGHT": 6, 
+            "INT_SLESS": 5, 
+            "BOOL_AND": 8, 
+            "LOAD": 7, 
+            "INT_LEFT": 1, 
+            "COPY": 6, 
+            "INT_AND": 1, 
+            "SUBPIECE": 11, 
+            "INT_SCARRY": 3, 
+            "INT_OR": 1, 
+            "INT_NOTEQUAL": 4, 
+            "STORE": 7, 
+            "INT_ADD": 17, 
+            "INT_SUB": 1, 
+            "INT_EQUAL": 9, 
+            "INT_CARRY": 3, 
+            "BOOL_OR": 4
+          }, 
+          "branch_condition_complexity": 56
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000107bc", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 24, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.2875, 
+            "rotate_ratio": 0.0125, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.2875, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.0125, 
+          "opcode_histogram": {
+            "INT_ZEXT": 11, 
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "LOAD": 11, 
+            "COPY": 3, 
+            "SUBPIECE": 12, 
+            "INT_NOTEQUAL": 1, 
+            "STORE": 12, 
+            "INT_ADD": 23, 
+            "INT_EQUAL": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 31
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000106bc", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 7, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.02127659574468085, 
+            "logical": 0.0, 
+            "add_ratio": 0.10638297872340426, 
+            "rotate_ratio": 0.0851063829787234, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.06382978723404255, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.10638297872340426, 
+          "opcode_histogram": {
+            "INT_ZEXT": 2, 
+            "INT_SLESS": 3, 
+            "INT_RIGHT": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 2, 
+            "INT_LEFT": 2, 
+            "INT_XOR": 1, 
+            "CBRANCH": 1, 
+            "COPY": 7, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "STORE": 1, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 4, 
+            "INT_EQUAL": 5, 
+            "INT_CARRY": 1, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 28
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010744", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 7, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.022222222222222223, 
+            "logical": 0.0, 
+            "add_ratio": 0.1111111111111111, 
+            "rotate_ratio": 0.044444444444444446, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.06666666666666667, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.06666666666666667, 
+          "opcode_histogram": {
+            "INT_ZEXT": 2, 
+            "INT_SLESS": 3, 
+            "INT_RIGHT": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 2, 
+            "INT_XOR": 1, 
+            "CBRANCH": 1, 
+            "COPY": 7, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "STORE": 1, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 4, 
+            "INT_EQUAL": 5, 
+            "INT_CARRY": 1, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 28
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010920", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 6, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.1282051282051282, 
+            "rotate_ratio": 0.05128205128205128, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.07692307692307693, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.05128205128205128, 
+          "opcode_histogram": {
+            "INT_ZEXT": 2, 
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 2, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "STORE": 1, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 4, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 23
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010724", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.07407407407407407, 
+            "rotate_ratio": 0.07407407407407407, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07407407407407407, 
+          "opcode_histogram": {
+            "INT_RIGHT": 4, 
+            "INT_SLESS": 4, 
+            "BOOL_AND": 8, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 4, 
+            "INT_SCARRY": 3, 
+            "INT_NOTEQUAL": 4, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_EQUAL": 8, 
+            "INT_CARRY": 3, 
+            "INT_ADD": 3, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 4
+          }, 
+          "branch_condition_complexity": 38
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000105e0", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 19, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.08088235294117647, 
+            "rotate_ratio": 0.08088235294117647, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.03676470588235294, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.08823529411764706
+          }, 
+          "bitwise_op_density": 0.16911764705882354, 
+          "opcode_histogram": {
+            "INT_RIGHT": 8, 
+            "INT_SLESS": 14, 
+            "BOOL_AND": 10, 
+            "INT_LEFT": 3, 
+            "COPY": 29, 
+            "INT_AND": 9, 
+            "SUBPIECE": 8, 
+            "INT_SCARRY": 3, 
+            "INT_NOTEQUAL": 5, 
+            "INT_NEGATE": 1, 
+            "INT_OR": 3, 
+            "STORE": 5, 
+            "INT_ADD": 8, 
+            "INT_EQUAL": 19, 
+            "INT_SUB": 3, 
+            "INT_CARRY": 3, 
+            "BOOL_OR": 5
+          }, 
+          "branch_condition_complexity": 99
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "0001068c", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 6, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.1282051282051282, 
+            "rotate_ratio": 0.05128205128205128, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.07692307692307693, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.05128205128205128, 
+          "opcode_histogram": {
+            "INT_ZEXT": 2, 
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 2, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "STORE": 1, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 4, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 23
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000109e8", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.07407407407407407, 
+            "rotate_ratio": 0.07407407407407407, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07407407407407407, 
+          "opcode_histogram": {
+            "INT_RIGHT": 4, 
+            "INT_SLESS": 4, 
+            "BOOL_AND": 8, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 4, 
+            "INT_SCARRY": 3, 
+            "INT_NOTEQUAL": 4, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_EQUAL": 8, 
+            "INT_CARRY": 3, 
+            "INT_ADD": 3, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 4
+          }, 
+          "branch_condition_complexity": 38
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000108a4", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.18181818181818182, 
+            "rotate_ratio": 0.045454545454545456, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.13636363636363635, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.045454545454545456, 
+          "opcode_histogram": {
+            "INT_ZEXT": 3, 
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BRANCH": 1, 
+            "BOOL_AND": 2, 
+            "LOAD": 3, 
+            "SUBPIECE": 1, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_ADD": 4, 
+            "INT_EQUAL": 2, 
+            "INT_CARRY": 1, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 12
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000108e8", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.07407407407407407, 
+            "rotate_ratio": 0.07407407407407407, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07407407407407407, 
+          "opcode_histogram": {
+            "INT_RIGHT": 4, 
+            "INT_SLESS": 4, 
+            "BOOL_AND": 8, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 4, 
+            "INT_SCARRY": 3, 
+            "INT_NOTEQUAL": 4, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_EQUAL": 8, 
+            "INT_CARRY": 3, 
+            "INT_ADD": 3, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 4
+          }, 
+          "branch_condition_complexity": 38
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000109c8", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 2, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.041666666666666664, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "BOOL_AND": 4, 
+            "COPY": 3, 
+            "SUBPIECE": 2, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "INT_ADD": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 17
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000108c8", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "COPY": 3, 
+            "SUBPIECE": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_EQUAL": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 8
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "0001062c", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.10810810810810811, 
+            "rotate_ratio": 0.08108108108108109, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.05405405405405406, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08108108108108109, 
+          "opcode_histogram": {
+            "INT_ZEXT": 1, 
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 1, 
+            "INT_LEFT": 1, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "STORE": 1, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 3, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 22
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "0001070c", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "COPY": 3, 
+            "SUBPIECE": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_EQUAL": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 8
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000106a4", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.05, 
+            "logical": 0.0, 
+            "add_ratio": 0.2, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.15, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.05, 
+          "opcode_histogram": {
+            "INT_SLESS": 2, 
+            "INT_ZEXT": 1, 
+            "LOAD": 2, 
+            "INT_XOR": 1, 
+            "COPY": 4, 
+            "SUBPIECE": 1, 
+            "INT_SCARRY": 1, 
+            "STORE": 1, 
+            "INT_ADD": 4, 
+            "INT_CARRY": 1, 
+            "INT_EQUAL": 2
+          }, 
+          "branch_condition_complexity": 13
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010774", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 4, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.041666666666666664, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 4, 
+            "INT_SLESS": 4, 
+            "BOOL_AND": 8, 
+            "COPY": 6, 
+            "SUBPIECE": 4, 
+            "INT_SCARRY": 2, 
+            "INT_NOTEQUAL": 4, 
+            "INT_EQUAL": 8, 
+            "INT_CARRY": 2, 
+            "INT_ADD": 2, 
+            "BOOL_OR": 4
+          }, 
+          "branch_condition_complexity": 34
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010994", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 1, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.0, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 1, 
+            "INT_SLESS": 1, 
+            "BOOL_AND": 2, 
+            "COPY": 3, 
+            "SUBPIECE": 1, 
+            "INT_NOTEQUAL": 1, 
+            "INT_EQUAL": 2, 
+            "BOOL_OR": 1
+          }, 
+          "branch_condition_complexity": 8
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010578", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 16, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.13, 
+            "rotate_ratio": 0.06, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.08, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.04
+          }, 
+          "bitwise_op_density": 0.1, 
+          "opcode_histogram": {
+            "INT_RIGHT": 5, 
+            "INT_SLESS": 7, 
+            "INT_ZEXT": 4, 
+            "BOOL_AND": 8, 
+            "LOAD": 4, 
+            "INT_LEFT": 1, 
+            "CBRANCH": 1, 
+            "COPY": 12, 
+            "INT_AND": 3, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 9, 
+            "INT_SCARRY": 3, 
+            "INT_NOTEQUAL": 4, 
+            "INT_OR": 1, 
+            "INT_SBORROW": 1, 
+            "STORE": 4, 
+            "BOOL_NEGATE": 1, 
+            "INT_SUB": 2, 
+            "INT_EQUAL": 11, 
+            "INT_CARRY": 3, 
+            "INT_ADD": 11, 
+            "BOOL_OR": 4
+          }, 
+          "branch_condition_complexity": 63
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010710", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.10810810810810811, 
+            "rotate_ratio": 0.08108108108108109, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.05405405405405406, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08108108108108109, 
+          "opcode_histogram": {
+            "INT_ZEXT": 1, 
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 1, 
+            "INT_LEFT": 1, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "STORE": 1, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 3, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 22
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010794", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 6, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.1282051282051282, 
+            "rotate_ratio": 0.05128205128205128, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.07692307692307693, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.05128205128205128, 
+          "opcode_histogram": {
+            "INT_ZEXT": 2, 
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 2, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "STORE": 1, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 4, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 23
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010738", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 2, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.041666666666666664, 
+            "rotate_ratio": 0.08333333333333333, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.08333333333333333, 
+          "opcode_histogram": {
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "BOOL_AND": 4, 
+            "COPY": 3, 
+            "SUBPIECE": 2, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "INT_ADD": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 17
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010938", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 4, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.07142857142857142, 
+            "rotate_ratio": 0.07142857142857142, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07142857142857142, 
+          "opcode_histogram": {
+            "INT_RIGHT": 3, 
+            "INT_SLESS": 3, 
+            "BOOL_AND": 6, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 2, 
+            "INT_NOTEQUAL": 3, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_EQUAL": 6, 
+            "INT_CARRY": 2, 
+            "INT_ADD": 2, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 3
+          }, 
+          "branch_condition_complexity": 29
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000108cc", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 7, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.022222222222222223, 
+            "logical": 0.0, 
+            "add_ratio": 0.1111111111111111, 
+            "rotate_ratio": 0.044444444444444446, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.06666666666666667, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.06666666666666667, 
+          "opcode_histogram": {
+            "INT_ZEXT": 2, 
+            "INT_SLESS": 3, 
+            "INT_RIGHT": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 2, 
+            "INT_XOR": 1, 
+            "CBRANCH": 1, 
+            "COPY": 7, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "STORE": 1, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 4, 
+            "INT_EQUAL": 5, 
+            "INT_CARRY": 1, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 28
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010910", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 3, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.07692307692307693, 
+            "rotate_ratio": 0.07692307692307693, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.038461538461538464, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07692307692307693, 
+          "opcode_histogram": {
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 1, 
+            "COPY": 3, 
+            "SUBPIECE": 2, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "INT_ADD": 2, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 18
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010998", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 7, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.022222222222222223, 
+            "logical": 0.0, 
+            "add_ratio": 0.1111111111111111, 
+            "rotate_ratio": 0.044444444444444446, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.06666666666666667, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.06666666666666667, 
+          "opcode_histogram": {
+            "INT_ZEXT": 2, 
+            "INT_SLESS": 3, 
+            "INT_RIGHT": 2, 
+            "BOOL_AND": 4, 
+            "LOAD": 2, 
+            "INT_XOR": 1, 
+            "CBRANCH": 1, 
+            "COPY": 7, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "STORE": 1, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 4, 
+            "INT_EQUAL": 5, 
+            "INT_CARRY": 1, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 28
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "000107ac", 
+          "table_lookup_presence": false, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 4, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.07142857142857142, 
+            "rotate_ratio": 0.07142857142857142, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.0, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.07142857142857142, 
+          "opcode_histogram": {
+            "INT_RIGHT": 3, 
+            "INT_SLESS": 3, 
+            "BOOL_AND": 6, 
+            "CBRANCH": 1, 
+            "COPY": 4, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 2, 
+            "INT_NOTEQUAL": 3, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_EQUAL": 6, 
+            "INT_CARRY": 2, 
+            "INT_ADD": 2, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 3
+          }, 
+          "branch_condition_complexity": 29
+        }
+      ], 
+      "crypto_signatures": {
+        "has_aes_sbox": 0, 
+        "rsa_bigint_detected": 0, 
+        "has_aes_rcon": 0, 
+        "has_sha_constants": 0
+      }, 
+      "data_references": {
+        "rodata_refs_count": 0, 
+        "string_refs_count": 0, 
+        "stack_frame_size": 284
+      }, 
+      "op_category_counts": {
+        "bitwise_ops": 62, 
+        "crypto_like_ops": 174, 
+        "arithmetic_ops": 233, 
+        "mem_ops_ratio": 0.057534246575342465
+      }, 
+      "label": "AES", 
+      "instruction_sequence": {
+        "unique_ngram_count": 89, 
+        "top_5_bigrams": [
+          "ldrb ldrb", 
+          "add cmp", 
+          "cmp bne", 
+          "add add", 
+          "eor eor"
+        ]
+      }, 
+      "entropy_metrics": {
+        "function_byte_entropy": 5.923974606248754, 
+        "opcode_entropy": 4.0333701783577025, 
+        "cyclomatic_complexity_density": 0.07718120805369127
+      }, 
+      "name": "aes192_encrypt"
+    }, 
+    {
+      "address": "00010a0c", 
+      "graph_level": {
+        "strongly_connected_components": 7, 
+        "average_block_size": 12.333333333333334, 
+        "num_edges": 8, 
+        "branch_density": 0.05405405405405406, 
+        "num_basic_blocks": 3, 
+        "num_entry_exit_paths": 1, 
+        "loop_count": 1, 
+        "loop_depth": 2, 
+        "cyclomatic_complexity": 7
+      }, 
+      "edge_level": [
+        {
+          "dst": "00010448", 
+          "src": "00010a8c", 
+          "is_loop_edge": false, 
+          "edge_type": "unconditional"
+        }, 
+        {
+          "dst": "0001055c", 
+          "src": "00010a0c", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010430", 
+          "src": "00010a0c", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010424", 
+          "src": "00010a0c", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010a74", 
+          "src": "00010a0c", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010424", 
+          "src": "00010a74", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010a74", 
+          "src": "00010a74", 
+          "is_loop_edge": true, 
+          "edge_type": "conditional"
+        }, 
+        {
+          "dst": "00010a8c", 
+          "src": "00010a74", 
+          "is_loop_edge": false, 
+          "edge_type": "conditional"
+        }
+      ], 
+      "node_level": [
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010a8c", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 5, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.12280701754385964, 
+            "rotate_ratio": 0.05263157894736842, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.10526315789473684, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.03508771929824561
+          }, 
+          "bitwise_op_density": 0.08771929824561403, 
+          "opcode_histogram": {
+            "INT_RIGHT": 3, 
+            "INT_SLESS": 3, 
+            "BOOL_AND": 6, 
+            "CALL": 1, 
+            "LOAD": 6, 
+            "COPY": 10, 
+            "INT_AND": 2, 
+            "RETURN": 1, 
+            "SUBPIECE": 3, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 4, 
+            "INT_EQUAL": 6, 
+            "INT_CARRY": 1, 
+            "INT_ADD": 7, 
+            "BOOL_OR": 3
+          }, 
+          "branch_condition_complexity": 35
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010a0c", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 26, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.26282051282051283, 
+            "rotate_ratio": 0.02564102564102564, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.1987179487179487, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.02564102564102564, 
+          "opcode_histogram": {
+            "INT_RIGHT": 4, 
+            "INT_SLESS": 9, 
+            "BOOL_AND": 8, 
+            "CALL": 3, 
+            "LOAD": 15, 
+            "COPY": 19, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 4, 
+            "INT_SCARRY": 7, 
+            "INT_NOTEQUAL": 4, 
+            "STORE": 16, 
+            "INT_SBORROW": 1, 
+            "INT_SUB": 8, 
+            "INT_ADD": 33, 
+            "INT_EQUAL": 13, 
+            "INT_CARRY": 7, 
+            "BOOL_OR": 4
+          }, 
+          "branch_condition_complexity": 95
+        }, 
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010a74", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 6, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.08333333333333333, 
+            "rotate_ratio": 0.05555555555555555, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.027777777777777776, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.0
+          }, 
+          "bitwise_op_density": 0.05555555555555555, 
+          "opcode_histogram": {
+            "INT_ZEXT": 1, 
+            "INT_RIGHT": 2, 
+            "INT_SLESS": 2, 
+            "CALL": 1, 
+            "BOOL_AND": 4, 
+            "LOAD": 1, 
+            "CBRANCH": 1, 
+            "COPY": 6, 
+            "INT_LESSEQUAL": 1, 
+            "SUBPIECE": 2, 
+            "INT_SCARRY": 1, 
+            "INT_NOTEQUAL": 2, 
+            "INT_SBORROW": 1, 
+            "BOOL_NEGATE": 1, 
+            "INT_ADD": 2, 
+            "INT_EQUAL": 4, 
+            "INT_CARRY": 1, 
+            "INT_SUB": 1, 
+            "BOOL_OR": 2
+          }, 
+          "branch_condition_complexity": 21
+        }
+      ], 
+      "crypto_signatures": {
+        "has_aes_sbox": 0, 
+        "rsa_bigint_detected": 0, 
+        "has_aes_rcon": 0, 
+        "has_sha_constants": 0
+      }, 
+      "data_references": {
+        "rodata_refs_count": 0, 
+        "string_refs_count": 0, 
+        "stack_frame_size": 80
+      }, 
+      "op_category_counts": {
+        "bitwise_ops": 2, 
+        "crypto_like_ops": 9, 
+        "arithmetic_ops": 51, 
+        "mem_ops_ratio": 0.15261044176706828
+      }, 
+      "label": "Non-Crypto", 
+      "instruction_sequence": {
+        "unique_ngram_count": 26, 
+        "top_5_bigrams": [
+          "ldr add", 
+          "add ldmia", 
+          "bl ldr", 
+          "mov add", 
+          "add bl"
+        ]
+      }, 
+      "entropy_metrics": {
+        "function_byte_entropy": 5.322294526554188, 
+        "opcode_entropy": 3.8535033441762048, 
+        "cyclomatic_complexity_density": 0.1891891891891892
+      }, 
+      "name": "main"
+    }, 
+    {
+      "address": "00010ab4", 
+      "graph_level": {
+        "strongly_connected_components": 1, 
+        "average_block_size": 2.0, 
+        "num_edges": 0, 
+        "branch_density": 0.0, 
+        "num_basic_blocks": 1, 
+        "num_entry_exit_paths": 2, 
+        "loop_count": 0, 
+        "loop_depth": 0, 
+        "cyclomatic_complexity": 1
+      }, 
+      "edge_level": [], 
+      "node_level": [
+        {
+          "immediate_entropy": 0.0, 
+          "address": "00010ab4", 
+          "table_lookup_presence": true, 
+          "crypto_constant_hits": 0, 
+          "instruction_count": 2, 
+          "opcode_ratios": {
+            "add": 0.0, 
+            "rotate": 0.0, 
+            "multiply_ratio": 0.0, 
+            "xor_ratio": 0.0, 
+            "logical": 0.0, 
+            "add_ratio": 0.35294117647058826, 
+            "rotate_ratio": 0.0, 
+            "load_store": 0.0, 
+            "load_store_ratio": 0.23529411764705882, 
+            "xor": 0.0, 
+            "multiply": 0.0, 
+            "logical_ratio": 0.11764705882352941
+          }, 
+          "bitwise_op_density": 0.11764705882352941, 
+          "opcode_histogram": {
+            "LOAD": 2, 
+            "COPY": 3, 
+            "INT_AND": 2, 
+            "RETURN": 1, 
+            "INT_NOTEQUAL": 1, 
+            "STORE": 2, 
+            "INT_SUB": 3, 
+            "INT_ADD": 3
+          }, 
+          "branch_condition_complexity": 10
+        }
+      ], 
+      "crypto_signatures": {
+        "has_aes_sbox": 0, 
+        "rsa_bigint_detected": 0, 
+        "has_aes_rcon": 0, 
+        "has_sha_constants": 0
+      }, 
+      "data_references": {
+        "rodata_refs_count": 0, 
+        "string_refs_count": 0, 
+        "stack_frame_size": 0
+      }, 
+      "op_category_counts": {
+        "bitwise_ops": 2, 
+        "crypto_like_ops": 0, 
+        "arithmetic_ops": 6, 
+        "mem_ops_ratio": 0.23529411764705882
+      }, 
+      "label": "Non-Crypto", 
+      "instruction_sequence": {
+        "unique_ngram_count": 1, 
+        "top_5_bigrams": [
+          "stmdb ldmia"
+        ]
+      }, 
+      "entropy_metrics": {
+        "function_byte_entropy": 2.75, 
+        "opcode_entropy": 2.895423870280316, 
+        "cyclomatic_complexity_density": 0.5
+      }, 
+      "name": "_fini"
+    }
+  ], 
+  "binary": "aes192_ARM_clang_Os.elf"
+}

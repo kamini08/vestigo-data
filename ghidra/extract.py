@@ -539,8 +539,15 @@ def analyze_function(func):
     }
 
 def main():
+    import os
     program_name = currentProgram.getName()
-    output_file = "{}.json".format(program_name)
+    
+    # Output to ghidra_output directory
+    output_dir = "ghidra_output"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    
+    output_file = os.path.join(output_dir, "{}.json".format(program_name))
     
     results = {"binary": program_name, "functions": []}
     
