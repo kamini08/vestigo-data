@@ -1,0 +1,581 @@
+crypto_detection_rules:
+
+  # -------------------------------------------------
+  # SHA-1
+  # -------------------------------------------------
+  - rule:
+      name: SHA1 Detection Rule
+      canonical_primitive: SHA-1
+      priority: 1
+
+      summary:
+        indicators:
+          - SHA1 IV constants
+          - SHA1 K(t) constants
+          - CALG_SHA1 API
+          - .NET SHA1Managed class
+        low_level:
+          - IV block (A,B,C,D,E)
+          - K(t) block
+          - rotate-left ops
+          - W[80] schedule
+        detection_heuristics:
+          - IV block OR K block
+          - CALG_SHA1 API
+          - SHA1Managed .NET
+        confidence: High (IV+K or API)
+        false_positives: [MD5, RIPEMD]
+        extra_checks: [80_round_loop, rotate_left_pattern]
+        ml_features:
+          - has_sha1_iv_constants
+          - has_sha1_k_constants
+          - num_rotate_left_ops
+          - has_calsha1_api
+
+      detect_if:
+        any_of:
+          - all_of:
+              - 0x67452301
+              - 0xEFCDAB89
+              - 0x98BADCFE
+              - 0x10325476
+              - 0xC3D2E1F0
+          - all_of:
+              - 0x5A827999
+              - 0x6ED9EBA1
+              - 0x8F1BBCDC
+              - 0xCA62C1D6
+          - api: advapi32.CryptCreateHash
+            number: 0x8004
+          - api: System.Security.Cryptography.SHA1Managed::ctor
+
+      ml_features:
+        node:
+          - instruction_count
+          - immediate_entropy
+          - bitwise_op_density
+          - opcode_histogram
+          - base_opcode_ratios
+          - table_lookup_presence
+          - crypto_constant_hits
+          - ngram_repetition
+          - simd_detection
+          - constant_matching_crypto_constants
+        function:
+          - num_basic_blocks
+          - num_edges
+          - cyclomatic_complexity
+          - loop_count
+          - branch_density
+          - average_block_size
+          - scc_count
+        edge:
+          - edge_type
+          - branch_condition_complexity
+          - is_loop_edge
+        algorithm_specific:
+          - sha_init_constants_hits
+          - sha_k_table_hits
+          - sha_rotation_patterns
+          - schedule_size_detection
+          - bitwise_mix_operations
+        data_refs:
+          - string_refs_count
+          - rodata_refs_count
+          - data_refs_count
+          - string_density
+        call_graph:
+          - call_in_degree
+          - call_out_degree
+          - betweenness_centrality
+          - pagerank_score
+        binary_metadata:
+          - text_size
+          - rodata_size
+          - data_size
+          - number_of_tables
+
+
+  # -------------------------------------------------
+  # SHA-224
+  # -------------------------------------------------
+  - rule:
+      name: SHA224 Detection Rule
+      canonical_primitive: SHA-224
+      priority: 1
+
+      summary:
+        indicators: [SHA224 IV block]
+        low_level: [H(0) 8 constants]
+        detection_heuristics: [8_IVs_present]
+        confidence: High
+        false_positives: []
+        extra_checks: [SHA2_64_rounds]
+        ml_features: [has_sha224_iv, sha2_round_ops_density]
+
+      detect_if:
+        all_of:
+          - 0xc1059ed8
+          - 0x367cd507
+          - 0x3070dd17
+          - 0xf70e5939
+          - 0xffc00b31
+          - 0x68581511
+          - 0x64f98fa7
+          - 0xbefa4fa4
+
+      ml_features:
+        node:
+          - instruction_count
+          - immediate_entropy
+          - opcode_histogram
+          - rotate_right_usage
+        function:
+          - num_basic_blocks
+          - cyclomatic_complexity
+          - loop_count
+        edge:
+          - edge_type
+        algorithm_specific:
+          - sha_init_constants_hits
+          - sha_rotation_patterns
+        data_refs:
+          - rodata_refs_count
+        call_graph:
+          - call_in_degree
+          - call_out_degree
+        binary_metadata:
+          - text_size
+          - rodata_size
+
+
+  # -------------------------------------------------
+  # SHA-256
+  # -------------------------------------------------
+  - rule:
+      name: SHA256 Detection Rule
+      canonical_primitive: SHA-256
+      priority: 1
+
+      summary:
+        indicators:
+          - H0 block
+          - concatenated SHA256 H0 bytes
+          - first 8 K constants
+          - .NET SHA256 APIs
+        low_level:
+          - rotates 16/11/7
+          - choice/majority ops
+        detection_heuristics:
+          - detect_iv_or_k
+          - detect_sha256_dotnet
+        confidence: High
+        false_positives: [SHA512 lower halves]
+        extra_checks: [W64, sigma0, sigma1]
+        ml_features:
+          - has_sha256_iv
+          - has_sha256_k_constants
+          - rotate_right_count
+
+      detect_if:
+        any_of:
+          - all_of:
+              - 0x6A09E667
+              - 0xBB67AE85
+              - 0x3C6EF372
+              - 0xA54FF53A
+              - 0x510E527F
+              - 0x9B05688C
+              - 0x1F83D9AB
+              - 0x5BE0CD19
+
+          - bytes: "67E6096A85AE67BB72F36E3C3AF54FA57F520E518C68059BABD9831F19CDE05B"
+
+          - and:
+              - 0x428a2f98
+              - 0x71374491
+              - 0xb5c0fbcf
+              - 0xe9b5dba5
+              - 0x3956c25b
+              - 0x59f111f1
+              - 0x923f82a4
+              - 0xab1c5ed5
+              - not_any_of:
+                  - 0xd728ae22
+                  - 0x23ef65cd
+
+          - dotnet_api:
+              - SHA256Managed::Initialize
+              - SHA256CryptoServiceProvider::Initialize
+              - SHA256::Create
+              - SHA256Managed::ctor
+
+      ml_features:
+        node:
+          - instruction_count
+          - opcode_histogram
+          - rotate_right_usage
+          - crypto_constant_hits
+        function:
+          - cyclomatic_complexity
+          - loop_count
+        edge:
+          - branch_condition_complexity
+        algorithm_specific:
+          - sha_rotation_patterns
+          - sha_k_table_hits
+          - schedule_size_detection
+        data_refs:
+          - rodata_refs_count
+        call_graph:
+          - call_out_degree
+        binary_metadata:
+          - number_of_tables
+
+
+  # -------------------------------------------------
+  # AES — Manual Constants
+  # -------------------------------------------------
+  - rule:
+      name: AES Manual Constants
+      canonical_primitive: AES
+      priority: 1
+
+      detect_if:
+        all_of:
+          - any_of:
+              - count_rol: ">=4"
+              - count_shl: ">=4"
+          - count_number_0x63: ">=2"
+          - number: 0x1B
+          - basic_block:
+              all_of:
+                - number: 0x63
+                - count_nzxor: ">=5"
+
+      ml_features:
+        node:
+          - instruction_count
+          - bitwise_op_density
+          - gf256_mul_ratio
+          - tbox_detected
+        function:
+          - num_basic_blocks
+          - approximate_rounds
+        algorithm_specific:
+          - has_aes_sbox
+          - aes_sbox_match_score
+          - has_aes_rcon
+          - mixcolumns_pattern_score
+          - key_expansion_detection
+          - table_entropy_score
+        data_refs:
+          - num_large_tables
+        binary_metadata:
+          - table_count
+
+
+  # -------------------------------------------------
+  # AES — Hardware (AES-NI)
+  # -------------------------------------------------
+  - rule:
+      name: AES Hardware Decryption
+      canonical_primitive: AES-NI
+      priority: 1
+
+      detect_if:
+        any_of:
+          - mnemonic: aesdec
+          - mnemonic: vaesdec
+          - mnemonic: aesdeclast
+          - mnemonic: vaesdeclast
+
+      ml_features:
+        node:
+          - simd_detection
+          - opcode_histogram
+        function:
+          - num_basic_blocks
+        algorithm_specific:
+          - aesni_usage
+        binary_metadata:
+          - text_size
+
+
+  # -------------------------------------------------
+  # AES — MixColumns
+  # -------------------------------------------------
+  - rule:
+      name: AES MixColumns
+      canonical_primitive: AES
+      priority: 1
+
+      detect_if:
+        all_of:
+          - loop
+          - instruction:
+              mnemonic: cmp
+              operand[1]: 0x4
+          - instruction:
+              mnemonic: shl
+              operand[1]: 0x1
+          - instruction:
+              mnemonic: xor
+              operand[1]: 0x1B
+          - optional_instruction:
+              mnemonic: mov
+              operand[0].offset: 0
+
+      ml_features:
+        algorithm_specific:
+          - mixcolumns_pattern_score
+          - gf256_mul_ratio
+        node:
+          - bitwise_op_density
+        function:
+          - loop_count
+
+
+  # -------------------------------------------------
+  # RSA — Embedded Library Encryption
+  # -------------------------------------------------
+  - rule:
+      name: RSA Embedded Library Encryption
+      canonical_primitive: RSA
+      priority: 1
+
+      detect_if:
+        all_of:
+          - instruction: { mnemonic: sub, number: 3 }
+          - instruction: { mnemonic: mov, offset: 0, number: 0 }
+          - instruction: { mnemonic: mov, offset: 1, number: 2 }
+          - instruction: { mnemonic: mov, offset: 2, number: 0 }
+          - count_call: "(6,8)"
+          - optional: bigint_function
+
+      ml_features:
+        algorithm_specific:
+          - bigint_op_count
+          - montgomery_op_count
+          - modexp_op_density
+          - exponent_bit_length
+          - modulus_bit_length
+          - bigint_width
+          - limb_count
+        node:
+          - carry_chain_depth
+        function:
+          - cyclomatic_complexity
+        binary_metadata:
+          - data_size
+
+
+  # -------------------------------------------------
+  # RSA — Public Key Reference
+  # -------------------------------------------------
+  - rule:
+      name: RSA Public Key Reference
+      canonical_primitive: RSA
+      priority: 1
+
+      detect_if:
+        any_of:
+          - bytes: "0602000000A4000052534131"
+          - number: 0x040031415352
+          - number: 0x080031415352
+          - number: 0x100031415352
+
+      ml_features:
+        algorithm_specific:
+          - rsa_magic_match
+          - rsa_bitlen
+        data_refs:
+          - rodata_refs_count
+
+
+  # -------------------------------------------------
+  # PRNG — SystemFunction036
+  # -------------------------------------------------
+  - rule:
+      name: RtlGenRandom PRNG
+      canonical_primitive: PRNG
+      priority: 1
+
+      detect_if:
+        any_of:
+          - api: SystemFunction036
+          - basic_block:
+              all_of:
+                - match: link_function_at_runtime
+                - string: "SystemFunction036"
+                - optional:
+                    - /advapi32/i
+                    - /cryptsp/i
+
+      ml_features:
+        algorithm_specific:
+          - prng_winapi_score
+        binary_metadata:
+          - text_size
+        data_refs:
+          - string_density
+
+
+  # -------------------------------------------------
+  # PRNG — WinAPI
+  # -------------------------------------------------
+  - rule:
+      name: WinAPI PRNG
+      canonical_primitive: PRNG
+      priority: 1
+
+      detect_if:
+        all_of:
+          - any_of:
+              - api: BCryptGenRandom
+              - api: CryptGenRandom
+          - optional:
+              - api: BCryptOpenAlgorithmProvider
+              - api: BCryptCloseAlgorithmProvider
+              - api: CryptAcquireContext
+
+      ml_features:
+        algorithm_specific:
+          - lcg_detection
+          - mt19937_constants
+          - feedback_polynomial
+        function:
+          - call_out_degree
+
+
+  # -------------------------------------------------
+  # ECC — Curve25519 Key Clamping
+  # -------------------------------------------------
+  - rule:
+      name: Curve25519 Key Clamping
+      canonical_primitive: Curve25519
+      priority: 1
+
+      detect_if:
+        all_of:
+          - instruction: { mnemonic: and, number: 0xF8 }
+          - any_of:
+              - instruction: { mnemonic: and, number: 0x7F }
+              - instruction: { mnemonic: and, number: 0x3F }
+          - instruction: { mnemonic: or, number: 0x40 }
+
+      ml_features:
+        algorithm_specific:
+          - curve25519_constant_detection
+          - ladder_step_count
+          - cswap_patterns
+          - coordinate_system_mix_ratio
+
+
+  # -------------------------------------------------
+  # ECC — Public Key Reference (ASN.1)
+  # -------------------------------------------------
+  - rule:
+      name: ECC Public Key Reference
+      canonical_primitive: ECC
+      priority: 1
+
+      detect_if:
+        any_of:
+          - bytes: "3059301306072A8648CE3D020106082A8648CE3D030107"
+          - bytes: "30760201010420"
+          - string: "EC PARAMETERS"
+          - string: "EC PUBLIC KEY"
+
+      ml_features:
+        data_refs:
+          - rodata_refs_count
+        algorithm_specific:
+          - ec_oid_match
+
+
+  # -------------------------------------------------
+  # ECC — OpenSSL EC API
+  # -------------------------------------------------
+  - rule:
+      name: ECC OpenSSL API Usage
+      canonical_primitive: ECC
+      priority: 1
+
+      detect_if:
+        any_of:
+          - api: EC_KEY_new
+          - api: EC_KEY_generate_key
+          - api: EC_KEY_set_private_key
+          - api: EC_POINT_mul
+          - api: EC_POINT_new
+          - api: EC_GROUP_new_by_curve_name
+          - api: EC_KEY_free
+          - api: EC_POINT_free
+
+      ml_features:
+        algorithm_specific:
+          - openssl_ec_api_present
+        call_graph:
+          - call_out_degree
+          - call_in_degree
+
+
+  # -------------------------------------------------
+  # ChaCha20
+  # -------------------------------------------------
+  - rule:
+      name: ChaCha20 Encryption
+      canonical_primitive: ChaCha20
+      priority: 1
+
+      detect_if:
+        any_of:
+          - all_of:
+              - 0x61707865
+              - 0x3320646E
+              - 0x79622D32
+              - 0x6B206574
+          - all_of:
+              - mnemonic: add
+              - mnemonic: xor
+              - any_of:
+                  - rol16
+                  - rol12
+                  - rol8
+                  - rol7
+
+      ml_features:
+        algorithm_specific:
+          - chacha_sigma_match
+          - quarterround_score
+        node:
+          - rotate_left_usage
+          - bitwise_op_density
+        function:
+          - loop_count
+
+
+  # -------------------------------------------------
+  # XOR Encryption
+  # -------------------------------------------------
+  - rule:
+      name: XOR Encryption
+      canonical_primitive: XOR
+      priority: 2
+
+      detect_if:
+        all_of:
+          - characteristic: loop
+          - xor_with_constant: true
+          - pointer_increment: true
+          - not_zeroing_xor: true
+
+      ml_features:
+        algorithm_specific:
+          - xor_key_immediate
+          - xor_loop_detected
+        node:
+          - bitwise_op_density
+        function:
+          - loop_count

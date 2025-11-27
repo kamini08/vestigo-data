@@ -1,0 +1,445 @@
+-------------------------------------------------
+SHA-1
+-------------------------------------------------
+
+Canonical Primitive: SHA-1
+
+Indicators:
+SHA1 IV constants, SHA1 K(t) constants, CALG_SHA1 API, .NET SHA1Managed
+
+Low-level:
+Rotate-left operations, W[80] schedule, 32-bit IV block
+
+Detection heuristics:
+IV block OR K(t) block OR CALG_SHA1 OR SHA1Managed
+
+Confidence: High (IV+K/API), Medium (IV-only or K-only)
+False positives: MD5/RIPEMD overlaps
+Extra checks: 80-round loop
+
+ML features:
+
+Node-level:
+instruction_count, immediate_entropy, bitwise_op_density, opcode_histogram, base_opcode_ratios, table_lookup_presence, crypto_constant_hits, ngram_repetition, simd_detection, constant_matching_crypto_constants
+
+Function-level:
+num_basic_blocks, num_edges, cyclomatic_complexity, loop_count, branch_density, average_block_size, strongly_connected_components
+
+Edge-level:
+edge_type, branch_condition_complexity, is_loop_edge
+
+Algorithm-specific:
+sha_init_constants_hits, sha_k_table_hits, sha_rotation_patterns, schedule_size_detection, bitwise_mix_operations
+
+Data refs:
+string_refs_count, rodata_refs_count, data_refs_count, string_density, stack_frame_size
+
+Call graph:
+call_in_degree, call_out_degree, betweenness_centrality, pagerank_score
+
+Binary metadata:
+text_size, rodata_size, data_size, number_of_tables
+
+Priority: 1
+
+-------------------------------------------------
+SHA-224
+-------------------------------------------------
+
+Canonical Primitive: SHA-224
+
+Indicators:
+8 IV constants (unique)
+
+Low-level:
+SHA-224 IV block
+
+Detection heuristics:
+All 8 IV words present
+
+Confidence: High
+False positives: None
+
+ML features:
+
+Node-level:
+instruction_count, opcode_histogram, rotate_right_usage
+
+Function-level:
+num_basic_blocks, cyclomatic_complexity, loop_count
+
+Edge-level:
+edge_type
+
+Algorithm-specific:
+sha_init_constants_hits, sha_rotation_patterns, sha_k_table_hits, schedule_size_detection
+
+Data refs:
+rodata_refs_count
+
+Call graph:
+call_in_degree, call_out_degree
+
+Binary metadata:
+text_size, rodata_size
+
+Priority: 1
+
+-------------------------------------------------
+SHA-256
+-------------------------------------------------
+
+Canonical Primitive: SHA-256
+
+Indicators:
+H0 IV block, K[0..7], concatenated bytes, .NET SHA256 API
+
+Low-level:
+Rotate-right ops, choice/majority boolean ops
+
+Detection heuristics:
+IV block OR K block OR .NET SHA-256 API
+Reject SHA-512 lower halves
+
+Confidence: High
+False positives: SHA-512 overlaps
+
+ML features:
+
+Node-level:
+instruction_count, opcode_histogram, rotate_right_usage, crypto_constant_hits
+
+Function-level:
+cyclomatic_complexity, loop_count
+
+Edge-level:
+branch_condition_complexity
+
+Algorithm-specific:
+has_sha256_iv, has_sha256_k_constants, rotate_right_count, sha_rotation_patterns, sha_k_table_hits, schedule_size_detection
+
+Data refs:
+rodata_refs_count
+
+Call graph:
+call_out_degree
+
+Binary metadata:
+number_of_tables
+
+Priority: 1
+
+-------------------------------------------------
+AES — Manual Constants
+-------------------------------------------------
+
+Canonical Primitive: AES
+
+Indicators:
+Multiple 0x63 occurrences, 0x1B, 4+ SHL/ROL, 5+ NZXOR
+
+Low-level:
+S-box reconstruction, GF(2⁸) logic
+
+Detection heuristics:
+4+ shifts/rotates + 0x63 + 0x1B + nzxor block
+
+Confidence: High
+
+ML features:
+
+Node-level:
+instruction_count, bitwise_op_density, gf256_mul_ratio, tbox_detected
+
+Function-level:
+num_basic_blocks, approximate_rounds
+
+Edge-level:
+edge_type
+
+Algorithm-specific:
+has_aes_sbox, aes_sbox_match_score, has_aes_rcon, mixcolumns_pattern_score, key_expansion_detection, num_large_tables, table_entropy_score
+
+Data refs:
+num_large_tables
+
+Binary metadata:
+table_count
+
+Priority: 1
+
+-------------------------------------------------
+AES-NI (Hardware AES)
+-------------------------------------------------
+
+Canonical Primitive: AES-NI
+
+Indicators:
+aesdec / aesdeclast / vaesdec opcodes
+
+Low-level:
+AES-NI ISA instructions
+
+Detection heuristics:
+Any AES-NI decrypt instr
+
+Confidence: Very High
+
+ML features:
+
+Node-level:
+simd_detection, opcode_histogram
+
+Function-level:
+num_basic_blocks
+
+Algorithm-specific:
+aesni_usage
+
+Binary metadata:
+text_size
+
+Priority: 1
+
+-------------------------------------------------
+AES — MixColumns
+-------------------------------------------------
+
+Canonical Primitive: AES
+
+Indicators:
+Loop(4), shl1, xor 0x1B
+
+Low-level:
+GF multiplication & reduction
+
+Detection heuristics:
+Exact MixColumns loop pattern
+
+ML features:
+
+Node-level:
+bitwise_op_density
+
+Function-level:
+loop_count
+
+Algorithm-specific:
+mixcolumns_pattern_score, gf256_mul_ratio
+
+Priority: 1
+
+-------------------------------------------------
+RSA — Embedded Library
+-------------------------------------------------
+
+Canonical Primitive: RSA
+
+Indicators:
+padding: sub 3, mov offsets, 6–8 calls, bigint ops
+
+Low-level:
+Big integer math, modexp components
+
+Detection heuristics:
+padding code + bigint calls
+
+Confidence: High
+
+ML features:
+
+Node-level:
+carry_chain_depth
+
+Function-level:
+cyclomatic_complexity
+
+Edge-level:
+branch_condition_complexity
+
+Algorithm-specific:
+bigint_op_count, montgomery_op_count, modexp_op_density, exponent_bit_length, modulus_bit_length, bigint_width, limb_count
+
+Binary metadata:
+data_size
+
+Priority: 1
+
+-------------------------------------------------
+RSA — Public Key Reference
+-------------------------------------------------
+
+Canonical Primitive: RSA
+
+Indicators:
+PUBLICKEYBLOB prefix, RSA1 magic words
+
+Low-level:
+ASN.1 + BLOBHEADER layout
+
+Detection heuristics:
+RSA1 signature OR public-key bytes
+
+ML features:
+
+Algorithm-specific:
+rsa_magic_match, rsa_bitlen
+
+Data refs:
+rodata_refs_count
+
+Priority: 1
+
+-------------------------------------------------
+PRNG — RtlGenRandom
+-------------------------------------------------
+
+Canonical Primitive: PRNG
+
+Indicators:
+SystemFunction036 API or runtime lookup
+
+Low-level:
+dynamic string linking
+
+Detection heuristics:
+Direct or indirect API ref
+
+ML features:
+
+Node-level:
+instruction_count
+
+Algorithm-specific:
+prng_winapi_score
+
+Binary metadata:
+text_size
+
+Data refs:
+string_density
+
+Priority: 1
+
+-------------------------------------------------
+PRNG — WinAPI (CryptGenRandom / BCryptGenRandom)
+-------------------------------------------------
+
+Canonical Primitive: PRNG
+
+Indicators:
+BCryptGenRandom / CryptGenRandom
+
+Detection heuristics:
+API call path + context ops
+
+ML features:
+
+Function-level:
+call_out_degree
+
+Algorithm-specific:
+lcg_detection, mt19937_constants, feedback_polynomial, quarterround_score
+
+Priority: 1
+
+-------------------------------------------------
+ECC — Curve25519 Key Clamping
+-------------------------------------------------
+
+Canonical Primitive: Curve25519
+
+Indicators:
+and 0xF8, and 0x7F/0x3F, or 0x40
+
+Detection heuristics:
+Bitmask pattern is unique
+
+ML features:
+
+Algorithm-specific:
+curve25519_constant_detection, ladder_step_count, cswap_patterns, mixed-coordinate_ratio
+
+Priority: 1
+
+-------------------------------------------------
+ECC — Public Key Reference
+-------------------------------------------------
+
+Canonical Primitive: ECC
+
+Indicators:
+ASN.1 EC key, EC PUBLIC KEY strings
+
+ML features:
+
+Algorithm-specific:
+ec_oid_match
+
+Data refs:
+rodata_refs_count
+
+Priority: 1
+
+-------------------------------------------------
+ECC — OpenSSL EC API Usage
+-------------------------------------------------
+
+Canonical Primitive: ECC
+
+Indicators:
+EC_KEY_new, EC_POINT_mul, EC_POINT_new
+
+ML features:
+
+Algorithm-specific:
+openssl_ec_api_present
+
+Call graph:
+call_in_degree, call_out_degree
+
+Priority: 1
+
+-------------------------------------------------
+ChaCha20
+-------------------------------------------------
+
+Canonical Primitive: ChaCha20
+
+Indicators:
+sigma constants, add+xor+rotate {16,12,8,7}
+
+ML features:
+
+Node-level:
+rotate_left_usage, bitwise_op_density
+
+Function-level:
+loop_count
+
+Algorithm-specific:
+chacha_sigma_match, quarterround_score
+
+Priority: 1
+
+-------------------------------------------------
+XOR Encryption
+-------------------------------------------------
+
+Canonical Primitive: XOR
+
+Indicators:
+xor imm + pointer increment + loop
+
+ML features:
+
+Node-level:
+bitwise_op_density
+
+Function-level:
+loop_count
+
+Algorithm-specific:
+xor_key_constant, xor_loop_detected
+
+Priority: 2
