@@ -40,7 +40,7 @@ import shutil
 def run_ghidra_on_binary(binary_path):
     """Run Ghidra analysis on a single binary"""
     # analyzer_bin = os.path.join(GHIDRA_HOME, "support", "analyzeHeadless")
-    analyzer_bin = os.path.join(GHIDRA_HOME, "support", "analyzeHeadless.bat")
+    analyzer_bin = os.path.join(GHIDRA_HOME, "support", "analyzeHeadless")
 
     binary_name = os.path.basename(binary_path)
     
@@ -121,7 +121,7 @@ def main():
         print(f"✗ No binaries found in '{BINARY_DIR}' (expected .o, .a, busybox_*_unstripped).")
         return
 
-    print(f"Found {len(binaries)} binaries (.o, .a, busybox_*_unstripped)")
+    print(f"Found {len(binaries)} binaries (.o, .a, busybox_*_unstripped,.elf)")
     print(f"Processing in batches of {BATCH_SIZE}")
     print()
     
