@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 220 18% 8%;
+    --foreground: 210 40% 98%;
+
+    --card: 220 16% 12%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 220 16% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 189 95% 52%;
+    --primary-foreground: 220 18% 8%;
+
+    --secondary: 220 14% 18%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 220 14% 18%;
+    --muted-foreground: 215 16% 65%;
+
+    --accent: 189 95% 52%;
+    --accent-foreground: 220 18% 8%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 14% 22%;
+    --input: 220 14% 22%;
+    --ring: 189 95% 52%;
+
+    --radius: 0.5rem;
+
+    /* Cyber-specific colors */
+    --cyber-cyan: 189 95% 52%;
+    --cyber-blue: 217 91% 60%;
+    --cyber-purple: 263 70% 50%;
+    --cyber-dark: 220 18% 8%;
+    --cyber-darker: 220 20% 5%;
+    --cyber-panel: 220 16% 12%;
+    --cyber-border: 220 14% 22%;
+    --cyber-glow: 189 95% 52%;
+
+    /* Gradients */
+    --gradient-cyber: linear-gradient(135deg, hsl(189 95% 52% / 0.2), hsl(217 91% 60% / 0.2));
+    --gradient-panel: linear-gradient(180deg, hsl(220 16% 12%), hsl(220 18% 10%));
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-weight: 700;
+  }
+}
+
+@layer utilities {
+  .cyber-glow {
+    text-shadow: 0 0 10px hsl(var(--cyber-glow) / 0.5);
+  }
+
+  .cyber-border-glow {
+    border-color: hsl(var(--cyber-cyan));
+    box-shadow: 0 0 10px hsl(var(--cyber-cyan) / 0.3);
+  }
+
+  .cyber-grid {
+    background-image: 
+      linear-gradient(hsl(var(--cyber-border)) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--cyber-border)) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}
