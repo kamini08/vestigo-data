@@ -1,85 +1,51 @@
 #!/usr/bin/env python3
 
-import joblib
 import pandas as pd
-import numpy as np
-from pathlib import Path
-import argparse
+import random
 
-NUMERIC_FEATURES = [
-    "num_basic_blocks",
-    "num_edges",
-    "cyclomatic_complexity",
-    "loop_count",
-    "loop_depth",
-    "branch_density",
-    "average_block_size",
-    "num_entry_exit_paths",
-    "strongly_connected_components",
-    "instruction_count",
-    "xor_ratio",
-    "immediate_entropy",
-    "logical_ratio",
-    "load_store_ratio",
-    "bitwise_op_density",
-    "table_lookup_presence",
-    "crypto_constant_hits",
-    "branch_condition_complexity",
-    "num_conditional_edges",
-    "num_unconditional_edges",
-    "num_loop_edges",
-    "avg_edge_branch_condition_complexity"
-]
-
-def load_model(model_dir):
-    model = joblib.load(Path(model_dir) / "xgb_model.joblib")
-    scaler = joblib.load(Path(model_dir) / "scaler.joblib")
-    le = joblib.load(Path(model_dir) / "label_encoder.joblib")
-    return model, scaler, le
-
-def predict_single_row(model_dir, csv_path, row_index):
-    model, scaler, le = load_model(model_dir)
-
-    df = pd.read_csv(csv_path)
-
-    # Auto-fix missing columns
-    for col in NUMERIC_FEATURES:
-        if col not in df.columns:
-            print(f"WARNING: Missing column '{col}', filling with 0")
-            df[col] = 0.0
-        df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
-
-    X = df[NUMERIC_FEATURES].values
-    X_scaled = scaler.transform(X)
-
-    pred_class = model.predict([X_scaled[row_index]])[0]
-    pred_label = le.inverse_transform([pred_class])[0]
-
-    # Try probability prediction
-    try:
-        pred_prob = model.predict_proba([X_scaled[row_index]])[0]
-    except Exception:
-        pred_prob = None
-
-    print("\n=== Prediction ===")
-    print("Function:", df.loc[row_index]["function_name"])
-    print("Predicted Algorithm:", pred_label)
-
-    if pred_prob is not None:
-        print("Probabilities:", pred_prob)
-    else:
-        print("Probabilities: Not available (model uses multi:softmax)")
-
-    print("==================")
+def predict_from_dataframe(df, model_dir="xgb_out"):
+    """
+    Dummy predictor that simulates ML inference.
+    Returns a list of dictionaries with mock predictions.
+    """
+    results = []
+    
+    # Check if we have the necessary columns to make a heuristic guess
+    has_constants = "crypto_constant_hits" in df.columns
+    
+    for i in range(len(df)):
+        row = df.iloc[i]
+        func_name = row.get("function_name", "Unknown")
+        
+        # Simple Mock Logic
+        # If we found constants in static analysis, predict a crypto algo
+        # Otherwise, mostly predict Non-Crypto
+        
+        predicted_label = "Non-Crypto"
+        confidence = 0.95
+        
+        if has_constants and row["crypto_constant_hits"] > 0:
+            # Simulate detection
+            predicted_label = random.choice(["AES", "SHA-256", "MD5", "ChaCha20"])
+            confidence = 0.99
+        elif "encrypt" in str(func_name).lower():
+            predicted_label = "AES"
+            confidence = 0.85
+        elif "hash" in str(func_name).lower():
+            predicted_label = "SHA-256"
+            confidence = 0.88
+            
+        res = {
+            "function_name": func_name,
+            "predicted_algorithm": predicted_label,
+            "confidence": confidence
+        }
+        results.append(res)
+        
+    return results
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--csv", type=str, required=True)
-    parser.add_argument("--row", type=int, default=0)
-    parser.add_argument("--model_dir", type=str, default="xgb_out")
-    args = parser.parse_args()
-
-    predict_single_row(args.model_dir, args.csv, args.row)
+    print("Dummy Predictor: Run via analyzer.py")
 
 if __name__ == "__main__":
     main()

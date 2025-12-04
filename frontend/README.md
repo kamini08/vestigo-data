@@ -1,4 +1,4 @@
-# CyberEz - Cybersecurity Binary Analysis Platform
+# VESTIGO- Cybersecurity Binary Analysis Platform
 
 A modern, responsive web application for advanced binary analysis and cybersecurity threat detection. Built with React, TypeScript, and Tailwind CSS.
 
@@ -68,7 +68,7 @@ vite.config.ts     # Vite build configuration
 1. **Clone the repository**
 ```bash
 git clone <YOUR_GIT_URL>
-cd cyberez
+cd frontend 
 ```
 
 2. **Install dependencies**
@@ -160,7 +160,7 @@ This project is the foundation for a full-stack cybersecurity platform. Contribu
 
 ## 📧 Contact
 
-For questions or feedback about CyberEz, please reach out through the project repository.
+For questions or feedback about VESTIGO, please reach out through the project repository.
 
 ---
 

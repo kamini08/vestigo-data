@@ -2,6 +2,14 @@
 #include <stdint.h>
 #include <string.h>
 
+#ifdef __SDCC
+int putchar(int c) { (void)c; return c; }
+#endif
+
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
 /* Alternate SHA-1 implementation */
 
 #define SHA1_BLOCK 64

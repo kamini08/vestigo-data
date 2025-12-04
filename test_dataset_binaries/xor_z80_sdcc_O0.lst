@@ -1,0 +1,2040 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 4.0.0 #11528 (Linux)
+                              4 ;--------------------------------------------------------
+                              5 	.module xor
+                              6 	.optsdcc -mz80
+                              7 	
+                              8 ;--------------------------------------------------------
+                              9 ; Public variables in this module
+                             10 ;--------------------------------------------------------
+                             11 	.globl _main
+                             12 	.globl _xor_stream
+                             13 	.globl _xor_decrypt_block
+                             14 	.globl _xor_encrypt_block
+                             15 	.globl _xor_init
+                             16 	.globl _strlen
+                             17 	.globl _free
+                             18 	.globl _malloc
+                             19 	.globl _puts
+                             20 	.globl _printf
+                             21 ;--------------------------------------------------------
+                             22 ; special function registers
+                             23 ;--------------------------------------------------------
+                             24 ;--------------------------------------------------------
+                             25 ; ram data
+                             26 ;--------------------------------------------------------
+                             27 	.area _DATA
+                             28 ;--------------------------------------------------------
+                             29 ; ram data
+                             30 ;--------------------------------------------------------
+                             31 	.area _INITIALIZED
+                             32 ;--------------------------------------------------------
+                             33 ; absolute external ram data
+                             34 ;--------------------------------------------------------
+                             35 	.area _DABS (ABS)
+                             36 ;--------------------------------------------------------
+                             37 ; global & static initialisations
+                             38 ;--------------------------------------------------------
+                             39 	.area _HOME
+                             40 	.area _GSINIT
+                             41 	.area _GSFINAL
+                             42 	.area _GSINIT
+                             43 ;--------------------------------------------------------
+                             44 ; Home
+                             45 ;--------------------------------------------------------
+                             46 	.area _HOME
+                             47 	.area _HOME
+                             48 ;--------------------------------------------------------
+                             49 ; code
+                             50 ;--------------------------------------------------------
+                             51 	.area _CODE
+                     0000    52 	Fxor$rol$0$0	= .
+                             53 	.globl	Fxor$rol$0$0
+                     0000    54 	C$xor.c$37$0_0$64	= .
+                             55 	.globl	C$xor.c$37$0_0$64
+                             56 ;/work/source_code/testingfiles/xor.c:37: static inline uint8_t rol(uint8_t v, int s) {
+                             57 ;	---------------------------------
+                             58 ; Function rol
+                             59 ; ---------------------------------
+   0000                      60 _rol:
+                     0000    61 	C$xor.c$38$1_0$64	= .
+                             62 	.globl	C$xor.c$38$1_0$64
+                             63 ;/work/source_code/testingfiles/xor.c:38: return (v << s) | (v >> (8 - s));
+   0000 FD 21 02 00   [14]   64 	ld	iy, #2
+   0004 FD 39         [15]   65 	add	iy, sp
+   0006 FD 5E 00      [19]   66 	ld	e, 0 (iy)
+   0009 FD 23         [10]   67 	inc	iy
+   000B FD 46 00      [19]   68 	ld	b, 0 (iy)
+   000E 04            [ 4]   69 	inc	b
+   000F C3r14r00      [10]   70 	jp	00104$
+   0012                      71 00103$:
+   0012 CB 23         [ 8]   72 	sla	e
+   0014                      73 00104$:
+   0014 10 FC         [13]   74 	djnz	00103$
+   0016 FD 4E 00      [19]   75 	ld	c, 0 (iy)
+   0019 3E 08         [ 7]   76 	ld	a, #0x08
+   001B 91            [ 4]   77 	sub	a, c
+   001C 47            [ 4]   78 	ld	b, a
+   001D FD 2B         [10]   79 	dec	iy
+   001F FD 4E 00      [19]   80 	ld	c, 0 (iy)
+   0022 04            [ 4]   81 	inc	b
+   0023 C3r28r00      [10]   82 	jp	00106$
+   0026                      83 00105$:
+   0026 CB 39         [ 8]   84 	srl	c
+   0028                      85 00106$:
+   0028 10 FC         [13]   86 	djnz	00105$
+   002A 7B            [ 4]   87 	ld	a, e
+   002B B1            [ 4]   88 	or	a, c
+   002C 6F            [ 4]   89 	ld	l, a
+   002D                      90 00101$:
+                     002D    91 	C$xor.c$39$1_0$64	= .
+                             92 	.globl	C$xor.c$39$1_0$64
+                             93 ;/work/source_code/testingfiles/xor.c:39: }
+                     002D    94 	C$xor.c$39$1_0$64	= .
+                             95 	.globl	C$xor.c$39$1_0$64
+                     002D    96 	XFxor$rol$0$0	= .
+                             97 	.globl	XFxor$rol$0$0
+   002D C9            [10]   98 	ret
+                     002E    99 Fxor$SBOX$0_0$0 == .
+   002E                     100 _SBOX:
+   002E 6A                  101 	.db #0x6a	; 106	'j'
+   002F 12                  102 	.db #0x12	; 18
+   0030 F3                  103 	.db #0xf3	; 243
+   0031 88                  104 	.db #0x88	; 136
+   0032 0F                  105 	.db #0x0f	; 15
+   0033 34                  106 	.db #0x34	; 52	'4'
+   0034 C5                  107 	.db #0xc5	; 197
+   0035 7E                  108 	.db #0x7e	; 126
+   0036 91                  109 	.db #0x91	; 145
+   0037 55                  110 	.db #0x55	; 85	'U'
+   0038 A2                  111 	.db #0xa2	; 162
+   0039 CE                  112 	.db #0xce	; 206
+   003A 1D                  113 	.db #0x1d	; 29
+   003B B8                  114 	.db #0xb8	; 184
+   003C E0                  115 	.db #0xe0	; 224
+   003D 43                  116 	.db #0x43	; 67	'C'
+   003E 9C                  117 	.db #0x9c	; 156
+   003F 01                  118 	.db #0x01	; 1
+   0040 6F                  119 	.db #0x6f	; 111	'o'
+   0041 DD                  120 	.db #0xdd	; 221
+   0042 84                  121 	.db #0x84	; 132
+   0043 23                  122 	.db #0x23	; 35
+   0044 5A                  123 	.db #0x5a	; 90	'Z'
+   0045 BC                  124 	.db #0xbc	; 188
+   0046 4E                  125 	.db #0x4e	; 78	'N'
+   0047 67                  126 	.db #0x67	; 103	'g'
+   0048 11                  127 	.db #0x11	; 17
+   0049 02                  128 	.db #0x02	; 2
+   004A 98                  129 	.db #0x98	; 152
+   004B 76                  130 	.db #0x76	; 118	'v'
+   004C AF                  131 	.db #0xaf	; 175
+   004D F9                  132 	.db #0xf9	; 249
+   004E C2                  133 	.db #0xc2	; 194
+   004F 5D                  134 	.db #0x5d	; 93
+   0050 7A                  135 	.db #0x7a	; 122	'z'
+   0051 49                  136 	.db #0x49	; 73	'I'
+   0052 B1                  137 	.db #0xb1	; 177
+   0053 EA                  138 	.db #0xea	; 234
+   0054 0C                  139 	.db #0x0c	; 12
+   0055 3E                  140 	.db #0x3e	; 62
+   0056 82                  141 	.db #0x82	; 130
+   0057 14                  142 	.db #0x14	; 20
+   0058 F5                  143 	.db #0xf5	; 245
+   0059 67                  144 	.db #0x67	; 103	'g'
+   005A 33                  145 	.db #0x33	; 51	'3'
+   005B AC                  146 	.db #0xac	; 172
+   005C 9F                  147 	.db #0x9f	; 159
+   005D D0                  148 	.db #0xd0	; 208
+   005E 2A                  149 	.db #0x2a	; 42
+   005F 51                  150 	.db #0x51	; 81	'Q'
+   0060 70                  151 	.db #0x70	; 112	'p'
+   0061 C9                  152 	.db #0xc9	; 201
+   0062 0D                  153 	.db #0x0d	; 13
+   0063 BE                  154 	.db #0xbe	; 190
+   0064 E8                  155 	.db #0xe8	; 232
+   0065 47                  156 	.db #0x47	; 71	'G'
+   0066 95                  157 	.db #0x95	; 149
+   0067 13                  158 	.db #0x13	; 19
+   0068 64                  159 	.db #0x64	; 100	'd'
+   0069 1F                  160 	.db #0x1f	; 31
+   006A C4                  161 	.db #0xc4	; 196
+   006B 7B                  162 	.db #0x7b	; 123
+   006C 22                  163 	.db #0x22	; 34
+   006D DA                  164 	.db #0xda	; 218
+   006E E3                  165 	.db #0xe3	; 227
+   006F F0                  166 	.db #0xf0	; 240
+   0070 28                  167 	.db #0x28	; 40
+   0071 8D                  168 	.db #0x8d	; 141
+   0072 36                  169 	.db #0x36	; 54	'6'
+   0073 42                  170 	.db #0x42	; 66	'B'
+   0074 A9                  171 	.db #0xa9	; 169
+   0075 CD                  172 	.db #0xcd	; 205
+   0076 58                  173 	.db #0x58	; 88	'X'
+   0077 6C                  174 	.db #0x6c	; 108	'l'
+   0078 0A                  175 	.db #0x0a	; 10
+   0079 35                  176 	.db #0x35	; 53	'5'
+   007A B7                  177 	.db #0xb7	; 183
+   007B F6                  178 	.db #0xf6	; 246
+   007C 89                  179 	.db #0x89	; 137
+   007D 9E                  180 	.db #0x9e	; 158
+   007E 65                  181 	.db #0x65	; 101	'e'
+   007F C8                  182 	.db #0xc8	; 200
+   0080 27                  183 	.db #0x27	; 39
+   0081 E4                  184 	.db #0xe4	; 228
+   0082 0B                  185 	.db #0x0b	; 11
+   0083 92                  186 	.db #0x92	; 146
+   0084 AF                  187 	.db #0xaf	; 175
+   0085 4C                  188 	.db #0x4c	; 76	'L'
+   0086 1A                  189 	.db #0x1a	; 26
+   0087 7D                  190 	.db #0x7d	; 125
+   0088 52                  191 	.db #0x52	; 82	'R'
+   0089 FC                  192 	.db #0xfc	; 252
+   008A 33                  193 	.db #0x33	; 51	'3'
+   008B E1                  194 	.db #0xe1	; 225
+   008C D4                  195 	.db #0xd4	; 212
+   008D 0E                  196 	.db #0x0e	; 14
+   008E B3                  197 	.db #0xb3	; 179
+   008F A4                  198 	.db #0xa4	; 164
+   0090 19                  199 	.db #0x19	; 25
+   0091 6B                  200 	.db #0x6b	; 107	'k'
+   0092 87                  201 	.db #0x87	; 135
+   0093 54                  202 	.db #0x54	; 84	'T'
+   0094 FE                  203 	.db #0xfe	; 254
+   0095 20                  204 	.db #0x20	; 32
+   0096 DC                  205 	.db #0xdc	; 220
+   0097 3A                  206 	.db #0x3a	; 58
+   0098 66                  207 	.db #0x66	; 102	'f'
+   0099 90                  208 	.db #0x90	; 144
+   009A AB                  209 	.db #0xab	; 171
+   009B 17                  210 	.db #0x17	; 23
+   009C 7C                  211 	.db #0x7c	; 124
+   009D 48                  212 	.db #0x48	; 72	'H'
+   009E 11                  213 	.db #0x11	; 17
+   009F 62                  214 	.db #0x62	; 98	'b'
+   00A0 C3                  215 	.db #0xc3	; 195
+   00A1 39                  216 	.db #0x39	; 57	'9'
+   00A2 E9                  217 	.db #0xe9	; 233
+   00A3 05                  218 	.db #0x05	; 5
+   00A4 B0                  219 	.db #0xb0	; 176
+   00A5 97                  220 	.db #0x97	; 151
+   00A6 4F                  221 	.db #0x4f	; 79	'O'
+   00A7 81                  222 	.db #0x81	; 129
+   00A8 F8                  223 	.db #0xf8	; 248
+   00A9 2F                  224 	.db #0x2f	; 47
+   00AA 0C                  225 	.db #0x0c	; 12
+   00AB D1                  226 	.db #0xd1	; 209
+   00AC 25                  227 	.db #0x25	; 37
+   00AD 76                  228 	.db #0x76	; 118	'v'
+   00AE 59                  229 	.db #0x59	; 89	'Y'
+   00AF 1C                  230 	.db #0x1c	; 28
+   00B0 A3                  231 	.db #0xa3	; 163
+   00B1 88                  232 	.db #0x88	; 136
+   00B2 5F                  233 	.db #0x5f	; 95
+   00B3 6E                  234 	.db #0x6e	; 110	'n'
+   00B4 92                  235 	.db #0x92	; 146
+   00B5 47                  236 	.db #0x47	; 71	'G'
+   00B6 CB                  237 	.db #0xcb	; 203
+   00B7 3C                  238 	.db #0x3c	; 60
+   00B8 BD                  239 	.db #0xbd	; 189
+   00B9 04                  240 	.db #0x04	; 4
+   00BA E6                  241 	.db #0xe6	; 230
+   00BB 7A                  242 	.db #0x7a	; 122	'z'
+   00BC 55                  243 	.db #0x55	; 85	'U'
+   00BD 9B                  244 	.db #0x9b	; 155
+   00BE 10                  245 	.db #0x10	; 16
+   00BF D9                  246 	.db #0xd9	; 217
+   00C0 2E                  247 	.db #0x2e	; 46
+   00C1 F1                  248 	.db #0xf1	; 241
+   00C2 68                  249 	.db #0x68	; 104	'h'
+   00C3 4D                  250 	.db #0x4d	; 77	'M'
+   00C4 B5                  251 	.db #0xb5	; 181
+   00C5 AC                  252 	.db #0xac	; 172
+   00C6 32                  253 	.db #0x32	; 50	'2'
+   00C7 03                  254 	.db #0x03	; 3
+   00C8 91                  255 	.db #0x91	; 145
+   00C9 7F                  256 	.db #0x7f	; 127
+   00CA C7                  257 	.db #0xc7	; 199
+   00CB 58                  258 	.db #0x58	; 88	'X'
+   00CC E2                  259 	.db #0xe2	; 226
+   00CD 0A                  260 	.db #0x0a	; 10
+   00CE 40                  261 	.db #0x40	; 64
+   00CF 29                  262 	.db #0x29	; 41
+   00D0 DF                  263 	.db #0xdf	; 223
+   00D1 63                  264 	.db #0x63	; 99	'c'
+   00D2 8C                  265 	.db #0x8c	; 140
+   00D3 12                  266 	.db #0x12	; 18
+   00D4 FA                  267 	.db #0xfa	; 250
+   00D5 B6                  268 	.db #0xb6	; 182
+   00D6 35                  269 	.db #0x35	; 53	'5'
+   00D7 EE                  270 	.db #0xee	; 238
+   00D8 57                  271 	.db #0x57	; 87	'W'
+   00D9 03                  272 	.db #0x03	; 3
+   00DA 94                  273 	.db #0x94	; 148
+   00DB 7D                  274 	.db #0x7d	; 125
+   00DC A1                  275 	.db #0xa1	; 161
+   00DD C0                  276 	.db #0xc0	; 192
+   00DE DA                  277 	.db #0xda	; 218
+   00DF 18                  278 	.db #0x18	; 24
+   00E0 4B                  279 	.db #0x4b	; 75	'K'
+   00E1 6C                  280 	.db #0x6c	; 108	'l'
+   00E2 B2                  281 	.db #0xb2	; 178
+   00E3 0F                  282 	.db #0x0f	; 15
+   00E4 79                  283 	.db #0x79	; 121	'y'
+   00E5 53                  284 	.db #0x53	; 83	'S'
+   00E6 EC                  285 	.db #0xec	; 236
+   00E7 36                  286 	.db #0x36	; 54	'6'
+   00E8 A7                  287 	.db #0xa7	; 167
+   00E9 91                  288 	.db #0x91	; 145
+   00EA 08                  289 	.db #0x08	; 8
+   00EB 62                  290 	.db #0x62	; 98	'b'
+   00EC DF                  291 	.db #0xdf	; 223
+   00ED CB                  292 	.db #0xcb	; 203
+   00EE 14                  293 	.db #0x14	; 20
+   00EF C6                  294 	.db #0xc6	; 198
+   00F0 7E                  295 	.db #0x7e	; 126
+   00F1 F3                  296 	.db #0xf3	; 243
+   00F2 9A                  297 	.db #0x9a	; 154
+   00F3 55                  298 	.db #0x55	; 85	'U'
+   00F4 81                  299 	.db #0x81	; 129
+   00F5 24                  300 	.db #0x24	; 36
+   00F6 39                  301 	.db #0x39	; 57	'9'
+   00F7 D5                  302 	.db #0xd5	; 213
+   00F8 AE                  303 	.db #0xae	; 174
+   00F9 02                  304 	.db #0x02	; 2
+   00FA F7                  305 	.db #0xf7	; 247
+   00FB 60                  306 	.db #0x60	; 96
+   00FC 48                  307 	.db #0x48	; 72	'H'
+   00FD 8E                  308 	.db #0x8e	; 142
+   00FE 2C                  309 	.db #0x2c	; 44
+   00FF D0                  310 	.db #0xd0	; 208
+   0100 93                  311 	.db #0x93	; 147
+   0101 11                  312 	.db #0x11	; 17
+   0102 F4                  313 	.db #0xf4	; 244
+   0103 3F                  314 	.db #0x3f	; 63
+   0104 52                  315 	.db #0x52	; 82	'R'
+   0105 ED                  316 	.db #0xed	; 237
+   0106 86                  317 	.db #0x86	; 134
+   0107 C1                  318 	.db #0xc1	; 193
+   0108 79                  319 	.db #0x79	; 121	'y'
+   0109 BE                  320 	.db #0xbe	; 190
+   010A 25                  321 	.db #0x25	; 37
+   010B 4A                  322 	.db #0x4a	; 74	'J'
+   010C 07                  323 	.db #0x07	; 7
+   010D 94                  324 	.db #0x94	; 148
+   010E 64                  325 	.db #0x64	; 100	'd'
+   010F 27                  326 	.db #0x27	; 39
+   0110 D8                  327 	.db #0xd8	; 216
+   0111 35                  328 	.db #0x35	; 53	'5'
+   0112 AC                  329 	.db #0xac	; 172
+   0113 F2                  330 	.db #0xf2	; 242
+   0114 8B                  331 	.db #0x8b	; 139
+   0115 13                  332 	.db #0x13	; 19
+   0116 50                  333 	.db #0x50	; 80	'P'
+   0117 E7                  334 	.db #0xe7	; 231
+   0118 9D                  335 	.db #0x9d	; 157
+   0119 04                  336 	.db #0x04	; 4
+   011A 7A                  337 	.db #0x7a	; 122	'z'
+   011B CA                  338 	.db #0xca	; 202
+   011C B1                  339 	.db #0xb1	; 177
+   011D 56                  340 	.db #0x56	; 86	'V'
+   011E 8F                  341 	.db #0x8f	; 143
+   011F 05                  342 	.db #0x05	; 5
+   0120 D6                  343 	.db #0xd6	; 214
+   0121 FE                  344 	.db #0xfe	; 254
+   0122 21                  345 	.db #0x21	; 33
+   0123 90                  346 	.db #0x90	; 144
+   0124 34                  347 	.db #0x34	; 52	'4'
+   0125 C2                  348 	.db #0xc2	; 194
+   0126 6A                  349 	.db #0x6a	; 106	'j'
+   0127 49                  350 	.db #0x49	; 73	'I'
+   0128 BE                  351 	.db #0xbe	; 190
+   0129 0D                  352 	.db #0x0d	; 13
+   012A 78                  353 	.db #0x78	; 120	'x'
+   012B E3                  354 	.db #0xe3	; 227
+   012C 57                  355 	.db #0x57	; 87	'W'
+   012D 00                  356 	.db #0x00	; 0
+                     012E   357 	G$xor_init$0$0	= .
+                            358 	.globl	G$xor_init$0$0
+                     012E   359 	C$xor.c$42$1_0$66	= .
+                            360 	.globl	C$xor.c$42$1_0$66
+                            361 ;/work/source_code/testingfiles/xor.c:42: void xor_init(XORCTX *c, const uint8_t *key) {
+                            362 ;	---------------------------------
+                            363 ; Function xor_init
+                            364 ; ---------------------------------
+   012E                     365 _xor_init::
+   012E DD E5         [15]  366 	push	ix
+   0130 DD 21 00 00   [14]  367 	ld	ix,#0
+   0134 DD 39         [15]  368 	add	ix,sp
+   0136 21 F5 FF      [10]  369 	ld	hl, #-11
+   0139 39            [11]  370 	add	hl, sp
+   013A F9            [ 6]  371 	ld	sp, hl
+                     013B   372 	C$xor.c$43$1_0$66	= .
+                            373 	.globl	C$xor.c$43$1_0$66
+                            374 ;/work/source_code/testingfiles/xor.c:43: memcpy(c->master, key, XRKEY);
+   013B DD 4E 04      [19]  375 	ld	c, 4 (ix)
+   013E DD 46 05      [19]  376 	ld	b, 5 (ix)
+   0141 59            [ 4]  377 	ld	e, c
+   0142 50            [ 4]  378 	ld	d, b
+   0143 DD 6E 06      [19]  379 	ld	l, 6 (ix)
+   0146 DD 66 07      [19]  380 	ld	h, 7 (ix)
+   0149 C5            [11]  381 	push	bc
+   014A 01 20 00      [10]  382 	ld	bc, #0x0020
+   014D ED B0         [21]  383 	ldir
+   014F C1            [10]  384 	pop	bc
+                     0150   385 	C$xor.c$45$5_0$70	= .
+                            386 	.globl	C$xor.c$45$5_0$70
+                            387 ;/work/source_code/testingfiles/xor.c:45: for (int r=0; r<XRROUND; r++) {
+   0150 21 20 00      [10]  388 	ld	hl, #0x0020
+   0153 09            [11]  389 	add	hl, bc
+   0154 E3            [19]  390 	ex	(sp), hl
+   0155 01 00 00      [10]  391 	ld	bc, #0x0000
+   0158                     392 00108$:
+   0158 79            [ 4]  393 	ld	a, c
+   0159 D6 06         [ 7]  394 	sub	a, #0x06
+   015B 78            [ 4]  395 	ld	a, b
+   015C 17            [ 4]  396 	rla
+   015D 3F            [ 4]  397 	ccf
+   015E 1F            [ 4]  398 	rra
+   015F DE 80         [ 7]  399 	sbc	a, #0x80
+   0161 D2r36r02      [10]  400 	jp	NC, 00110$
+                     0164   401 	C$xor.c$46$5_0$70	= .
+                            402 	.globl	C$xor.c$46$5_0$70
+                            403 ;/work/source_code/testingfiles/xor.c:46: for (int i=0; i<XRKEY; i++) {
+   0164 69            [ 4]  404 	ld	l, c
+   0165 60            [ 4]  405 	ld	h, b
+   0166 29            [11]  406 	add	hl, hl
+   0167 09            [11]  407 	add	hl, bc
+   0168 29            [11]  408 	add	hl, hl
+   0169 29            [11]  409 	add	hl, hl
+   016A 09            [11]  410 	add	hl, bc
+   016B DD 75 F7      [19]  411 	ld	-9 (ix), l
+   016E DD 74 F8      [19]  412 	ld	-8 (ix), h
+   0171 C5            [11]  413 	push	bc
+   0172 21 05 00      [10]  414 	ld	hl, #0x0005
+   0175 E5            [11]  415 	push	hl
+   0176 C5            [11]  416 	push	bc
+   0177 CDr00r00      [17]  417 	call	__modsint
+   017A F1            [10]  418 	pop	af
+   017B F1            [10]  419 	pop	af
+   017C C1            [10]  420 	pop	bc
+   017D DD 75 F9      [19]  421 	ld	-7 (ix), l
+   0180 DD 74 FA      [19]  422 	ld	-6 (ix), h
+   0183 69            [ 4]  423 	ld	l, c
+   0184 60            [ 4]  424 	ld	h, b
+   0185 29            [11]  425 	add	hl, hl
+   0186 29            [11]  426 	add	hl, hl
+   0187 29            [11]  427 	add	hl, hl
+   0188 29            [11]  428 	add	hl, hl
+   0189 29            [11]  429 	add	hl, hl
+   018A DD 7E F5      [19]  430 	ld	a, -11 (ix)
+   018D 85            [ 4]  431 	add	a, l
+   018E DD 77 FB      [19]  432 	ld	-5 (ix), a
+   0191 DD 7E F6      [19]  433 	ld	a, -10 (ix)
+   0194 8C            [ 4]  434 	adc	a, h
+   0195 DD 77 FC      [19]  435 	ld	-4 (ix), a
+   0198 AF            [ 4]  436 	xor	a, a
+   0199 DD 77 FE      [19]  437 	ld	-2 (ix), a
+   019C DD 77 FF      [19]  438 	ld	-1 (ix), a
+   019F                     439 00105$:
+   019F DD 7E FE      [19]  440 	ld	a, -2 (ix)
+   01A2 D6 20         [ 7]  441 	sub	a, #0x20
+   01A4 DD 7E FF      [19]  442 	ld	a, -1 (ix)
+   01A7 17            [ 4]  443 	rla
+   01A8 3F            [ 4]  444 	ccf
+   01A9 1F            [ 4]  445 	rra
+   01AA DE 80         [ 7]  446 	sbc	a, #0x80
+   01AC D2r32r02      [10]  447 	jp	NC, 00109$
+                     01AF   448 	C$xor.c$47$5_0$70	= .
+                            449 	.globl	C$xor.c$47$5_0$70
+                            450 ;/work/source_code/testingfiles/xor.c:47: uint8_t v = key[(i + r) % XRKEY];
+   01AF DD 6E FE      [19]  451 	ld	l, -2 (ix)
+   01B2 DD 66 FF      [19]  452 	ld	h, -1 (ix)
+   01B5 09            [11]  453 	add	hl, bc
+   01B6 C5            [11]  454 	push	bc
+   01B7 11 20 00      [10]  455 	ld	de, #0x0020
+   01BA D5            [11]  456 	push	de
+   01BB E5            [11]  457 	push	hl
+   01BC CDr00r00      [17]  458 	call	__modsint
+   01BF F1            [10]  459 	pop	af
+   01C0 F1            [10]  460 	pop	af
+   01C1 5D            [ 4]  461 	ld	e, l
+   01C2 54            [ 4]  462 	ld	d, h
+   01C3 C1            [10]  463 	pop	bc
+   01C4 DD 6E 06      [19]  464 	ld	l, 6 (ix)
+   01C7 DD 66 07      [19]  465 	ld	h, 7 (ix)
+   01CA 19            [11]  466 	add	hl, de
+   01CB 7E            [ 7]  467 	ld	a, (hl)
+   01CC DD 77 FD      [19]  468 	ld	-3 (ix), a
+                     01CF   469 	C$xor.c$48$5_0$70	= .
+                            470 	.globl	C$xor.c$48$5_0$70
+                            471 ;/work/source_code/testingfiles/xor.c:48: v ^= SBOX[(i * 7 + r * 13) & 0xFF];
+   01CF DD 5E FE      [19]  472 	ld	e, -2 (ix)
+   01D2 DD 56 FF      [19]  473 	ld	d, -1 (ix)
+   01D5 6B            [ 4]  474 	ld	l, e
+   01D6 62            [ 4]  475 	ld	h, d
+   01D7 29            [11]  476 	add	hl, hl
+   01D8 19            [11]  477 	add	hl, de
+   01D9 29            [11]  478 	add	hl, hl
+   01DA 19            [11]  479 	add	hl, de
+   01DB DD 5E F7      [19]  480 	ld	e, -9 (ix)
+   01DE DD 56 F8      [19]  481 	ld	d, -8 (ix)
+   01E1 19            [11]  482 	add	hl, de
+   01E2 26 00         [ 7]  483 	ld	h, #0x00
+   01E4 11r2Er00      [10]  484 	ld	de, #_SBOX
+   01E7 19            [11]  485 	add	hl, de
+   01E8 7E            [ 7]  486 	ld	a, (hl)
+   01E9 DD AE FD      [19]  487 	xor	a, -3 (ix)
+   01EC DD 77 FD      [19]  488 	ld	-3 (ix), a
+                     01EF   489 	C$xor.c$49$6_0$71	= .
+                            490 	.globl	C$xor.c$49$6_0$71
+                            491 ;/work/source_code/testingfiles/xor.c:49: v ^= rol(r + i, r % 5);
+   01EF 79            [ 4]  492 	ld	a, c
+   01F0 DD 5E FE      [19]  493 	ld	e, -2 (ix)
+   01F3 83            [ 4]  494 	add	a, e
+   01F4 5F            [ 4]  495 	ld	e, a
+                     01F5   496 	C$xor.c$38$8_0$73	= .
+                            497 	.globl	C$xor.c$38$8_0$73
+                            498 ;/work/source_code/testingfiles/xor.c:38: return (v << s) | (v >> (8 - s));
+   01F5 6B            [ 4]  499 	ld	l, e
+   01F6 DD 7E F9      [19]  500 	ld	a, -7 (ix)
+   01F9 3C            [ 4]  501 	inc	a
+   01FA C3rFFr01      [10]  502 	jp	00135$
+   01FD                     503 00134$:
+   01FD CB 25         [ 8]  504 	sla	l
+   01FF                     505 00135$:
+   01FF 3D            [ 4]  506 	dec	a
+   0200 20 FB         [12]  507 	jr	NZ,00134$
+   0202 DD 56 F9      [19]  508 	ld	d, -7 (ix)
+   0205 3E 08         [ 7]  509 	ld	a, #0x08
+   0207 92            [ 4]  510 	sub	a, d
+   0208 3C            [ 4]  511 	inc	a
+   0209 C3r0Er02      [10]  512 	jp	00137$
+   020C                     513 00136$:
+   020C CB 3B         [ 8]  514 	srl	e
+   020E                     515 00137$:
+   020E 3D            [ 4]  516 	dec	a
+   020F 20 FB         [12]  517 	jr	NZ, 00136$
+   0211 7D            [ 4]  518 	ld	a, l
+   0212 B3            [ 4]  519 	or	a, e
+                     0213   520 	C$xor.c$49$7_0$72	= .
+                            521 	.globl	C$xor.c$49$7_0$72
+                            522 ;/work/source_code/testingfiles/xor.c:49: v ^= rol(r + i, r % 5);
+   0213 DD AE FD      [19]  523 	xor	a, -3 (ix)
+   0216 5F            [ 4]  524 	ld	e, a
+                     0217   525 	C$xor.c$50$5_0$70	= .
+                            526 	.globl	C$xor.c$50$5_0$70
+                            527 ;/work/source_code/testingfiles/xor.c:50: c->rkey[r][i] = v;
+   0217 DD 7E FB      [19]  528 	ld	a, -5 (ix)
+   021A DD 86 FE      [19]  529 	add	a, -2 (ix)
+   021D 6F            [ 4]  530 	ld	l, a
+   021E DD 7E FC      [19]  531 	ld	a, -4 (ix)
+   0221 DD 8E FF      [19]  532 	adc	a, -1 (ix)
+   0224 67            [ 4]  533 	ld	h, a
+   0225 73            [ 7]  534 	ld	(hl), e
+                     0226   535 	C$xor.c$46$4_0$69	= .
+                            536 	.globl	C$xor.c$46$4_0$69
+                            537 ;/work/source_code/testingfiles/xor.c:46: for (int i=0; i<XRKEY; i++) {
+   0226 DD 34 FE      [23]  538 	inc	-2 (ix)
+   0229 C2r2Fr02      [10]  539 	jp	NZ, 00138$
+   022C DD 34 FF      [23]  540 	inc	-1 (ix)
+   022F                     541 00138$:
+   022F C3r9Fr01      [10]  542 	jp	00105$
+   0232                     543 00109$:
+                     0232   544 	C$xor.c$45$2_0$67	= .
+                            545 	.globl	C$xor.c$45$2_0$67
+                            546 ;/work/source_code/testingfiles/xor.c:45: for (int r=0; r<XRROUND; r++) {
+   0232 03            [ 6]  547 	inc	bc
+   0233 C3r58r01      [10]  548 	jp	00108$
+   0236                     549 00110$:
+                     0236   550 	C$xor.c$53$2_0$66	= .
+                            551 	.globl	C$xor.c$53$2_0$66
+                            552 ;/work/source_code/testingfiles/xor.c:53: }
+   0236 DD F9         [10]  553 	ld	sp, ix
+   0238 DD E1         [14]  554 	pop	ix
+                     023A   555 	C$xor.c$53$2_0$66	= .
+                            556 	.globl	C$xor.c$53$2_0$66
+                     023A   557 	XG$xor_init$0$0	= .
+                            558 	.globl	XG$xor_init$0$0
+   023A C9            [10]  559 	ret
+                     023B   560 	Fxor$sub$0$0	= .
+                            561 	.globl	Fxor$sub$0$0
+                     023B   562 	C$xor.c$56$2_0$76	= .
+                            563 	.globl	C$xor.c$56$2_0$76
+                            564 ;/work/source_code/testingfiles/xor.c:56: static void sub(uint8_t *b) {
+                            565 ;	---------------------------------
+                            566 ; Function sub
+                            567 ; ---------------------------------
+   023B                     568 _sub:
+   023B DD E5         [15]  569 	push	ix
+   023D DD 21 00 00   [14]  570 	ld	ix,#0
+   0241 DD 39         [15]  571 	add	ix,sp
+                     0243   572 	C$xor.c$57$2_0$76	= .
+                            573 	.globl	C$xor.c$57$2_0$76
+                            574 ;/work/source_code/testingfiles/xor.c:57: for (int i=0;i<XRBLOCK;i++) b[i] = SBOX[b[i]];
+   0243 01 00 00      [10]  575 	ld	bc, #0x0000
+   0246                     576 00103$:
+   0246 79            [ 4]  577 	ld	a, c
+   0247 D6 10         [ 7]  578 	sub	a, #0x10
+   0249 78            [ 4]  579 	ld	a, b
+   024A 17            [ 4]  580 	rla
+   024B 3F            [ 4]  581 	ccf
+   024C 1F            [ 4]  582 	rra
+   024D DE 80         [ 7]  583 	sbc	a, #0x80
+   024F D2r6Br02      [10]  584 	jp	NC, 00105$
+   0252 DD 7E 04      [19]  585 	ld	a, 4 (ix)
+   0255 81            [ 4]  586 	add	a, c
+   0256 5F            [ 4]  587 	ld	e, a
+   0257 DD 7E 05      [19]  588 	ld	a, 5 (ix)
+   025A 88            [ 4]  589 	adc	a, b
+   025B 57            [ 4]  590 	ld	d, a
+   025C 1A            [ 7]  591 	ld	a, (de)
+   025D C6r2E         [ 7]  592 	add	a, #<(_SBOX)
+   025F 6F            [ 4]  593 	ld	l, a
+   0260 3E 00         [ 7]  594 	ld	a, #0x00
+   0262 CEs00         [ 7]  595 	adc	a, #>(_SBOX)
+   0264 67            [ 4]  596 	ld	h, a
+   0265 7E            [ 7]  597 	ld	a, (hl)
+   0266 12            [ 7]  598 	ld	(de), a
+   0267 03            [ 6]  599 	inc	bc
+   0268 C3r46r02      [10]  600 	jp	00103$
+   026B                     601 00105$:
+                     026B   602 	C$xor.c$58$2_0$76	= .
+                            603 	.globl	C$xor.c$58$2_0$76
+                            604 ;/work/source_code/testingfiles/xor.c:58: }
+   026B DD E1         [14]  605 	pop	ix
+                     026D   606 	C$xor.c$58$2_0$76	= .
+                            607 	.globl	C$xor.c$58$2_0$76
+                     026D   608 	XFxor$sub$0$0	= .
+                            609 	.globl	XFxor$sub$0$0
+   026D C9            [10]  610 	ret
+                     026E   611 	Fxor$perm$0$0	= .
+                            612 	.globl	Fxor$perm$0$0
+                     026E   613 	C$xor.c$61$2_0$78	= .
+                            614 	.globl	C$xor.c$61$2_0$78
+                            615 ;/work/source_code/testingfiles/xor.c:61: static void perm(uint8_t *b) {
+                            616 ;	---------------------------------
+                            617 ; Function perm
+                            618 ; ---------------------------------
+   026E                     619 _perm:
+   026E DD E5         [15]  620 	push	ix
+   0270 DD 21 00 00   [14]  621 	ld	ix,#0
+   0274 DD 39         [15]  622 	add	ix,sp
+   0276 21 EC FF      [10]  623 	ld	hl, #-20
+   0279 39            [11]  624 	add	hl, sp
+   027A F9            [ 6]  625 	ld	sp, hl
+                     027B   626 	C$xor.c$63$2_0$79	= .
+                            627 	.globl	C$xor.c$63$2_0$79
+                            628 ;/work/source_code/testingfiles/xor.c:63: for(int i=0;i<XRBLOCK;i++)
+   027B 21 00 00      [10]  629 	ld	hl, #0
+   027E 39            [11]  630 	add	hl, sp
+   027F DD 75 FC      [19]  631 	ld	-4 (ix), l
+   0282 DD 74 FD      [19]  632 	ld	-3 (ix), h
+   0285 01 00 00      [10]  633 	ld	bc, #0x0000
+   0288                     634 00103$:
+   0288 79            [ 4]  635 	ld	a, c
+   0289 D6 10         [ 7]  636 	sub	a, #0x10
+   028B 78            [ 4]  637 	ld	a, b
+   028C 17            [ 4]  638 	rla
+   028D 3F            [ 4]  639 	ccf
+   028E 1F            [ 4]  640 	rra
+   028F DE 80         [ 7]  641 	sbc	a, #0x80
+   0291 D2rCBr02      [10]  642 	jp	NC, 00101$
+                     0294   643 	C$xor.c$64$2_0$79	= .
+                            644 	.globl	C$xor.c$64$2_0$79
+                            645 ;/work/source_code/testingfiles/xor.c:64: t[i] = b[(i*3 + 5) % XRBLOCK];
+   0294 DD 7E FC      [19]  646 	ld	a, -4 (ix)
+   0297 81            [ 4]  647 	add	a, c
+   0298 DD 77 FE      [19]  648 	ld	-2 (ix), a
+   029B DD 7E FD      [19]  649 	ld	a, -3 (ix)
+   029E 88            [ 4]  650 	adc	a, b
+   029F DD 77 FF      [19]  651 	ld	-1 (ix), a
+   02A2 69            [ 4]  652 	ld	l, c
+   02A3 60            [ 4]  653 	ld	h, b
+   02A4 29            [11]  654 	add	hl, hl
+   02A5 09            [11]  655 	add	hl, bc
+   02A6 11 05 00      [10]  656 	ld	de, #0x0005
+   02A9 19            [11]  657 	add	hl, de
+   02AA C5            [11]  658 	push	bc
+   02AB 11 10 00      [10]  659 	ld	de, #0x0010
+   02AE D5            [11]  660 	push	de
+   02AF E5            [11]  661 	push	hl
+   02B0 CDr00r00      [17]  662 	call	__modsint
+   02B3 F1            [10]  663 	pop	af
+   02B4 F1            [10]  664 	pop	af
+   02B5 5D            [ 4]  665 	ld	e, l
+   02B6 54            [ 4]  666 	ld	d, h
+   02B7 C1            [10]  667 	pop	bc
+   02B8 DD 6E 04      [19]  668 	ld	l, 4 (ix)
+   02BB DD 66 05      [19]  669 	ld	h, 5 (ix)
+   02BE 19            [11]  670 	add	hl, de
+   02BF 7E            [ 7]  671 	ld	a, (hl)
+   02C0 DD 6E FE      [19]  672 	ld	l, -2 (ix)
+   02C3 DD 66 FF      [19]  673 	ld	h, -1 (ix)
+   02C6 77            [ 7]  674 	ld	(hl), a
+                     02C7   675 	C$xor.c$63$2_0$79	= .
+                            676 	.globl	C$xor.c$63$2_0$79
+                            677 ;/work/source_code/testingfiles/xor.c:63: for(int i=0;i<XRBLOCK;i++)
+   02C7 03            [ 6]  678 	inc	bc
+   02C8 C3r88r02      [10]  679 	jp	00103$
+   02CB                     680 00101$:
+                     02CB   681 	C$xor.c$65$1_0$78	= .
+                            682 	.globl	C$xor.c$65$1_0$78
+                            683 ;/work/source_code/testingfiles/xor.c:65: memcpy(b,t,XRBLOCK);
+   02CB DD 5E 04      [19]  684 	ld	e, 4 (ix)
+   02CE DD 56 05      [19]  685 	ld	d, 5 (ix)
+   02D1 DD 6E FC      [19]  686 	ld	l, -4 (ix)
+   02D4 DD 66 FD      [19]  687 	ld	h, -3 (ix)
+   02D7 01 10 00      [10]  688 	ld	bc, #0x0010
+   02DA ED B0         [21]  689 	ldir
+   02DC                     690 00105$:
+                     02DC   691 	C$xor.c$66$1_0$78	= .
+                            692 	.globl	C$xor.c$66$1_0$78
+                            693 ;/work/source_code/testingfiles/xor.c:66: }
+   02DC DD F9         [10]  694 	ld	sp, ix
+   02DE DD E1         [14]  695 	pop	ix
+                     02E0   696 	C$xor.c$66$1_0$78	= .
+                            697 	.globl	C$xor.c$66$1_0$78
+                     02E0   698 	XFxor$perm$0$0	= .
+                            699 	.globl	XFxor$perm$0$0
+   02E0 C9            [10]  700 	ret
+                     02E1   701 	Fxor$diff$0$0	= .
+                            702 	.globl	Fxor$diff$0$0
+                     02E1   703 	C$xor.c$69$1_0$82	= .
+                            704 	.globl	C$xor.c$69$1_0$82
+                            705 ;/work/source_code/testingfiles/xor.c:69: static void diff(uint8_t *b) {
+                            706 ;	---------------------------------
+                            707 ; Function diff
+                            708 ; ---------------------------------
+   02E1                     709 _diff:
+   02E1 DD E5         [15]  710 	push	ix
+   02E3 DD 21 00 00   [14]  711 	ld	ix,#0
+   02E7 DD 39         [15]  712 	add	ix,sp
+   02E9 21 FA FF      [10]  713 	ld	hl, #-6
+   02EC 39            [11]  714 	add	hl, sp
+   02ED F9            [ 6]  715 	ld	sp, hl
+                     02EE   716 	C$xor.c$70$3_0$82	= .
+                            717 	.globl	C$xor.c$70$3_0$82
+                            718 ;/work/source_code/testingfiles/xor.c:70: for(int i=0;i<XRBLOCK;i++){
+   02EE 01 00 00      [10]  719 	ld	bc, #0x0000
+   02F1                     720 00104$:
+   02F1 79            [ 4]  721 	ld	a, c
+   02F2 D6 10         [ 7]  722 	sub	a, #0x10
+   02F4 78            [ 4]  723 	ld	a, b
+   02F5 17            [ 4]  724 	rla
+   02F6 3F            [ 4]  725 	ccf
+   02F7 1F            [ 4]  726 	rra
+   02F8 DE 80         [ 7]  727 	sbc	a, #0x80
+   02FA D2r71r03      [10]  728 	jp	NC, 00106$
+                     02FD   729 	C$xor.c$71$3_0$83	= .
+                            730 	.globl	C$xor.c$71$3_0$83
+                            731 ;/work/source_code/testingfiles/xor.c:71: int p=(i+XRBLOCK-1)%XRBLOCK;
+   02FD 21 0F 00      [10]  732 	ld	hl, #0x000f
+   0300 09            [11]  733 	add	hl, bc
+   0301 C5            [11]  734 	push	bc
+   0302 11 10 00      [10]  735 	ld	de, #0x0010
+   0305 D5            [11]  736 	push	de
+   0306 E5            [11]  737 	push	hl
+   0307 CDr00r00      [17]  738 	call	__modsint
+   030A F1            [10]  739 	pop	af
+   030B F1            [10]  740 	pop	af
+   030C C1            [10]  741 	pop	bc
+   030D 33            [ 6]  742 	inc	sp
+   030E 33            [ 6]  743 	inc	sp
+   030F E5            [11]  744 	push	hl
+                     0310   745 	C$xor.c$72$3_0$83	= .
+                            746 	.globl	C$xor.c$72$3_0$83
+                            747 ;/work/source_code/testingfiles/xor.c:72: int n=(i+1)%XRBLOCK;
+   0310 59            [ 4]  748 	ld	e, c
+   0311 50            [ 4]  749 	ld	d, b
+   0312 13            [ 6]  750 	inc	de
+   0313 C5            [11]  751 	push	bc
+   0314 D5            [11]  752 	push	de
+   0315 21 10 00      [10]  753 	ld	hl, #0x0010
+   0318 E5            [11]  754 	push	hl
+   0319 D5            [11]  755 	push	de
+   031A CDr00r00      [17]  756 	call	__modsint
+   031D F1            [10]  757 	pop	af
+   031E F1            [10]  758 	pop	af
+   031F D1            [10]  759 	pop	de
+   0320 C1            [10]  760 	pop	bc
+   0321 DD 75 FC      [19]  761 	ld	-4 (ix), l
+   0324 DD 74 FD      [19]  762 	ld	-3 (ix), h
+                     0327   763 	C$xor.c$73$3_0$83	= .
+                            764 	.globl	C$xor.c$73$3_0$83
+                            765 ;/work/source_code/testingfiles/xor.c:73: b[i] ^= rol(b[p],2) ^ (b[n]>>3);
+   0327 DD 7E 04      [19]  766 	ld	a, 4 (ix)
+   032A 81            [ 4]  767 	add	a, c
+   032B 4F            [ 4]  768 	ld	c, a
+   032C DD 7E 05      [19]  769 	ld	a, 5 (ix)
+   032F 88            [ 4]  770 	adc	a, b
+   0330 47            [ 4]  771 	ld	b, a
+   0331 0A            [ 7]  772 	ld	a, (bc)
+   0332 DD 77 FE      [19]  773 	ld	-2 (ix), a
+   0335 DD 7E FA      [19]  774 	ld	a, -6 (ix)
+   0338 DD 86 04      [19]  775 	add	a, 4 (ix)
+   033B 6F            [ 4]  776 	ld	l, a
+   033C DD 7E FB      [19]  777 	ld	a, -5 (ix)
+   033F DD 8E 05      [19]  778 	adc	a, 5 (ix)
+   0342 67            [ 4]  779 	ld	h, a
+   0343 7E            [ 7]  780 	ld	a, (hl)
+                     0344   781 	C$xor.c$38$6_0$86	= .
+                            782 	.globl	C$xor.c$38$6_0$86
+                            783 ;/work/source_code/testingfiles/xor.c:38: return (v << s) | (v >> (8 - s));
+   0344 6F            [ 4]  784 	ld	l, a
+   0345 CB 25         [ 8]  785 	sla	l
+   0347 CB 25         [ 8]  786 	sla	l
+   0349 07            [ 4]  787 	rlca
+   034A 07            [ 4]  788 	rlca
+   034B E6 03         [ 7]  789 	and	a, #0x03
+   034D B5            [ 4]  790 	or	a, l
+   034E DD 77 FF      [19]  791 	ld	-1 (ix), a
+                     0351   792 	C$xor.c$73$3_0$83	= .
+                            793 	.globl	C$xor.c$73$3_0$83
+                            794 ;/work/source_code/testingfiles/xor.c:73: b[i] ^= rol(b[p],2) ^ (b[n]>>3);
+   0351 DD 7E FC      [19]  795 	ld	a, -4 (ix)
+   0354 DD 86 04      [19]  796 	add	a, 4 (ix)
+   0357 6F            [ 4]  797 	ld	l, a
+   0358 DD 7E FD      [19]  798 	ld	a, -3 (ix)
+   035B DD 8E 05      [19]  799 	adc	a, 5 (ix)
+   035E 67            [ 4]  800 	ld	h, a
+   035F 7E            [ 7]  801 	ld	a, (hl)
+   0360 0F            [ 4]  802 	rrca
+   0361 0F            [ 4]  803 	rrca
+   0362 0F            [ 4]  804 	rrca
+   0363 E6 1F         [ 7]  805 	and	a, #0x1f
+   0365 DD AE FF      [19]  806 	xor	a, -1 (ix)
+   0368 DD AE FE      [19]  807 	xor	a, -2 (ix)
+   036B 02            [ 7]  808 	ld	(bc), a
+                     036C   809 	C$xor.c$70$2_0$82	= .
+                            810 	.globl	C$xor.c$70$2_0$82
+                            811 ;/work/source_code/testingfiles/xor.c:70: for(int i=0;i<XRBLOCK;i++){
+   036C 4B            [ 4]  812 	ld	c, e
+   036D 42            [ 4]  813 	ld	b, d
+   036E C3rF1r02      [10]  814 	jp	00104$
+   0371                     815 00106$:
+                     0371   816 	C$xor.c$75$2_0$82	= .
+                            817 	.globl	C$xor.c$75$2_0$82
+                            818 ;/work/source_code/testingfiles/xor.c:75: }
+   0371 DD F9         [10]  819 	ld	sp, ix
+   0373 DD E1         [14]  820 	pop	ix
+                     0375   821 	C$xor.c$75$2_0$82	= .
+                            822 	.globl	C$xor.c$75$2_0$82
+                     0375   823 	XFxor$diff$0$0	= .
+                            824 	.globl	XFxor$diff$0$0
+   0375 C9            [10]  825 	ret
+                     0376   826 	G$xor_encrypt_block$0$0	= .
+                            827 	.globl	G$xor_encrypt_block$0$0
+                     0376   828 	C$xor.c$78$2_0$88	= .
+                            829 	.globl	C$xor.c$78$2_0$88
+                            830 ;/work/source_code/testingfiles/xor.c:78: void xor_encrypt_block(const uint8_t *in, uint8_t *out, XORCTX *c) {
+                            831 ;	---------------------------------
+                            832 ; Function xor_encrypt_block
+                            833 ; ---------------------------------
+   0376                     834 _xor_encrypt_block::
+   0376 DD E5         [15]  835 	push	ix
+   0378 DD 21 00 00   [14]  836 	ld	ix,#0
+   037C DD 39         [15]  837 	add	ix,sp
+   037E 21 E1 FF      [10]  838 	ld	hl, #-31
+   0381 39            [11]  839 	add	hl, sp
+   0382 F9            [ 6]  840 	ld	sp, hl
+                     0383   841 	C$xor.c$80$1_0$88	= .
+                            842 	.globl	C$xor.c$80$1_0$88
+                            843 ;/work/source_code/testingfiles/xor.c:80: memcpy(s,in,XRBLOCK);
+   0383 21 00 00      [10]  844 	ld	hl, #0
+   0386 39            [11]  845 	add	hl, sp
+   0387 4D            [ 4]  846 	ld	c, l
+   0388 44            [ 4]  847 	ld	b, h
+   0389 59            [ 4]  848 	ld	e, c
+   038A 50            [ 4]  849 	ld	d, b
+   038B DD 6E 04      [19]  850 	ld	l, 4 (ix)
+   038E DD 66 05      [19]  851 	ld	h, 5 (ix)
+   0391 C5            [11]  852 	push	bc
+   0392 01 10 00      [10]  853 	ld	bc, #0x0010
+   0395 ED B0         [21]  854 	ldir
+   0397 C1            [10]  855 	pop	bc
+                     0398   856 	C$xor.c$82$4_0$91	= .
+                            857 	.globl	C$xor.c$82$4_0$91
+                            858 ;/work/source_code/testingfiles/xor.c:82: for(int r=0;r<XRROUND;r++){
+   0398 DD 5E 08      [19]  859 	ld	e, 8 (ix)
+   039B DD 56 09      [19]  860 	ld	d, 9 (ix)
+   039E 21 20 00      [10]  861 	ld	hl, #0x0020
+   03A1 19            [11]  862 	add	hl, de
+   03A2 DD 75 F1      [19]  863 	ld	-15 (ix), l
+   03A5 DD 74 F2      [19]  864 	ld	-14 (ix), h
+   03A8 DD 71 F3      [19]  865 	ld	-13 (ix), c
+   03AB DD 70 F4      [19]  866 	ld	-12 (ix), b
+   03AE DD 71 F5      [19]  867 	ld	-11 (ix), c
+   03B1 DD 70 F6      [19]  868 	ld	-10 (ix), b
+   03B4 DD 71 F7      [19]  869 	ld	-9 (ix), c
+   03B7 DD 70 F8      [19]  870 	ld	-8 (ix), b
+   03BA 11 00 00      [10]  871 	ld	de, #0x0000
+   03BD                     872 00109$:
+   03BD 7B            [ 4]  873 	ld	a, e
+   03BE D6 06         [ 7]  874 	sub	a, #0x06
+   03C0 7A            [ 4]  875 	ld	a, d
+   03C1 17            [ 4]  876 	rla
+   03C2 3F            [ 4]  877 	ccf
+   03C3 1F            [ 4]  878 	rra
+   03C4 DE 80         [ 7]  879 	sbc	a, #0x80
+   03C6 D2r6Fr04      [10]  880 	jp	NC, 00104$
+                     03C9   881 	C$xor.c$83$4_0$91	= .
+                            882 	.globl	C$xor.c$83$4_0$91
+                            883 ;/work/source_code/testingfiles/xor.c:83: for(int i=0;i<XRBLOCK;i++)
+   03C9 6B            [ 4]  884 	ld	l, e
+   03CA 62            [ 4]  885 	ld	h, d
+   03CB 29            [11]  886 	add	hl, hl
+   03CC 29            [11]  887 	add	hl, hl
+   03CD 29            [11]  888 	add	hl, hl
+   03CE 29            [11]  889 	add	hl, hl
+   03CF 29            [11]  890 	add	hl, hl
+   03D0 7D            [ 4]  891 	ld	a, l
+   03D1 DD 86 F1      [19]  892 	add	a, -15 (ix)
+   03D4 DD 77 F9      [19]  893 	ld	-7 (ix), a
+   03D7 7C            [ 4]  894 	ld	a, h
+   03D8 DD 8E F2      [19]  895 	adc	a, -14 (ix)
+   03DB DD 77 FA      [19]  896 	ld	-6 (ix), a
+   03DE AF            [ 4]  897 	xor	a, a
+   03DF DD 77 FE      [19]  898 	ld	-2 (ix), a
+   03E2 DD 77 FF      [19]  899 	ld	-1 (ix), a
+   03E5                     900 00106$:
+   03E5 DD 7E FE      [19]  901 	ld	a, -2 (ix)
+   03E8 D6 10         [ 7]  902 	sub	a, #0x10
+   03EA DD 7E FF      [19]  903 	ld	a, -1 (ix)
+   03ED 17            [ 4]  904 	rla
+   03EE 3F            [ 4]  905 	ccf
+   03EF 1F            [ 4]  906 	rra
+   03F0 DE 80         [ 7]  907 	sbc	a, #0x80
+   03F2 D2r32r04      [10]  908 	jp	NC, 00101$
+                     03F5   909 	C$xor.c$84$4_0$91	= .
+                            910 	.globl	C$xor.c$84$4_0$91
+                            911 ;/work/source_code/testingfiles/xor.c:84: s[i] ^= c->rkey[r][i];
+   03F5 79            [ 4]  912 	ld	a, c
+   03F6 DD 86 FE      [19]  913 	add	a, -2 (ix)
+   03F9 DD 77 FB      [19]  914 	ld	-5 (ix), a
+   03FC 78            [ 4]  915 	ld	a, b
+   03FD DD 8E FF      [19]  916 	adc	a, -1 (ix)
+   0400 DD 77 FC      [19]  917 	ld	-4 (ix), a
+   0403 DD 6E FB      [19]  918 	ld	l, -5 (ix)
+   0406 DD 66 FC      [19]  919 	ld	h, -4 (ix)
+   0409 7E            [ 7]  920 	ld	a, (hl)
+   040A DD 77 FD      [19]  921 	ld	-3 (ix), a
+   040D DD 7E F9      [19]  922 	ld	a, -7 (ix)
+   0410 DD 86 FE      [19]  923 	add	a, -2 (ix)
+   0413 6F            [ 4]  924 	ld	l, a
+   0414 DD 7E FA      [19]  925 	ld	a, -6 (ix)
+   0417 DD 8E FF      [19]  926 	adc	a, -1 (ix)
+   041A 67            [ 4]  927 	ld	h, a
+   041B 7E            [ 7]  928 	ld	a, (hl)
+   041C DD AE FD      [19]  929 	xor	a, -3 (ix)
+   041F DD 6E FB      [19]  930 	ld	l, -5 (ix)
+   0422 DD 66 FC      [19]  931 	ld	h, -4 (ix)
+   0425 77            [ 7]  932 	ld	(hl), a
+                     0426   933 	C$xor.c$83$4_0$91	= .
+                            934 	.globl	C$xor.c$83$4_0$91
+                            935 ;/work/source_code/testingfiles/xor.c:83: for(int i=0;i<XRBLOCK;i++)
+   0426 DD 34 FE      [23]  936 	inc	-2 (ix)
+   0429 C2r2Fr04      [10]  937 	jp	NZ, 00140$
+   042C DD 34 FF      [23]  938 	inc	-1 (ix)
+   042F                     939 00140$:
+   042F C3rE5r03      [10]  940 	jp	00106$
+   0432                     941 00101$:
+                     0432   942 	C$xor.c$86$3_0$90	= .
+                            943 	.globl	C$xor.c$86$3_0$90
+                            944 ;/work/source_code/testingfiles/xor.c:86: sub(s);
+   0432 DD 6E F5      [19]  945 	ld	l, -11 (ix)
+   0435 DD 66 F6      [19]  946 	ld	h, -10 (ix)
+   0438 C5            [11]  947 	push	bc
+   0439 D5            [11]  948 	push	de
+   043A E5            [11]  949 	push	hl
+   043B CDr3Br02      [17]  950 	call	_sub
+   043E F1            [10]  951 	pop	af
+   043F D1            [10]  952 	pop	de
+   0440 C1            [10]  953 	pop	bc
+                     0441   954 	C$xor.c$87$3_0$90	= .
+                            955 	.globl	C$xor.c$87$3_0$90
+                            956 ;/work/source_code/testingfiles/xor.c:87: perm(s);
+   0441 DD 6E F7      [19]  957 	ld	l, -9 (ix)
+   0444 DD 66 F8      [19]  958 	ld	h, -8 (ix)
+   0447 C5            [11]  959 	push	bc
+   0448 D5            [11]  960 	push	de
+   0449 E5            [11]  961 	push	hl
+   044A CDr6Er02      [17]  962 	call	_perm
+   044D F1            [10]  963 	pop	af
+   044E D1            [10]  964 	pop	de
+   044F C1            [10]  965 	pop	bc
+                     0450   966 	C$xor.c$88$3_0$90	= .
+                            967 	.globl	C$xor.c$88$3_0$90
+                            968 ;/work/source_code/testingfiles/xor.c:88: if(r < XRROUND-1) diff(s);
+   0450 7B            [ 4]  969 	ld	a, e
+   0451 D6 05         [ 7]  970 	sub	a, #0x05
+   0453 7A            [ 4]  971 	ld	a, d
+   0454 17            [ 4]  972 	rla
+   0455 3F            [ 4]  973 	ccf
+   0456 1F            [ 4]  974 	rra
+   0457 DE 80         [ 7]  975 	sbc	a, #0x80
+   0459 D2r6Br04      [10]  976 	jp	NC, 00110$
+   045C DD 6E F3      [19]  977 	ld	l, -13 (ix)
+   045F DD 66 F4      [19]  978 	ld	h, -12 (ix)
+   0462 C5            [11]  979 	push	bc
+   0463 D5            [11]  980 	push	de
+   0464 E5            [11]  981 	push	hl
+   0465 CDrE1r02      [17]  982 	call	_diff
+   0468 F1            [10]  983 	pop	af
+   0469 D1            [10]  984 	pop	de
+   046A C1            [10]  985 	pop	bc
+   046B                     986 00110$:
+                     046B   987 	C$xor.c$82$2_0$89	= .
+                            988 	.globl	C$xor.c$82$2_0$89
+                            989 ;/work/source_code/testingfiles/xor.c:82: for(int r=0;r<XRROUND;r++){
+   046B 13            [ 6]  990 	inc	de
+   046C C3rBDr03      [10]  991 	jp	00109$
+   046F                     992 00104$:
+                     046F   993 	C$xor.c$90$1_0$88	= .
+                            994 	.globl	C$xor.c$90$1_0$88
+                            995 ;/work/source_code/testingfiles/xor.c:90: memcpy(out,s,XRBLOCK);
+   046F DD 5E 06      [19]  996 	ld	e, 6 (ix)
+   0472 DD 56 07      [19]  997 	ld	d, 7 (ix)
+   0475 69            [ 4]  998 	ld	l, c
+   0476 60            [ 4]  999 	ld	h, b
+   0477 01 10 00      [10] 1000 	ld	bc, #0x0010
+   047A ED B0         [21] 1001 	ldir
+   047C                    1002 00111$:
+                     047C  1003 	C$xor.c$91$1_0$88	= .
+                           1004 	.globl	C$xor.c$91$1_0$88
+                           1005 ;/work/source_code/testingfiles/xor.c:91: }
+   047C DD F9         [10] 1006 	ld	sp, ix
+   047E DD E1         [14] 1007 	pop	ix
+                     0480  1008 	C$xor.c$91$1_0$88	= .
+                           1009 	.globl	C$xor.c$91$1_0$88
+                     0480  1010 	XG$xor_encrypt_block$0$0	= .
+                           1011 	.globl	XG$xor_encrypt_block$0$0
+   0480 C9            [10] 1012 	ret
+                     0481  1013 	G$xor_decrypt_block$0$0	= .
+                           1014 	.globl	G$xor_decrypt_block$0$0
+                     0481  1015 	C$xor.c$94$1_0$93	= .
+                           1016 	.globl	C$xor.c$94$1_0$93
+                           1017 ;/work/source_code/testingfiles/xor.c:94: void xor_decrypt_block(const uint8_t *in, uint8_t *out, XORCTX *c) {
+                           1018 ;	---------------------------------
+                           1019 ; Function xor_decrypt_block
+                           1020 ; ---------------------------------
+   0481                    1021 _xor_decrypt_block::
+   0481 DD E5         [15] 1022 	push	ix
+   0483 DD 21 00 00   [14] 1023 	ld	ix,#0
+   0487 DD 39         [15] 1024 	add	ix,sp
+   0489 21 CC FF      [10] 1025 	ld	hl, #-52
+   048C 39            [11] 1026 	add	hl, sp
+   048D F9            [ 6] 1027 	ld	sp, hl
+                     048E  1028 	C$xor.c$96$1_0$93	= .
+                           1029 	.globl	C$xor.c$96$1_0$93
+                           1030 ;/work/source_code/testingfiles/xor.c:96: memcpy(s,in,XRBLOCK);
+   048E 21 00 00      [10] 1031 	ld	hl, #0
+   0491 39            [11] 1032 	add	hl, sp
+   0492 DD 75 EC      [19] 1033 	ld	-20 (ix), l
+   0495 DD 74 ED      [19] 1034 	ld	-19 (ix), h
+   0498 DD 5E EC      [19] 1035 	ld	e, -20 (ix)
+   049B DD 56 ED      [19] 1036 	ld	d, -19 (ix)
+   049E DD 6E 04      [19] 1037 	ld	l, 4 (ix)
+   04A1 DD 66 05      [19] 1038 	ld	h, 5 (ix)
+   04A4 01 10 00      [10] 1039 	ld	bc, #0x0010
+   04A7 ED B0         [21] 1040 	ldir
+                     04A9  1041 	C$xor.c$98$4_0$96	= .
+                           1042 	.globl	C$xor.c$98$4_0$96
+                           1043 ;/work/source_code/testingfiles/xor.c:98: for(int r=XRROUND-1;r>=0;r--){
+   04A9 DD 7E EC      [19] 1044 	ld	a, -20 (ix)
+   04AC DD 77 EE      [19] 1045 	ld	-18 (ix), a
+   04AF DD 7E ED      [19] 1046 	ld	a, -19 (ix)
+   04B2 DD 77 EF      [19] 1047 	ld	-17 (ix), a
+   04B5 21 10 00      [10] 1048 	ld	hl, #16
+   04B8 39            [11] 1049 	add	hl, sp
+   04B9 DD 75 F0      [19] 1050 	ld	-16 (ix), l
+   04BC DD 74 F1      [19] 1051 	ld	-15 (ix), h
+   04BF DD 7E EC      [19] 1052 	ld	a, -20 (ix)
+   04C2 DD 77 F2      [19] 1053 	ld	-14 (ix), a
+   04C5 DD 7E ED      [19] 1054 	ld	a, -19 (ix)
+   04C8 DD 77 F3      [19] 1055 	ld	-13 (ix), a
+   04CB DD 7E F0      [19] 1056 	ld	a, -16 (ix)
+   04CE DD 77 F4      [19] 1057 	ld	-12 (ix), a
+   04D1 DD 7E F1      [19] 1058 	ld	a, -15 (ix)
+   04D4 DD 77 F5      [19] 1059 	ld	-11 (ix), a
+   04D7 DD 4E 08      [19] 1060 	ld	c, 8 (ix)
+   04DA DD 46 09      [19] 1061 	ld	b, 9 (ix)
+   04DD 21 20 00      [10] 1062 	ld	hl, #0x0020
+   04E0 09            [11] 1063 	add	hl, bc
+   04E1 DD 75 F6      [19] 1064 	ld	-10 (ix), l
+   04E4 DD 74 F7      [19] 1065 	ld	-9 (ix), h
+   04E7 DD 36 FC 05   [19] 1066 	ld	-4 (ix), #0x05
+   04EB AF            [ 4] 1067 	xor	a, a
+   04EC DD 77 FD      [19] 1068 	ld	-3 (ix), a
+   04EF                    1069 00125$:
+   04EF DD CB FD 7E   [20] 1070 	bit	7, -3 (ix)
+   04F3 C2r61r06      [10] 1071 	jp	NZ, 00108$
+                     04F6  1072 	C$xor.c$99$1_0$93	= .
+                           1073 	.globl	C$xor.c$99$1_0$93
+                           1074 ;/work/source_code/testingfiles/xor.c:99: for(int x=0;x<2;x++) diff(s); // approximate inverse
+   04F6 01 00 00      [10] 1075 	ld	bc, #0x0000
+   04F9                    1076 00110$:
+   04F9 79            [ 4] 1077 	ld	a, c
+   04FA D6 02         [ 7] 1078 	sub	a, #0x02
+   04FC 78            [ 4] 1079 	ld	a, b
+   04FD 17            [ 4] 1080 	rla
+   04FE 3F            [ 4] 1081 	ccf
+   04FF 1F            [ 4] 1082 	rra
+   0500 DE 80         [ 7] 1083 	sbc	a, #0x80
+   0502 D2r16r05      [10] 1084 	jp	NC, 00101$
+   0505 DD 5E EE      [19] 1085 	ld	e, -18 (ix)
+   0508 DD 56 EF      [19] 1086 	ld	d, -17 (ix)
+   050B C5            [11] 1087 	push	bc
+   050C D5            [11] 1088 	push	de
+   050D CDrE1r02      [17] 1089 	call	_diff
+   0510 F1            [10] 1090 	pop	af
+   0511 C1            [10] 1091 	pop	bc
+   0512 03            [ 6] 1092 	inc	bc
+   0513 C3rF9r04      [10] 1093 	jp	00110$
+   0516                    1094 00101$:
+                     0516  1095 	C$xor.c$102$1_0$93	= .
+                           1096 	.globl	C$xor.c$102$1_0$93
+                           1097 ;/work/source_code/testingfiles/xor.c:102: for(int i=0;i<XRBLOCK;i++)
+   0516 AF            [ 4] 1098 	xor	a, a
+   0517 DD 77 FE      [19] 1099 	ld	-2 (ix), a
+   051A DD 77 FF      [19] 1100 	ld	-1 (ix), a
+   051D                    1101 00113$:
+   051D DD 7E FE      [19] 1102 	ld	a, -2 (ix)
+   0520 D6 10         [ 7] 1103 	sub	a, #0x10
+   0522 DD 7E FF      [19] 1104 	ld	a, -1 (ix)
+   0525 17            [ 4] 1105 	rla
+   0526 3F            [ 4] 1106 	ccf
+   0527 1F            [ 4] 1107 	rra
+   0528 DE 80         [ 7] 1108 	sbc	a, #0x80
+   052A D2r83r05      [10] 1109 	jp	NC, 00102$
+                     052D  1110 	C$xor.c$103$4_1$98	= .
+                           1111 	.globl	C$xor.c$103$4_1$98
+                           1112 ;/work/source_code/testingfiles/xor.c:103: t[(i*3+5)%XRBLOCK] = s[i];
+   052D DD 4E FE      [19] 1113 	ld	c, -2 (ix)
+   0530 DD 46 FF      [19] 1114 	ld	b, -1 (ix)
+   0533 69            [ 4] 1115 	ld	l, c
+   0534 60            [ 4] 1116 	ld	h, b
+   0535 29            [11] 1117 	add	hl, hl
+   0536 09            [11] 1118 	add	hl, bc
+   0537 DD 75 F8      [19] 1119 	ld	-8 (ix), l
+   053A DD 74 F9      [19] 1120 	ld	-7 (ix), h
+   053D DD 7E F8      [19] 1121 	ld	a, -8 (ix)
+   0540 C6 05         [ 7] 1122 	add	a, #0x05
+   0542 DD 77 FA      [19] 1123 	ld	-6 (ix), a
+   0545 DD 7E F9      [19] 1124 	ld	a, -7 (ix)
+   0548 CE 00         [ 7] 1125 	adc	a, #0x00
+   054A DD 77 FB      [19] 1126 	ld	-5 (ix), a
+   054D 21 10 00      [10] 1127 	ld	hl, #0x0010
+   0550 E5            [11] 1128 	push	hl
+   0551 DD 6E FA      [19] 1129 	ld	l, -6 (ix)
+   0554 DD 66 FB      [19] 1130 	ld	h, -5 (ix)
+   0557 E5            [11] 1131 	push	hl
+   0558 CDr00r00      [17] 1132 	call	__modsint
+   055B F1            [10] 1133 	pop	af
+   055C F1            [10] 1134 	pop	af
+   055D DD 7E F0      [19] 1135 	ld	a, -16 (ix)
+   0560 85            [ 4] 1136 	add	a, l
+   0561 4F            [ 4] 1137 	ld	c, a
+   0562 DD 7E F1      [19] 1138 	ld	a, -15 (ix)
+   0565 8C            [ 4] 1139 	adc	a, h
+   0566 47            [ 4] 1140 	ld	b, a
+   0567 DD 7E EC      [19] 1141 	ld	a, -20 (ix)
+   056A DD 86 FE      [19] 1142 	add	a, -2 (ix)
+   056D 5F            [ 4] 1143 	ld	e, a
+   056E DD 7E ED      [19] 1144 	ld	a, -19 (ix)
+   0571 DD 8E FF      [19] 1145 	adc	a, -1 (ix)
+   0574 57            [ 4] 1146 	ld	d, a
+   0575 1A            [ 7] 1147 	ld	a, (de)
+   0576 02            [ 7] 1148 	ld	(bc), a
+                     0577  1149 	C$xor.c$102$4_1$98	= .
+                           1150 	.globl	C$xor.c$102$4_1$98
+                           1151 ;/work/source_code/testingfiles/xor.c:102: for(int i=0;i<XRBLOCK;i++)
+   0577 DD 34 FE      [23] 1152 	inc	-2 (ix)
+   057A C2r80r05      [10] 1153 	jp	NZ, 00199$
+   057D DD 34 FF      [23] 1154 	inc	-1 (ix)
+   0580                    1155 00199$:
+   0580 C3r1Dr05      [10] 1156 	jp	00113$
+   0583                    1157 00102$:
+                     0583  1158 	C$xor.c$104$3_1$97	= .
+                           1159 	.globl	C$xor.c$104$3_1$97
+                           1160 ;/work/source_code/testingfiles/xor.c:104: memcpy(s,t,XRBLOCK);
+   0583 DD 5E F2      [19] 1161 	ld	e, -14 (ix)
+   0586 DD 56 F3      [19] 1162 	ld	d, -13 (ix)
+   0589 DD 6E F4      [19] 1163 	ld	l, -12 (ix)
+   058C DD 66 F5      [19] 1164 	ld	h, -11 (ix)
+   058F 01 10 00      [10] 1165 	ld	bc, #0x0010
+   0592 ED B0         [21] 1166 	ldir
+                     0594  1167 	C$xor.c$106$1_0$93	= .
+                           1168 	.globl	C$xor.c$106$1_0$93
+                           1169 ;/work/source_code/testingfiles/xor.c:106: for(int i=0;i<XRBLOCK;i++)
+   0594 01 00 00      [10] 1170 	ld	bc, #0x0000
+   0597                    1171 00119$:
+   0597 79            [ 4] 1172 	ld	a, c
+   0598 D6 10         [ 7] 1173 	sub	a, #0x10
+   059A 78            [ 4] 1174 	ld	a, b
+   059B 17            [ 4] 1175 	rla
+   059C 3F            [ 4] 1176 	ccf
+   059D 1F            [ 4] 1177 	rra
+   059E DE 80         [ 7] 1178 	sbc	a, #0x80
+   05A0 D2r0Br06      [10] 1179 	jp	NC, 00106$
+                     05A3  1180 	C$xor.c$107$6_1$100	= .
+                           1181 	.globl	C$xor.c$107$6_1$100
+                           1182 ;/work/source_code/testingfiles/xor.c:107: for(int k=0;k<256;k++)
+   05A3 AF            [ 4] 1183 	xor	a, a
+   05A4 DD 77 F8      [19] 1184 	ld	-8 (ix), a
+   05A7 DD 77 F9      [19] 1185 	ld	-7 (ix), a
+   05AA AF            [ 4] 1186 	xor	a, a
+   05AB DD 77 FE      [19] 1187 	ld	-2 (ix), a
+   05AE DD 77 FF      [19] 1188 	ld	-1 (ix), a
+   05B1                    1189 00116$:
+   05B1 DD 7E FF      [19] 1190 	ld	a, -1 (ix)
+   05B4 EE 80         [ 7] 1191 	xor	a, #0x80
+   05B6 D6 81         [ 7] 1192 	sub	a, #0x81
+   05B8 D2r07r06      [10] 1193 	jp	NC, 00120$
+                     05BB  1194 	C$xor.c$108$5_1$100	= .
+                           1195 	.globl	C$xor.c$108$5_1$100
+                           1196 ;/work/source_code/testingfiles/xor.c:108: if(SBOX[k] == s[i]) { s[i]=k; break; }
+   05BB 3Er2E         [ 7] 1197 	ld	a, #<(_SBOX)
+   05BD DD 86 FE      [19] 1198 	add	a, -2 (ix)
+   05C0 6F            [ 4] 1199 	ld	l, a
+   05C1 3Es00         [ 7] 1200 	ld	a, #>(_SBOX)
+   05C3 DD 8E FF      [19] 1201 	adc	a, -1 (ix)
+   05C6 67            [ 4] 1202 	ld	h, a
+   05C7 7E            [ 7] 1203 	ld	a, (hl)
+   05C8 DD 77 FA      [19] 1204 	ld	-6 (ix), a
+   05CB DD 7E EC      [19] 1205 	ld	a, -20 (ix)
+   05CE 81            [ 4] 1206 	add	a, c
+   05CF 5F            [ 4] 1207 	ld	e, a
+   05D0 DD 7E ED      [19] 1208 	ld	a, -19 (ix)
+   05D3 88            [ 4] 1209 	adc	a, b
+   05D4 57            [ 4] 1210 	ld	d, a
+   05D5 1A            [ 7] 1211 	ld	a, (de)
+   05D6 DD 77 FB      [19] 1212 	ld	-5 (ix), a
+   05D9 DD 7E FA      [19] 1213 	ld	a, -6 (ix)
+   05DC DD 96 FB      [19] 1214 	sub	a, -5 (ix)
+   05DF C2rE5r05      [10] 1215 	jp	NZ,00200$
+   05E2 C3rE8r05      [10] 1216 	jp	00201$
+   05E5                    1217 00200$:
+   05E5 C3rEFr05      [10] 1218 	jp	00117$
+   05E8                    1219 00201$:
+   05E8 DD 7E F8      [19] 1220 	ld	a, -8 (ix)
+   05EB 12            [ 7] 1221 	ld	(de), a
+   05EC C3r07r06      [10] 1222 	jp	00120$
+   05EF                    1223 00117$:
+                     05EF  1224 	C$xor.c$107$5_1$100	= .
+                           1225 	.globl	C$xor.c$107$5_1$100
+                           1226 ;/work/source_code/testingfiles/xor.c:107: for(int k=0;k<256;k++)
+   05EF DD 34 FE      [23] 1227 	inc	-2 (ix)
+   05F2 C2rF8r05      [10] 1228 	jp	NZ, 00202$
+   05F5 DD 34 FF      [23] 1229 	inc	-1 (ix)
+   05F8                    1230 00202$:
+   05F8 DD 7E FE      [19] 1231 	ld	a, -2 (ix)
+   05FB DD 77 F8      [19] 1232 	ld	-8 (ix), a
+   05FE DD 7E FF      [19] 1233 	ld	a, -1 (ix)
+   0601 DD 77 F9      [19] 1234 	ld	-7 (ix), a
+   0604 C3rB1r05      [10] 1235 	jp	00116$
+   0607                    1236 00120$:
+                     0607  1237 	C$xor.c$106$4_1$99	= .
+                           1238 	.globl	C$xor.c$106$4_1$99
+                           1239 ;/work/source_code/testingfiles/xor.c:106: for(int i=0;i<XRBLOCK;i++)
+   0607 03            [ 6] 1240 	inc	bc
+   0608 C3r97r05      [10] 1241 	jp	00119$
+   060B                    1242 00106$:
+                     060B  1243 	C$xor.c$110$4_1$102	= .
+                           1244 	.globl	C$xor.c$110$4_1$102
+                           1245 ;/work/source_code/testingfiles/xor.c:110: for(int i=0;i<XRBLOCK;i++)
+   060B DD 6E FC      [19] 1246 	ld	l, -4 (ix)
+   060E DD 66 FD      [19] 1247 	ld	h, -3 (ix)
+   0611 29            [11] 1248 	add	hl, hl
+   0612 29            [11] 1249 	add	hl, hl
+   0613 29            [11] 1250 	add	hl, hl
+   0614 29            [11] 1251 	add	hl, hl
+   0615 29            [11] 1252 	add	hl, hl
+   0616 7D            [ 4] 1253 	ld	a, l
+   0617 DD 86 F6      [19] 1254 	add	a, -10 (ix)
+   061A DD 77 FA      [19] 1255 	ld	-6 (ix), a
+   061D 7C            [ 4] 1256 	ld	a, h
+   061E DD 8E F7      [19] 1257 	adc	a, -9 (ix)
+   0621 DD 77 FB      [19] 1258 	ld	-5 (ix), a
+   0624 01 00 00      [10] 1259 	ld	bc, #0x0000
+   0627                    1260 00122$:
+   0627 79            [ 4] 1261 	ld	a, c
+   0628 D6 10         [ 7] 1262 	sub	a, #0x10
+   062A 78            [ 4] 1263 	ld	a, b
+   062B 17            [ 4] 1264 	rla
+   062C 3F            [ 4] 1265 	ccf
+   062D 1F            [ 4] 1266 	rra
+   062E DE 80         [ 7] 1267 	sbc	a, #0x80
+   0630 D2r51r06      [10] 1268 	jp	NC, 00126$
+                     0633  1269 	C$xor.c$111$4_1$102	= .
+                           1270 	.globl	C$xor.c$111$4_1$102
+                           1271 ;/work/source_code/testingfiles/xor.c:111: s[i] ^= c->rkey[r][i];
+   0633 DD 7E EC      [19] 1272 	ld	a, -20 (ix)
+   0636 81            [ 4] 1273 	add	a, c
+   0637 5F            [ 4] 1274 	ld	e, a
+   0638 DD 7E ED      [19] 1275 	ld	a, -19 (ix)
+   063B 88            [ 4] 1276 	adc	a, b
+   063C 57            [ 4] 1277 	ld	d, a
+   063D 1A            [ 7] 1278 	ld	a, (de)
+   063E DD 77 FF      [19] 1279 	ld	-1 (ix), a
+   0641 DD 6E FA      [19] 1280 	ld	l, -6 (ix)
+   0644 DD 66 FB      [19] 1281 	ld	h, -5 (ix)
+   0647 09            [11] 1282 	add	hl, bc
+   0648 7E            [ 7] 1283 	ld	a, (hl)
+   0649 DD AE FF      [19] 1284 	xor	a, -1 (ix)
+   064C 12            [ 7] 1285 	ld	(de), a
+                     064D  1286 	C$xor.c$110$4_1$102	= .
+                           1287 	.globl	C$xor.c$110$4_1$102
+                           1288 ;/work/source_code/testingfiles/xor.c:110: for(int i=0;i<XRBLOCK;i++)
+   064D 03            [ 6] 1289 	inc	bc
+   064E C3r27r06      [10] 1290 	jp	00122$
+   0651                    1291 00126$:
+                     0651  1292 	C$xor.c$98$2_0$94	= .
+                           1293 	.globl	C$xor.c$98$2_0$94
+                           1294 ;/work/source_code/testingfiles/xor.c:98: for(int r=XRROUND-1;r>=0;r--){
+   0651 DD 6E FC      [19] 1295 	ld	l, -4 (ix)
+   0654 DD 66 FD      [19] 1296 	ld	h, -3 (ix)
+   0657 2B            [ 6] 1297 	dec	hl
+   0658 DD 75 FC      [19] 1298 	ld	-4 (ix), l
+   065B DD 74 FD      [19] 1299 	ld	-3 (ix), h
+   065E C3rEFr04      [10] 1300 	jp	00125$
+   0661                    1301 00108$:
+                     0661  1302 	C$xor.c$113$1_0$93	= .
+                           1303 	.globl	C$xor.c$113$1_0$93
+                           1304 ;/work/source_code/testingfiles/xor.c:113: memcpy(out,s,XRBLOCK);
+   0661 DD 5E 06      [19] 1305 	ld	e, 6 (ix)
+   0664 DD 56 07      [19] 1306 	ld	d, 7 (ix)
+   0667 DD 6E EC      [19] 1307 	ld	l, -20 (ix)
+   066A DD 66 ED      [19] 1308 	ld	h, -19 (ix)
+   066D 01 10 00      [10] 1309 	ld	bc, #0x0010
+   0670 ED B0         [21] 1310 	ldir
+   0672                    1311 00127$:
+                     0672  1312 	C$xor.c$114$1_0$93	= .
+                           1313 	.globl	C$xor.c$114$1_0$93
+                           1314 ;/work/source_code/testingfiles/xor.c:114: }
+   0672 DD F9         [10] 1315 	ld	sp, ix
+   0674 DD E1         [14] 1316 	pop	ix
+                     0676  1317 	C$xor.c$114$1_0$93	= .
+                           1318 	.globl	C$xor.c$114$1_0$93
+                     0676  1319 	XG$xor_decrypt_block$0$0	= .
+                           1320 	.globl	XG$xor_decrypt_block$0$0
+   0676 C9            [10] 1321 	ret
+                     0677  1322 	G$xor_stream$0$0	= .
+                           1323 	.globl	G$xor_stream$0$0
+                     0677  1324 	C$xor.c$117$1_0$105	= .
+                           1325 	.globl	C$xor.c$117$1_0$105
+                           1326 ;/work/source_code/testingfiles/xor.c:117: void xor_stream(const uint8_t *in, uint8_t *out, size_t len, XORCTX *c, uint64_t nonce) {
+                           1327 ;	---------------------------------
+                           1328 ; Function xor_stream
+                           1329 ; ---------------------------------
+   0677                    1330 _xor_stream::
+   0677 DD E5         [15] 1331 	push	ix
+   0679 DD 21 00 00   [14] 1332 	ld	ix,#0
+   067D DD 39         [15] 1333 	add	ix,sp
+   067F 21 C8 FF      [10] 1334 	ld	hl, #-56
+   0682 39            [11] 1335 	add	hl, sp
+   0683 F9            [ 6] 1336 	ld	sp, hl
+                     0684  1337 	C$xor.c$120$3_0$106	= .
+                           1338 	.globl	C$xor.c$120$3_0$106
+                           1339 ;/work/source_code/testingfiles/xor.c:120: for(size_t i=0;i<len;i+=XRBLOCK) {
+   0684 21 10 00      [10] 1340 	ld	hl, #16
+   0687 39            [11] 1341 	add	hl, sp
+   0688 DD 75 F0      [19] 1342 	ld	-16 (ix), l
+   068B DD 74 F1      [19] 1343 	ld	-15 (ix), h
+   068E DD 7E F0      [19] 1344 	ld	a, -16 (ix)
+   0691 C6 08         [ 7] 1345 	add	a, #0x08
+   0693 DD 77 F2      [19] 1346 	ld	-14 (ix), a
+   0696 DD 7E F1      [19] 1347 	ld	a, -15 (ix)
+   0699 CE 00         [ 7] 1348 	adc	a, #0x00
+   069B DD 77 F3      [19] 1349 	ld	-13 (ix), a
+   069E 21 00 00      [10] 1350 	ld	hl, #0
+   06A1 39            [11] 1351 	add	hl, sp
+   06A2 DD 75 F4      [19] 1352 	ld	-12 (ix), l
+   06A5 DD 74 F5      [19] 1353 	ld	-11 (ix), h
+   06A8 DD 7E F0      [19] 1354 	ld	a, -16 (ix)
+   06AB DD 77 F6      [19] 1355 	ld	-10 (ix), a
+   06AE DD 7E F1      [19] 1356 	ld	a, -15 (ix)
+   06B1 DD 77 F7      [19] 1357 	ld	-9 (ix), a
+   06B4 AF            [ 4] 1358 	xor	a, a
+   06B5 DD 77 F8      [19] 1359 	ld	-8 (ix), a
+   06B8 DD 77 F9      [19] 1360 	ld	-7 (ix), a
+   06BB                    1361 00107$:
+   06BB DD 7E F8      [19] 1362 	ld	a, -8 (ix)
+   06BE DD 96 08      [19] 1363 	sub	a, 8 (ix)
+   06C1 DD 7E F9      [19] 1364 	ld	a, -7 (ix)
+   06C4 DD 9E 09      [19] 1365 	sbc	a, 9 (ix)
+   06C7 D2rCDr07      [10] 1366 	jp	NC, 00109$
+                     06CA  1367 	C$xor.c$121$3_0$106	= .
+                           1368 	.globl	C$xor.c$121$3_0$106
+                           1369 ;/work/source_code/testingfiles/xor.c:121: uint64_t blk = i / XRBLOCK;
+   06CA DD 4E F8      [19] 1370 	ld	c, -8 (ix)
+   06CD DD 46 F9      [19] 1371 	ld	b, -7 (ix)
+   06D0 CB 38         [ 8] 1372 	srl	b
+   06D2 CB 19         [ 8] 1373 	rr	c
+   06D4 CB 38         [ 8] 1374 	srl	b
+   06D6 CB 19         [ 8] 1375 	rr	c
+   06D8 CB 38         [ 8] 1376 	srl	b
+   06DA CB 19         [ 8] 1377 	rr	c
+   06DC CB 38         [ 8] 1378 	srl	b
+   06DE CB 19         [ 8] 1379 	rr	c
+   06E0 DD 71 E8      [19] 1380 	ld	-24 (ix), c
+   06E3 DD 70 E9      [19] 1381 	ld	-23 (ix), b
+   06E6 AF            [ 4] 1382 	xor	a, a
+   06E7 DD 77 EA      [19] 1383 	ld	-22 (ix), a
+   06EA DD 77 EB      [19] 1384 	ld	-21 (ix), a
+   06ED DD 77 EC      [19] 1385 	ld	-20 (ix), a
+   06F0 DD 77 ED      [19] 1386 	ld	-19 (ix), a
+   06F3 DD 77 EE      [19] 1387 	ld	-18 (ix), a
+   06F6 DD 77 EF      [19] 1388 	ld	-17 (ix), a
+                     06F9  1389 	C$xor.c$122$3_0$106	= .
+                           1390 	.globl	C$xor.c$122$3_0$106
+                           1391 ;/work/source_code/testingfiles/xor.c:122: memcpy(ctr,&nonce,8);
+   06F9 DD 5E F0      [19] 1392 	ld	e, -16 (ix)
+   06FC DD 56 F1      [19] 1393 	ld	d, -15 (ix)
+   06FF 21 44 00      [10] 1394 	ld	hl, #68
+   0702 39            [11] 1395 	add	hl, sp
+   0703 01 08 00      [10] 1396 	ld	bc, #0x0008
+   0706 ED B0         [21] 1397 	ldir
+                     0708  1398 	C$xor.c$123$3_0$106	= .
+                           1399 	.globl	C$xor.c$123$3_0$106
+                           1400 ;/work/source_code/testingfiles/xor.c:123: memcpy(ctr+8,&blk,8);
+   0708 DD 5E F2      [19] 1401 	ld	e, -14 (ix)
+   070B DD 56 F3      [19] 1402 	ld	d, -13 (ix)
+   070E 21 20 00      [10] 1403 	ld	hl, #32
+   0711 39            [11] 1404 	add	hl, sp
+   0712 01 08 00      [10] 1405 	ld	bc, #0x0008
+   0715 ED B0         [21] 1406 	ldir
+                     0717  1407 	C$xor.c$125$3_0$106	= .
+                           1408 	.globl	C$xor.c$125$3_0$106
+                           1409 ;/work/source_code/testingfiles/xor.c:125: xor_encrypt_block(ctr,ks,c);
+   0717 DD 5E F4      [19] 1410 	ld	e, -12 (ix)
+   071A DD 56 F5      [19] 1411 	ld	d, -11 (ix)
+   071D DD 4E F6      [19] 1412 	ld	c, -10 (ix)
+   0720 DD 46 F7      [19] 1413 	ld	b, -9 (ix)
+   0723 DD 6E 0A      [19] 1414 	ld	l, 10 (ix)
+   0726 DD 66 0B      [19] 1415 	ld	h, 11 (ix)
+   0729 E5            [11] 1416 	push	hl
+   072A D5            [11] 1417 	push	de
+   072B C5            [11] 1418 	push	bc
+   072C CDr76r03      [17] 1419 	call	_xor_encrypt_block
+   072F 21 06 00      [10] 1420 	ld	hl, #6
+   0732 39            [11] 1421 	add	hl, sp
+   0733 F9            [ 6] 1422 	ld	sp, hl
+                     0734  1423 	C$xor.c$127$2_0$105	= .
+                           1424 	.globl	C$xor.c$127$2_0$105
+                           1425 ;/work/source_code/testingfiles/xor.c:127: size_t n = (i+XRBLOCK>len)? len-i : XRBLOCK;
+   0734 DD 7E F8      [19] 1426 	ld	a, -8 (ix)
+   0737 C6 10         [ 7] 1427 	add	a, #0x10
+   0739 DD 77 FA      [19] 1428 	ld	-6 (ix), a
+   073C DD 7E F9      [19] 1429 	ld	a, -7 (ix)
+   073F CE 00         [ 7] 1430 	adc	a, #0x00
+   0741 DD 77 FB      [19] 1431 	ld	-5 (ix), a
+   0744 DD 7E 08      [19] 1432 	ld	a, 8 (ix)
+   0747 DD 96 FA      [19] 1433 	sub	a, -6 (ix)
+   074A DD 7E 09      [19] 1434 	ld	a, 9 (ix)
+   074D DD 9E FB      [19] 1435 	sbc	a, -5 (ix)
+   0750 D2r68r07      [10] 1436 	jp	NC, 00111$
+   0753 DD 7E 08      [19] 1437 	ld	a, 8 (ix)
+   0756 DD 96 F8      [19] 1438 	sub	a, -8 (ix)
+   0759 DD 77 FE      [19] 1439 	ld	-2 (ix), a
+   075C DD 7E 09      [19] 1440 	ld	a, 9 (ix)
+   075F DD 9E F9      [19] 1441 	sbc	a, -7 (ix)
+   0762 DD 77 FF      [19] 1442 	ld	-1 (ix), a
+   0765 C3r70r07      [10] 1443 	jp	00112$
+   0768                    1444 00111$:
+   0768 DD 36 FE 10   [19] 1445 	ld	-2 (ix), #0x10
+   076C AF            [ 4] 1446 	xor	a, a
+   076D DD 77 FF      [19] 1447 	ld	-1 (ix), a
+   0770                    1448 00112$:
+   0770 DD 7E FE      [19] 1449 	ld	a, -2 (ix)
+   0773 DD 77 FC      [19] 1450 	ld	-4 (ix), a
+   0776 DD 7E FF      [19] 1451 	ld	a, -1 (ix)
+   0779 DD 77 FD      [19] 1452 	ld	-3 (ix), a
+                     077C  1453 	C$xor.c$128$2_0$105	= .
+                           1454 	.globl	C$xor.c$128$2_0$105
+                           1455 ;/work/source_code/testingfiles/xor.c:128: for(size_t j=0;j<n;j++)
+   077C 11 00 00      [10] 1456 	ld	de, #0x0000
+   077F                    1457 00104$:
+   077F 7B            [ 4] 1458 	ld	a, e
+   0780 DD 96 FC      [19] 1459 	sub	a, -4 (ix)
+   0783 7A            [ 4] 1460 	ld	a, d
+   0784 DD 9E FD      [19] 1461 	sbc	a, -3 (ix)
+   0787 D2rBEr07      [10] 1462 	jp	NC, 00108$
+                     078A  1463 	C$xor.c$129$4_1$108	= .
+                           1464 	.globl	C$xor.c$129$4_1$108
+                           1465 ;/work/source_code/testingfiles/xor.c:129: out[i+j] = in[i+j] ^ ks[j];
+   078A DD 7E F8      [19] 1466 	ld	a, -8 (ix)
+   078D 83            [ 4] 1467 	add	a, e
+   078E 4F            [ 4] 1468 	ld	c, a
+   078F DD 7E F9      [19] 1469 	ld	a, -7 (ix)
+   0792 8A            [ 4] 1470 	adc	a, d
+   0793 47            [ 4] 1471 	ld	b, a
+   0794 DD 7E 06      [19] 1472 	ld	a, 6 (ix)
+   0797 81            [ 4] 1473 	add	a, c
+   0798 DD 77 FE      [19] 1474 	ld	-2 (ix), a
+   079B DD 7E 07      [19] 1475 	ld	a, 7 (ix)
+   079E 88            [ 4] 1476 	adc	a, b
+   079F DD 77 FF      [19] 1477 	ld	-1 (ix), a
+   07A2 DD 6E 04      [19] 1478 	ld	l, 4 (ix)
+   07A5 DD 66 05      [19] 1479 	ld	h, 5 (ix)
+   07A8 09            [11] 1480 	add	hl, bc
+   07A9 4E            [ 7] 1481 	ld	c, (hl)
+   07AA DD 6E F4      [19] 1482 	ld	l, -12 (ix)
+   07AD DD 66 F5      [19] 1483 	ld	h, -11 (ix)
+   07B0 19            [11] 1484 	add	hl, de
+   07B1 7E            [ 7] 1485 	ld	a, (hl)
+   07B2 A9            [ 4] 1486 	xor	a, c
+   07B3 DD 6E FE      [19] 1487 	ld	l, -2 (ix)
+   07B6 DD 66 FF      [19] 1488 	ld	h, -1 (ix)
+   07B9 77            [ 7] 1489 	ld	(hl), a
+                     07BA  1490 	C$xor.c$128$4_1$108	= .
+                           1491 	.globl	C$xor.c$128$4_1$108
+                           1492 ;/work/source_code/testingfiles/xor.c:128: for(size_t j=0;j<n;j++)
+   07BA 13            [ 6] 1493 	inc	de
+   07BB C3r7Fr07      [10] 1494 	jp	00104$
+   07BE                    1495 00108$:
+                     07BE  1496 	C$xor.c$120$2_0$105	= .
+                           1497 	.globl	C$xor.c$120$2_0$105
+                           1498 ;/work/source_code/testingfiles/xor.c:120: for(size_t i=0;i<len;i+=XRBLOCK) {
+   07BE DD 7E FA      [19] 1499 	ld	a, -6 (ix)
+   07C1 DD 77 F8      [19] 1500 	ld	-8 (ix), a
+   07C4 DD 7E FB      [19] 1501 	ld	a, -5 (ix)
+   07C7 DD 77 F9      [19] 1502 	ld	-7 (ix), a
+   07CA C3rBBr06      [10] 1503 	jp	00107$
+   07CD                    1504 00109$:
+                     07CD  1505 	C$xor.c$131$2_0$105	= .
+                           1506 	.globl	C$xor.c$131$2_0$105
+                           1507 ;/work/source_code/testingfiles/xor.c:131: }
+   07CD DD F9         [10] 1508 	ld	sp, ix
+   07CF DD E1         [14] 1509 	pop	ix
+                     07D1  1510 	C$xor.c$131$2_0$105	= .
+                           1511 	.globl	C$xor.c$131$2_0$105
+                     07D1  1512 	XG$xor_stream$0$0	= .
+                           1513 	.globl	XG$xor_stream$0$0
+   07D1 C9            [10] 1514 	ret
+                     07D2  1515 	G$main$0$0	= .
+                           1516 	.globl	G$main$0$0
+                     07D2  1517 	C$xor.c$134$2_0$109	= .
+                           1518 	.globl	C$xor.c$134$2_0$109
+                           1519 ;/work/source_code/testingfiles/xor.c:134: int main(){
+                           1520 ;	---------------------------------
+                           1521 ; Function main
+                           1522 ; ---------------------------------
+   07D2                    1523 _main::
+   07D2 DD E5         [15] 1524 	push	ix
+   07D4 DD 21 00 00   [14] 1525 	ld	ix,#0
+   07D8 DD 39         [15] 1526 	add	ix,sp
+   07DA 21 C8 FE      [10] 1527 	ld	hl, #-312
+   07DD 39            [11] 1528 	add	hl, sp
+   07DE F9            [ 6] 1529 	ld	sp, hl
+                     07DF  1530 	C$xor.c$137$2_0$110	= .
+                           1531 	.globl	C$xor.c$137$2_0$110
+                           1532 ;/work/source_code/testingfiles/xor.c:137: for(i=0;i<XRKEY;i++) key[i]=i*4;
+   07DF 21 00 00      [10] 1533 	ld	hl, #0
+   07E2 39            [11] 1534 	add	hl, sp
+   07E3 EB            [ 4] 1535 	ex	de, hl
+   07E4 01 00 00      [10] 1536 	ld	bc, #0x0000
+   07E7                    1537 00106$:
+   07E7 6B            [ 4] 1538 	ld	l, e
+   07E8 62            [ 4] 1539 	ld	h, d
+   07E9 09            [11] 1540 	add	hl, bc
+   07EA 79            [ 4] 1541 	ld	a, c
+   07EB 87            [ 4] 1542 	add	a, a
+   07EC 87            [ 4] 1543 	add	a, a
+   07ED 77            [ 7] 1544 	ld	(hl), a
+   07EE 03            [ 6] 1545 	inc	bc
+   07EF 79            [ 4] 1546 	ld	a, c
+   07F0 D6 20         [ 7] 1547 	sub	a, #0x20
+   07F2 78            [ 4] 1548 	ld	a, b
+   07F3 17            [ 4] 1549 	rla
+   07F4 3F            [ 4] 1550 	ccf
+   07F5 1F            [ 4] 1551 	rra
+   07F6 DE 80         [ 7] 1552 	sbc	a, #0x80
+   07F8 DArE7r07      [10] 1553 	jp	C, 00106$
+                     07FB  1554 	C$xor.c$140$1_1$111	= .
+                           1555 	.globl	C$xor.c$140$1_1$111
+                           1556 ;/work/source_code/testingfiles/xor.c:140: xor_init(&ctx,key);
+   07FB 21 20 00      [10] 1557 	ld	hl, #32
+   07FE 39            [11] 1558 	add	hl, sp
+   07FF DD 75 F8      [19] 1559 	ld	-8 (ix), l
+   0802 DD 74 F9      [19] 1560 	ld	-7 (ix), h
+   0805 DD 4E F8      [19] 1561 	ld	c, -8 (ix)
+   0808 DD 46 F9      [19] 1562 	ld	b, -7 (ix)
+   080B D5            [11] 1563 	push	de
+   080C C5            [11] 1564 	push	bc
+   080D CDr2Er01      [17] 1565 	call	_xor_init
+   0810 F1            [10] 1566 	pop	af
+   0811 F1            [10] 1567 	pop	af
+                     0812  1568 	C$xor.c$142$2_1$112	= .
+                           1569 	.globl	C$xor.c$142$2_1$112
+                           1570 ;/work/source_code/testingfiles/xor.c:142: uint8_t pt[XRBLOCK] = "XorCipher Test!";
+   0812 21 00 01      [10] 1571 	ld	hl, #256
+   0815 39            [11] 1572 	add	hl, sp
+   0816 EB            [ 4] 1573 	ex	de, hl
+   0817 3E 58         [ 7] 1574 	ld	a, #0x58
+   0819 12            [ 7] 1575 	ld	(de), a
+   081A 6B            [ 4] 1576 	ld	l, e
+   081B 62            [ 4] 1577 	ld	h, d
+   081C 23            [ 6] 1578 	inc	hl
+   081D 36 6F         [10] 1579 	ld	(hl), #0x6f
+   081F 6B            [ 4] 1580 	ld	l, e
+   0820 62            [ 4] 1581 	ld	h, d
+   0821 23            [ 6] 1582 	inc	hl
+   0822 23            [ 6] 1583 	inc	hl
+   0823 36 72         [10] 1584 	ld	(hl), #0x72
+   0825 6B            [ 4] 1585 	ld	l, e
+   0826 62            [ 4] 1586 	ld	h, d
+   0827 23            [ 6] 1587 	inc	hl
+   0828 23            [ 6] 1588 	inc	hl
+   0829 23            [ 6] 1589 	inc	hl
+   082A 36 43         [10] 1590 	ld	(hl), #0x43
+   082C 21 04 00      [10] 1591 	ld	hl, #0x0004
+   082F 19            [11] 1592 	add	hl, de
+   0830 36 69         [10] 1593 	ld	(hl), #0x69
+   0832 21 05 00      [10] 1594 	ld	hl, #0x0005
+   0835 19            [11] 1595 	add	hl, de
+   0836 36 70         [10] 1596 	ld	(hl), #0x70
+   0838 21 06 00      [10] 1597 	ld	hl, #0x0006
+   083B 19            [11] 1598 	add	hl, de
+   083C 36 68         [10] 1599 	ld	(hl), #0x68
+   083E 21 07 00      [10] 1600 	ld	hl, #0x0007
+   0841 19            [11] 1601 	add	hl, de
+   0842 36 65         [10] 1602 	ld	(hl), #0x65
+   0844 21 08 00      [10] 1603 	ld	hl, #0x0008
+   0847 19            [11] 1604 	add	hl, de
+   0848 36 72         [10] 1605 	ld	(hl), #0x72
+   084A 21 09 00      [10] 1606 	ld	hl, #0x0009
+   084D 19            [11] 1607 	add	hl, de
+   084E 36 20         [10] 1608 	ld	(hl), #0x20
+   0850 21 0A 00      [10] 1609 	ld	hl, #0x000a
+   0853 19            [11] 1610 	add	hl, de
+   0854 36 54         [10] 1611 	ld	(hl), #0x54
+   0856 21 0B 00      [10] 1612 	ld	hl, #0x000b
+   0859 19            [11] 1613 	add	hl, de
+   085A 36 65         [10] 1614 	ld	(hl), #0x65
+   085C 21 0C 00      [10] 1615 	ld	hl, #0x000c
+   085F 19            [11] 1616 	add	hl, de
+   0860 36 73         [10] 1617 	ld	(hl), #0x73
+   0862 21 0D 00      [10] 1618 	ld	hl, #0x000d
+   0865 19            [11] 1619 	add	hl, de
+   0866 36 74         [10] 1620 	ld	(hl), #0x74
+   0868 21 0E 00      [10] 1621 	ld	hl, #0x000e
+   086B 19            [11] 1622 	add	hl, de
+   086C 36 21         [10] 1623 	ld	(hl), #0x21
+   086E 21 0F 00      [10] 1624 	ld	hl, #0x000f
+   0871 19            [11] 1625 	add	hl, de
+   0872 36 00         [10] 1626 	ld	(hl), #0x00
+                     0874  1627 	C$xor.c$145$1_2$112	= .
+                           1628 	.globl	C$xor.c$145$1_2$112
+                           1629 ;/work/source_code/testingfiles/xor.c:145: printf("Alternate XOR Cipher (Simple)\n\n");
+   0874 D5            [11] 1630 	push	de
+   0875 21rADr0A      [10] 1631 	ld	hl, #___str_3
+   0878 E5            [11] 1632 	push	hl
+   0879 CDr00r00      [17] 1633 	call	_puts
+   087C F1            [10] 1634 	pop	af
+   087D D1            [10] 1635 	pop	de
+                     087E  1636 	C$xor.c$147$1_2$112	= .
+                           1637 	.globl	C$xor.c$147$1_2$112
+                           1638 ;/work/source_code/testingfiles/xor.c:147: xor_encrypt_block(pt,ct,&ctx);
+   087E DD 4E F8      [19] 1639 	ld	c, -8 (ix)
+   0881 DD 46 F9      [19] 1640 	ld	b, -7 (ix)
+   0884 21 10 01      [10] 1641 	ld	hl, #272
+   0887 39            [11] 1642 	add	hl, sp
+   0888 DD 75 FA      [19] 1643 	ld	-6 (ix), l
+   088B DD 74 FB      [19] 1644 	ld	-5 (ix), h
+   088E DD 7E FA      [19] 1645 	ld	a, -6 (ix)
+   0891 DD 77 FE      [19] 1646 	ld	-2 (ix), a
+   0894 DD 7E FB      [19] 1647 	ld	a, -5 (ix)
+   0897 DD 77 FF      [19] 1648 	ld	-1 (ix), a
+   089A 6B            [ 4] 1649 	ld	l, e
+   089B 62            [ 4] 1650 	ld	h, d
+   089C D5            [11] 1651 	push	de
+   089D C5            [11] 1652 	push	bc
+   089E DD 4E FE      [19] 1653 	ld	c, -2 (ix)
+   08A1 DD 46 FF      [19] 1654 	ld	b, -1 (ix)
+   08A4 C5            [11] 1655 	push	bc
+   08A5 E5            [11] 1656 	push	hl
+   08A6 CDr76r03      [17] 1657 	call	_xor_encrypt_block
+   08A9 21 06 00      [10] 1658 	ld	hl, #6
+   08AC 39            [11] 1659 	add	hl, sp
+   08AD F9            [ 6] 1660 	ld	sp, hl
+   08AE D1            [10] 1661 	pop	de
+                     08AF  1662 	C$xor.c$148$1_2$112	= .
+                           1663 	.globl	C$xor.c$148$1_2$112
+                           1664 ;/work/source_code/testingfiles/xor.c:148: xor_decrypt_block(ct,dt,&ctx);
+   08AF DD 4E F8      [19] 1665 	ld	c, -8 (ix)
+   08B2 DD 46 F9      [19] 1666 	ld	b, -7 (ix)
+   08B5 21 20 01      [10] 1667 	ld	hl, #288
+   08B8 39            [11] 1668 	add	hl, sp
+   08B9 DD 75 FC      [19] 1669 	ld	-4 (ix), l
+   08BC DD 74 FD      [19] 1670 	ld	-3 (ix), h
+   08BF DD 7E FC      [19] 1671 	ld	a, -4 (ix)
+   08C2 DD 77 FE      [19] 1672 	ld	-2 (ix), a
+   08C5 DD 7E FD      [19] 1673 	ld	a, -3 (ix)
+   08C8 DD 77 FF      [19] 1674 	ld	-1 (ix), a
+   08CB DD 6E FA      [19] 1675 	ld	l, -6 (ix)
+   08CE DD 66 FB      [19] 1676 	ld	h, -5 (ix)
+   08D1 D5            [11] 1677 	push	de
+   08D2 C5            [11] 1678 	push	bc
+   08D3 DD 4E FE      [19] 1679 	ld	c, -2 (ix)
+   08D6 DD 46 FF      [19] 1680 	ld	b, -1 (ix)
+   08D9 C5            [11] 1681 	push	bc
+   08DA E5            [11] 1682 	push	hl
+   08DB CDr81r04      [17] 1683 	call	_xor_decrypt_block
+   08DE 21 06 00      [10] 1684 	ld	hl, #6
+   08E1 39            [11] 1685 	add	hl, sp
+   08E2 F9            [ 6] 1686 	ld	sp, hl
+   08E3 D1            [10] 1687 	pop	de
+                     08E4  1688 	C$xor.c$150$1_2$112	= .
+                           1689 	.globl	C$xor.c$150$1_2$112
+                           1690 ;/work/source_code/testingfiles/xor.c:150: printf("Block:\n");
+   08E4 D5            [11] 1691 	push	de
+   08E5 21rCCr0A      [10] 1692 	ld	hl, #___str_5
+   08E8 E5            [11] 1693 	push	hl
+   08E9 CDr00r00      [17] 1694 	call	_puts
+   08EC F1            [10] 1695 	pop	af
+   08ED D1            [10] 1696 	pop	de
+                     08EE  1697 	C$xor.c$151$1_2$112	= .
+                           1698 	.globl	C$xor.c$151$1_2$112
+                           1699 ;/work/source_code/testingfiles/xor.c:151: printf("Plain : ");
+   08EE D5            [11] 1700 	push	de
+   08EF 21rD3r0A      [10] 1701 	ld	hl, #___str_6
+   08F2 E5            [11] 1702 	push	hl
+   08F3 CDr00r00      [17] 1703 	call	_printf
+   08F6 F1            [10] 1704 	pop	af
+   08F7 D1            [10] 1705 	pop	de
+                     08F8  1706 	C$xor.c$152$2_2$113	= .
+                           1707 	.globl	C$xor.c$152$2_2$113
+                           1708 ;/work/source_code/testingfiles/xor.c:152: for(i=0;i<XRBLOCK;i++) printf("%02x ",pt[i]); printf("\n");
+   08F8 01 00 00      [10] 1709 	ld	bc, #0x0000
+   08FB                    1710 00108$:
+   08FB 6B            [ 4] 1711 	ld	l, e
+   08FC 62            [ 4] 1712 	ld	h, d
+   08FD 09            [11] 1713 	add	hl, bc
+   08FE 6E            [ 7] 1714 	ld	l, (hl)
+   08FF 26 00         [ 7] 1715 	ld	h, #0x00
+   0901 C5            [11] 1716 	push	bc
+   0902 D5            [11] 1717 	push	de
+   0903 E5            [11] 1718 	push	hl
+   0904 21rDCr0A      [10] 1719 	ld	hl, #___str_7
+   0907 E5            [11] 1720 	push	hl
+   0908 CDr00r00      [17] 1721 	call	_printf
+   090B F1            [10] 1722 	pop	af
+   090C F1            [10] 1723 	pop	af
+   090D D1            [10] 1724 	pop	de
+   090E C1            [10] 1725 	pop	bc
+   090F 03            [ 6] 1726 	inc	bc
+   0910 79            [ 4] 1727 	ld	a, c
+   0911 D6 10         [ 7] 1728 	sub	a, #0x10
+   0913 78            [ 4] 1729 	ld	a, b
+   0914 17            [ 4] 1730 	rla
+   0915 3F            [ 4] 1731 	ccf
+   0916 1F            [ 4] 1732 	rra
+   0917 DE 80         [ 7] 1733 	sbc	a, #0x80
+   0919 DArFBr08      [10] 1734 	jp	C, 00108$
+   091C 21rE2r0A      [10] 1735 	ld	hl, #___str_9
+   091F E5            [11] 1736 	push	hl
+   0920 CDr00r00      [17] 1737 	call	_puts
+   0923 F1            [10] 1738 	pop	af
+                     0924  1739 	C$xor.c$153$1_2$112	= .
+                           1740 	.globl	C$xor.c$153$1_2$112
+                           1741 ;/work/source_code/testingfiles/xor.c:153: printf("Cipher: ");
+   0924 21rE3r0A      [10] 1742 	ld	hl, #___str_10
+   0927 E5            [11] 1743 	push	hl
+   0928 CDr00r00      [17] 1744 	call	_printf
+   092B F1            [10] 1745 	pop	af
+                     092C  1746 	C$xor.c$154$2_2$114	= .
+                           1747 	.globl	C$xor.c$154$2_2$114
+                           1748 ;/work/source_code/testingfiles/xor.c:154: for(i=0;i<XRBLOCK;i++) printf("%02x ",ct[i]); printf("\n");
+   092C 01 00 00      [10] 1749 	ld	bc, #0x0000
+   092F                    1750 00110$:
+   092F DD 6E FA      [19] 1751 	ld	l, -6 (ix)
+   0932 DD 66 FB      [19] 1752 	ld	h, -5 (ix)
+   0935 09            [11] 1753 	add	hl, bc
+   0936 5E            [ 7] 1754 	ld	e, (hl)
+   0937 16 00         [ 7] 1755 	ld	d, #0x00
+   0939 C5            [11] 1756 	push	bc
+   093A D5            [11] 1757 	push	de
+   093B 21rDCr0A      [10] 1758 	ld	hl, #___str_7
+   093E E5            [11] 1759 	push	hl
+   093F CDr00r00      [17] 1760 	call	_printf
+   0942 F1            [10] 1761 	pop	af
+   0943 F1            [10] 1762 	pop	af
+   0944 C1            [10] 1763 	pop	bc
+   0945 03            [ 6] 1764 	inc	bc
+   0946 79            [ 4] 1765 	ld	a, c
+   0947 D6 10         [ 7] 1766 	sub	a, #0x10
+   0949 78            [ 4] 1767 	ld	a, b
+   094A 17            [ 4] 1768 	rla
+   094B 3F            [ 4] 1769 	ccf
+   094C 1F            [ 4] 1770 	rra
+   094D DE 80         [ 7] 1771 	sbc	a, #0x80
+   094F DAr2Fr09      [10] 1772 	jp	C, 00110$
+   0952 21rE2r0A      [10] 1773 	ld	hl, #___str_9
+   0955 E5            [11] 1774 	push	hl
+   0956 CDr00r00      [17] 1775 	call	_puts
+   0959 F1            [10] 1776 	pop	af
+                     095A  1777 	C$xor.c$155$1_2$112	= .
+                           1778 	.globl	C$xor.c$155$1_2$112
+                           1779 ;/work/source_code/testingfiles/xor.c:155: printf("Dec   : ");
+   095A 21rECr0A      [10] 1780 	ld	hl, #___str_12
+   095D E5            [11] 1781 	push	hl
+   095E CDr00r00      [17] 1782 	call	_printf
+   0961 F1            [10] 1783 	pop	af
+                     0962  1784 	C$xor.c$156$2_2$115	= .
+                           1785 	.globl	C$xor.c$156$2_2$115
+                           1786 ;/work/source_code/testingfiles/xor.c:156: for(i=0;i<XRBLOCK;i++) printf("%02x ",dt[i]); printf("\n\n");
+   0962 01 00 00      [10] 1787 	ld	bc, #0x0000
+   0965                    1788 00112$:
+   0965 DD 6E FC      [19] 1789 	ld	l, -4 (ix)
+   0968 DD 66 FD      [19] 1790 	ld	h, -3 (ix)
+   096B 09            [11] 1791 	add	hl, bc
+   096C 5E            [ 7] 1792 	ld	e, (hl)
+   096D 16 00         [ 7] 1793 	ld	d, #0x00
+   096F C5            [11] 1794 	push	bc
+   0970 D5            [11] 1795 	push	de
+   0971 21rDCr0A      [10] 1796 	ld	hl, #___str_7
+   0974 E5            [11] 1797 	push	hl
+   0975 CDr00r00      [17] 1798 	call	_printf
+   0978 F1            [10] 1799 	pop	af
+   0979 F1            [10] 1800 	pop	af
+   097A C1            [10] 1801 	pop	bc
+   097B 03            [ 6] 1802 	inc	bc
+   097C 79            [ 4] 1803 	ld	a, c
+   097D D6 10         [ 7] 1804 	sub	a, #0x10
+   097F 78            [ 4] 1805 	ld	a, b
+   0980 17            [ 4] 1806 	rla
+   0981 3F            [ 4] 1807 	ccf
+   0982 1F            [ 4] 1808 	rra
+   0983 DE 80         [ 7] 1809 	sbc	a, #0x80
+   0985 DAr65r09      [10] 1810 	jp	C, 00112$
+   0988 21rF5r0A      [10] 1811 	ld	hl, #___str_14
+   098B E5            [11] 1812 	push	hl
+   098C CDr00r00      [17] 1813 	call	_puts
+   098F F1            [10] 1814 	pop	af
+                     0990  1815 	C$xor.c$158$2_2$116	= .
+                           1816 	.globl	C$xor.c$158$2_2$116
+                           1817 ;/work/source_code/testingfiles/xor.c:158: const char *msg="Alternate XOR CTR stream mode works!";
+                     0990  1818 	C$xor.c$159$1_3$116	= .
+                           1819 	.globl	C$xor.c$159$1_3$116
+                           1820 ;/work/source_code/testingfiles/xor.c:159: size_t L=strlen(msg);
+   0990 21r88r0A      [10] 1821 	ld	hl, #___str_1
+   0993 E5            [11] 1822 	push	hl
+   0994 CDr00r00      [17] 1823 	call	_strlen
+   0997 F1            [10] 1824 	pop	af
+   0998 DD 75 FA      [19] 1825 	ld	-6 (ix), l
+   099B DD 74 FB      [19] 1826 	ld	-5 (ix), h
+                     099E  1827 	C$xor.c$160$1_3$116	= .
+                           1828 	.globl	C$xor.c$160$1_3$116
+                           1829 ;/work/source_code/testingfiles/xor.c:160: uint8_t *sc=malloc(L), *sd=malloc(L);
+   099E DD 6E FA      [19] 1830 	ld	l, -6 (ix)
+   09A1 DD 66 FB      [19] 1831 	ld	h, -5 (ix)
+   09A4 E5            [11] 1832 	push	hl
+   09A5 CDr00r00      [17] 1833 	call	_malloc
+   09A8 F1            [10] 1834 	pop	af
+   09A9 DD 75 FC      [19] 1835 	ld	-4 (ix), l
+   09AC DD 74 FD      [19] 1836 	ld	-3 (ix), h
+   09AF DD 6E FA      [19] 1837 	ld	l, -6 (ix)
+   09B2 DD 66 FB      [19] 1838 	ld	h, -5 (ix)
+   09B5 E5            [11] 1839 	push	hl
+   09B6 CDr00r00      [17] 1840 	call	_malloc
+   09B9 F1            [10] 1841 	pop	af
+   09BA DD 75 FE      [19] 1842 	ld	-2 (ix), l
+   09BD DD 74 FF      [19] 1843 	ld	-1 (ix), h
+                     09C0  1844 	C$xor.c$162$1_3$116	= .
+                           1845 	.globl	C$xor.c$162$1_3$116
+                           1846 ;/work/source_code/testingfiles/xor.c:162: xor_stream((uint8_t*)msg,sc,L,&ctx,0xAABBCCDDEEFF0011ULL);
+   09C0 DD 4E F8      [19] 1847 	ld	c, -8 (ix)
+   09C3 DD 46 F9      [19] 1848 	ld	b, -7 (ix)
+   09C6 11 BB AA      [10] 1849 	ld	de, #0xaabb
+   09C9 D5            [11] 1850 	push	de
+   09CA 11 DD CC      [10] 1851 	ld	de, #0xccdd
+   09CD D5            [11] 1852 	push	de
+   09CE 11 FF EE      [10] 1853 	ld	de, #0xeeff
+   09D1 D5            [11] 1854 	push	de
+   09D2 11 11 00      [10] 1855 	ld	de, #0x0011
+   09D5 D5            [11] 1856 	push	de
+   09D6 C5            [11] 1857 	push	bc
+   09D7 DD 6E FA      [19] 1858 	ld	l, -6 (ix)
+   09DA DD 66 FB      [19] 1859 	ld	h, -5 (ix)
+   09DD E5            [11] 1860 	push	hl
+   09DE DD 6E FC      [19] 1861 	ld	l, -4 (ix)
+   09E1 DD 66 FD      [19] 1862 	ld	h, -3 (ix)
+   09E4 E5            [11] 1863 	push	hl
+   09E5 21r88r0A      [10] 1864 	ld	hl, #___str_1
+   09E8 E5            [11] 1865 	push	hl
+   09E9 CDr77r06      [17] 1866 	call	_xor_stream
+   09EC 21 10 00      [10] 1867 	ld	hl, #16
+   09EF 39            [11] 1868 	add	hl, sp
+   09F0 F9            [ 6] 1869 	ld	sp, hl
+                     09F1  1870 	C$xor.c$163$1_3$116	= .
+                           1871 	.globl	C$xor.c$163$1_3$116
+                           1872 ;/work/source_code/testingfiles/xor.c:163: xor_stream(sc,sd,L,&ctx,0xAABBCCDDEEFF0011ULL);
+   09F1 DD 4E F8      [19] 1873 	ld	c, -8 (ix)
+   09F4 DD 46 F9      [19] 1874 	ld	b, -7 (ix)
+   09F7 11 BB AA      [10] 1875 	ld	de, #0xaabb
+   09FA D5            [11] 1876 	push	de
+   09FB 11 DD CC      [10] 1877 	ld	de, #0xccdd
+   09FE D5            [11] 1878 	push	de
+   09FF 11 FF EE      [10] 1879 	ld	de, #0xeeff
+   0A02 D5            [11] 1880 	push	de
+   0A03 11 11 00      [10] 1881 	ld	de, #0x0011
+   0A06 D5            [11] 1882 	push	de
+   0A07 C5            [11] 1883 	push	bc
+   0A08 DD 6E FA      [19] 1884 	ld	l, -6 (ix)
+   0A0B DD 66 FB      [19] 1885 	ld	h, -5 (ix)
+   0A0E E5            [11] 1886 	push	hl
+   0A0F DD 6E FE      [19] 1887 	ld	l, -2 (ix)
+   0A12 DD 66 FF      [19] 1888 	ld	h, -1 (ix)
+   0A15 E5            [11] 1889 	push	hl
+   0A16 DD 6E FC      [19] 1890 	ld	l, -4 (ix)
+   0A19 DD 66 FD      [19] 1891 	ld	h, -3 (ix)
+   0A1C E5            [11] 1892 	push	hl
+   0A1D CDr77r06      [17] 1893 	call	_xor_stream
+   0A20 21 10 00      [10] 1894 	ld	hl, #16
+   0A23 39            [11] 1895 	add	hl, sp
+   0A24 F9            [ 6] 1896 	ld	sp, hl
+                     0A25  1897 	C$xor.c$165$1_3$116	= .
+                           1898 	.globl	C$xor.c$165$1_3$116
+                           1899 ;/work/source_code/testingfiles/xor.c:165: printf("Stream Encrypted: ");
+   0A25 21rF7r0A      [10] 1900 	ld	hl, #___str_15
+   0A28 E5            [11] 1901 	push	hl
+   0A29 CDr00r00      [17] 1902 	call	_printf
+   0A2C F1            [10] 1903 	pop	af
+                     0A2D  1904 	C$xor.c$166$2_3$117	= .
+                           1905 	.globl	C$xor.c$166$2_3$117
+                           1906 ;/work/source_code/testingfiles/xor.c:166: for(size_t i=0;i<L;i++) printf("%02x",sc[i]);
+   0A2D 01 00 00      [10] 1907 	ld	bc, #0x0000
+   0A30                    1908 00115$:
+   0A30 79            [ 4] 1909 	ld	a, c
+   0A31 DD 96 FA      [19] 1910 	sub	a, -6 (ix)
+   0A34 78            [ 4] 1911 	ld	a, b
+   0A35 DD 9E FB      [19] 1912 	sbc	a, -5 (ix)
+   0A38 D2r55r0A      [10] 1913 	jp	NC, 00105$
+   0A3B DD 6E FC      [19] 1914 	ld	l, -4 (ix)
+   0A3E DD 66 FD      [19] 1915 	ld	h, -3 (ix)
+   0A41 09            [11] 1916 	add	hl, bc
+   0A42 5E            [ 7] 1917 	ld	e, (hl)
+   0A43 16 00         [ 7] 1918 	ld	d, #0x00
+   0A45 C5            [11] 1919 	push	bc
+   0A46 D5            [11] 1920 	push	de
+   0A47 21r0Ar0B      [10] 1921 	ld	hl, #___str_16
+   0A4A E5            [11] 1922 	push	hl
+   0A4B CDr00r00      [17] 1923 	call	_printf
+   0A4E F1            [10] 1924 	pop	af
+   0A4F F1            [10] 1925 	pop	af
+   0A50 C1            [10] 1926 	pop	bc
+   0A51 03            [ 6] 1927 	inc	bc
+   0A52 C3r30r0A      [10] 1928 	jp	00115$
+   0A55                    1929 00105$:
+                     0A55  1930 	C$xor.c$167$1_3$116	= .
+                           1931 	.globl	C$xor.c$167$1_3$116
+                           1932 ;/work/source_code/testingfiles/xor.c:167: printf("\n");
+   0A55 21rF5r0A      [10] 1933 	ld	hl, #___str_14
+   0A58 E5            [11] 1934 	push	hl
+   0A59 CDr00r00      [17] 1935 	call	_printf
+   0A5C F1            [10] 1936 	pop	af
+                     0A5D  1937 	C$xor.c$169$1_3$116	= .
+                           1938 	.globl	C$xor.c$169$1_3$116
+                           1939 ;/work/source_code/testingfiles/xor.c:169: printf("Stream Decrypted: %s\n", sd);
+   0A5D DD 6E FE      [19] 1940 	ld	l, -2 (ix)
+   0A60 DD 66 FF      [19] 1941 	ld	h, -1 (ix)
+   0A63 E5            [11] 1942 	push	hl
+   0A64 21r0Fr0B      [10] 1943 	ld	hl, #___str_17
+   0A67 E5            [11] 1944 	push	hl
+   0A68 CDr00r00      [17] 1945 	call	_printf
+   0A6B F1            [10] 1946 	pop	af
+   0A6C F1            [10] 1947 	pop	af
+                     0A6D  1948 	C$xor.c$171$1_3$116	= .
+                           1949 	.globl	C$xor.c$171$1_3$116
+                           1950 ;/work/source_code/testingfiles/xor.c:171: free(sc); free(sd);
+   0A6D DD 4E FC      [19] 1951 	ld	c, -4 (ix)
+   0A70 DD 46 FD      [19] 1952 	ld	b, -3 (ix)
+   0A73 C5            [11] 1953 	push	bc
+   0A74 CDr00r00      [17] 1954 	call	_free
+   0A77 F1            [10] 1955 	pop	af
+   0A78 DD 4E FE      [19] 1956 	ld	c, -2 (ix)
+   0A7B DD 46 FF      [19] 1957 	ld	b, -1 (ix)
+   0A7E C5            [11] 1958 	push	bc
+   0A7F CDr00r00      [17] 1959 	call	_free
+   0A82 F1            [10] 1960 	pop	af
+   0A83                    1961 00117$:
+                     0A83  1962 	C$xor.c$172$1_3$109	= .
+                           1963 	.globl	C$xor.c$172$1_3$109
+                           1964 ;/work/source_code/testingfiles/xor.c:172: }
+   0A83 DD F9         [10] 1965 	ld	sp, ix
+   0A85 DD E1         [14] 1966 	pop	ix
+                     0A87  1967 	C$xor.c$172$1_3$109	= .
+                           1968 	.globl	C$xor.c$172$1_3$109
+                     0A87  1969 	XG$main$0$0	= .
+                           1970 	.globl	XG$main$0$0
+   0A87 C9            [10] 1971 	ret
+                     0A88  1972 Fxor$__str_1$0_0$0 == .
+   0A88                    1973 ___str_1:
+   0A88 41 6C 74 65 72 6E  1974 	.ascii "Alternate XOR CTR stream mode works!"
+        61 74 65 20 58 4F
+        52 20 43 54 52 20
+        73 74 72 65 61 6D
+        20 6D 6F 64 65 20
+        77 6F 72 6B 73 21
+   0AAC 00                 1975 	.db 0x00
+                     0AAD  1976 Fxor$__str_3$0_0$0 == .
+   0AAD                    1977 ___str_3:
+   0AAD 41 6C 74 65 72 6E  1978 	.ascii "Alternate XOR Cipher (Simple)"
+        61 74 65 20 58 4F
+        52 20 43 69 70 68
+        65 72 20 28 53 69
+        6D 70 6C 65 29
+   0ACA 0A                 1979 	.db 0x0a
+   0ACB 00                 1980 	.db 0x00
+                     0ACC  1981 Fxor$__str_5$0_0$0 == .
+   0ACC                    1982 ___str_5:
+   0ACC 42 6C 6F 63 6B 3A  1983 	.ascii "Block:"
+   0AD2 00                 1984 	.db 0x00
+                     0AD3  1985 Fxor$__str_6$0_0$0 == .
+   0AD3                    1986 ___str_6:
+   0AD3 50 6C 61 69 6E 20  1987 	.ascii "Plain : "
+        3A 20
+   0ADB 00                 1988 	.db 0x00
+                     0ADC  1989 Fxor$__str_7$0_0$0 == .
+   0ADC                    1990 ___str_7:
+   0ADC 25 30 32 78 20     1991 	.ascii "%02x "
+   0AE1 00                 1992 	.db 0x00
+                     0AE2  1993 Fxor$__str_9$0_0$0 == .
+   0AE2                    1994 ___str_9:
+   0AE2 00                 1995 	.db 0x00
+                     0AE3  1996 Fxor$__str_10$0_0$0 == .
+   0AE3                    1997 ___str_10:
+   0AE3 43 69 70 68 65 72  1998 	.ascii "Cipher: "
+        3A 20
+   0AEB 00                 1999 	.db 0x00
+                     0AEC  2000 Fxor$__str_12$0_0$0 == .
+   0AEC                    2001 ___str_12:
+   0AEC 44 65 63 20 20 20  2002 	.ascii "Dec   : "
+        3A 20
+   0AF4 00                 2003 	.db 0x00
+                     0AF5  2004 Fxor$__str_14$0_0$0 == .
+   0AF5                    2005 ___str_14:
+   0AF5 0A                 2006 	.db 0x0a
+   0AF6 00                 2007 	.db 0x00
+                     0AF7  2008 Fxor$__str_15$0_0$0 == .
+   0AF7                    2009 ___str_15:
+   0AF7 53 74 72 65 61 6D  2010 	.ascii "Stream Encrypted: "
+        20 45 6E 63 72 79
+        70 74 65 64 3A 20
+   0B09 00                 2011 	.db 0x00
+                     0B0A  2012 Fxor$__str_16$0_0$0 == .
+   0B0A                    2013 ___str_16:
+   0B0A 25 30 32 78        2014 	.ascii "%02x"
+   0B0E 00                 2015 	.db 0x00
+                     0B0F  2016 Fxor$__str_17$0_0$0 == .
+   0B0F                    2017 ___str_17:
+   0B0F 53 74 72 65 61 6D  2018 	.ascii "Stream Decrypted: %s"
+        20 44 65 63 72 79
+        70 74 65 64 3A 20
+        25 73
+   0B23 0A                 2019 	.db 0x0a
+   0B24 00                 2020 	.db 0x00
+                           2021 	.area _CODE
+                           2022 	.area _INITIALIZER
+                           2023 	.area _CABS (ABS)

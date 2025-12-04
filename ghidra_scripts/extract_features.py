@@ -6,7 +6,34 @@
 
 import ghidra
 from ghidra.program.model.block import BasicBlockModel
-from ghidra.program.model.pcode import PcodeOp
+# The ghidra.program.model.pcode module is only available inside Ghidra's Jython environment.
+# Wrap the import so that static analysis or running outside Ghidra does not fail; provide a
+# minimal fallback PcodeOp shim for environments where ghidra isn't available.
+try:
+    from ghidra.program.model.pcode import PcodeOp
+except Exception:
+    class PcodeOp:
+        INT_XOR = 1
+        INT_AND = 2
+        INT_OR = 3
+        INT_LEFT = 4
+        INT_RIGHT = 5
+        INT_SRIGHT = 6
+        INT_ADD = 7
+        INT_SUB = 8
+        INT_MULT = 9
+        INT_DIV = 10
+        INT_REM = 11
+        INT_CARRY = 12
+        INT_SCARRY = 13
+        LOAD = 14
+        STORE = 15
+        BRANCH = 16
+        CBRANCH = 17
+        CALL = 18
+        RETURN = 19
+        MULTIEQUAL = 20
+
 from ghidra.util.task import TaskMonitor
 from ghidra.program.model.address import AddressSet
 
@@ -61,6 +88,7 @@ CRYPTO_CONSTANTS = {
     
     # --- PRNG ---
     # Mersenne Twister MT19937 Matrix A
+
     "MT19937_MATRIX_A": [0x9908b0df],
 }
 
@@ -635,7 +663,8 @@ def detect_crypto_signatures(func, immediates):
         "has_aes_sbox": 0,
         "has_aes_rcon": 0,
         "has_sha_constants": 0,
-        "rsa_bigint_detected": 0
+        "rsa_bigint_detected": 0,
+        "has_chacha_constants": 0
     }
     # Check immediates against CRYPTO_CONSTANTS
     for val in immediates:
@@ -648,6 +677,8 @@ def detect_crypto_signatures(func, immediates):
             signatures["has_sha_constants"] = 1
         if val32 in CRYPTO_CONSTANTS.get("P256_PRIME", []) or val32 in CRYPTO_CONSTANTS.get("C25519_PRIME", []):
              signatures["rsa_bigint_detected"] = 1
+        if val32 in CRYPTO_CONSTANTS.get("CHACHA_SIG", []):
+             signatures["has_chacha_constants"] = 1
     return signatures
 
 def calculate_function_entropy_metrics(func, opcode_list, cyclomatic_complexity, total_inst_count, current_program):
@@ -808,168 +839,224 @@ def calculate_loop_depth(all_nodes, back_edges, pred_list):
 
 
 # =============================================================================
-# 3. FEATURE EXTRACTION LOGIC
-# =============================================================================
+    for item in data:
+        counts[item] = counts.get(item, 0) + 1
+    for count in counts.values():
+        p = float(count) / length
+        entropy -= p * math.log(p, 2)
+    return entropy
 
-def extract_node_features(block, listing):
-    """
-    Extracts numeric features for a single Basic Block.
-    """
-    features = {
-        "instruction_count": 0,
-        "opcode_histogram": {},
-        "bitwise_op_density": 0.0,
-        "immediate_entropy": 0.0,
-        "table_lookup_presence": False,
-        "crypto_constant_hits": 0,
-        "constant_flags": {}, 
-        
-        # R+R Resilience Features
-        "carry_chain_depth": 0,
-        "n_gram_repetition": 0.0,
-        "simd_usage": False,
-        
-        "opcode_ratios": {
-            "xor": 0.0, "add": 0.0, "multiply": 0.0, 
-            "rotate": 0.0, "logical": 0.0, "load_store": 0.0
-        }
+def extract_graph_features(func):
+    """Extracts structural features: Complexity, Loops, SCCs."""
+    model = BasicBlockModel(currentProgram)
+    blocks = model.getCodeBlocksContaining(func.getBody(), TaskMonitor.DUMMY)
+    
+    num_blocks = 0
+    num_edges = 0
+    back_edges = 0 # Loop count approximation
+    
+    # Simple CFG traversal
+    visited = set()
+    
+    # We need to iterate to count blocks and edges
+    # Note: getCodeBlocksContaining returns a CodeBlockIterator
+    
+    # Create a list of blocks first to avoid iterator exhaustion issues if reused
+    block_list = []
+    while blocks.hasNext():
+        block_list.append(blocks.next())
+    
+    num_blocks = len(block_list)
+    
+    for block in block_list:
+        destinations = block.getDestinations(TaskMonitor.DUMMY)
+        while destinations.hasNext():
+            edge = destinations.next()
+            num_edges += 1
+            dest_addr = edge.getDestinationAddress()
+            
+            # Check for back-edge (destination address < source address)
+            # This is a heuristic for loops
+            if dest_addr.compareTo(block.getFirstStartAddress()) < 0:
+                back_edges += 1
+
+    # Cyclomatic Complexity: E - N + 2P (P=1 for single function)
+    cyclomatic_complexity = num_edges - num_blocks + 2
+    
+    return {
+        "cyclomatic_complexity": cyclomatic_complexity,
+        "loop_count": back_edges,
+        "num_blocks": num_blocks,
+        "num_edges": num_edges
+    }
+
+def extract_node_features(func):
+    """Extracts semantic features from P-Code."""
+    
+    # Counters
+    opcode_counts = {
+        "INT_XOR": 0, "INT_AND": 0, "INT_OR": 0, "INT_ADD": 0, "INT_SUB": 0,
+        "INT_MULT": 0, "INT_LEFT": 0, "INT_RIGHT": 0, "INT_SRIGHT": 0,
+        "COPY": 0, "LOAD": 0, "STORE": 0, "CALL": 0, "BRANCH": 0
     }
     
-    instructions = listing.getCodeUnits(block, True)
-    
-    raw_opcodes = []
+    total_ops = 0
+    bitwise_ops = 0
     immediates = []
-    carry_chains = {} # Map output_varnode -> chain_length
-    max_carry = 0
+    # Resilience: N-Grams (3-gram)
+    pcode_sequence = []
+    ngram_counts = {}
     
-    counts = {k:0 for k in ["XOR","ADD","MUL","ROT","LOGIC","MEM","TOTAL"]}
+    # Resilience: Carry Chains
+    carry_chain_depth = 0
+    current_chain = 0
     
-    while instructions.hasNext():
-        inst = instructions.next()
-        features["instruction_count"] += 1
+    # Constant Matching
+    detected_constants = set()
+
+    ops_iter = get_pcode_ops(func)
+    
+    for op in ops_iter:
+        mnemonic = op.getMnemonic()
+        total_ops += 1
         
-        # Use P-Code for architecture agnostic analysis
-        pcode = inst.getPcode()
-        for p in pcode:
-            opcode_id = p.getOpcode()
-            counts["TOTAL"] += 1
+        # 1. Opcode Counts
+        if mnemonic in opcode_counts:
+            opcode_counts[mnemonic] += 1
             
-            # 1. Histogram & Categorization
-            mnemonic = PCODE_MAP.get(opcode_id, "OTHER")
-            features["opcode_histogram"][mnemonic] = features["opcode_histogram"].get(mnemonic, 0) + 1
-            raw_opcodes.append(mnemonic)
+        # 2. Bitwise Density
+        if mnemonic in ["INT_XOR", "INT_AND", "INT_OR", "INT_LEFT", "INT_RIGHT", "INT_SRIGHT"]:
+            bitwise_ops += 1
             
-            if opcode_id == PcodeOp.INT_XOR:
-                counts["XOR"] += 1
-                counts["LOGIC"] += 1
-            elif opcode_id in [PcodeOp.INT_AND, PcodeOp.INT_OR]:
-                counts["LOGIC"] += 1
-            elif opcode_id == PcodeOp.INT_ADD:
-                counts["ADD"] += 1
-            elif opcode_id == PcodeOp.INT_MULT:
-                counts["MUL"] += 1
-            elif opcode_id in [PcodeOp.INT_LEFT, PcodeOp.INT_RIGHT, PcodeOp.INT_SRIGHT]:
-                counts["ROT"] += 1
-            elif opcode_id in [PcodeOp.LOAD, PcodeOp.STORE]:
-                counts["MEM"] += 1
-                # Table Lookup Check: Is offset constant or variable?
-                if len(p.getInputs()) > 1:
-                    offset_vn = p.getInput(1)
-                    if not offset_vn.isConstant():
-                        features["table_lookup_presence"] = True
+        # 3. Immediates & Constants
+        for input_var in op.getInputs():
+            if input_var.isConstant():
+                val = input_var.getOffset()
+                immediates.append(val)
+                
+                # Check against known crypto constants
+                # We check 32-bit chunks for speed
+                val32 = val & 0xFFFFFFFF
+                for algo, consts in CRYPTO_CONSTANTS.items():
+                    if val32 in consts:
+                        detected_constants.add(algo)
 
-            # 2. Carry Chain (RSA Detection)
-            # Tracks dependency of CARRY/SCARRY outputs feeding into next instructions
-            if opcode_id in [PcodeOp.INT_CARRY, PcodeOp.INT_SCARRY]:
-                chain_len = 1
-                for inp in p.getInputs():
-                    if not inp.isConstant() and inp in carry_chains:
-                        chain_len = max(chain_len, carry_chains[inp] + 1)
-                out_vn = p.getOutput()
-                if out_vn:
-                    carry_chains[out_vn] = chain_len
-                    max_carry = max(max_carry, chain_len)
+        # 4. N-Grams (Sliding Window of 3)
+        pcode_sequence.append(mnemonic)
+        if len(pcode_sequence) > 3:
+            pcode_sequence.pop(0)
+        
+        if len(pcode_sequence) == 3:
+            ngram = tuple(pcode_sequence)
+            ngram_counts[ngram] = ngram_counts.get(ngram, 0) + 1
 
-            # 3. SIMD Detection (128-bit+ registers)
-            out_vn = p.getOutput()
-            if out_vn and out_vn.getSize() >= 16:
-                features["simd_usage"] = True
+        # 5. Carry Chains (Heuristic)
+        # INT_CARRY and INT_SCARRY often precede INT_ADD in big int math
+        if mnemonic in ["INT_CARRY", "INT_SCARRY"]:
+            current_chain += 1
+        elif mnemonic not in ["INT_ADD", "COPY"]:
+            # Break chain on non-arithmetic ops
+            if current_chain > carry_chain_depth:
+                carry_chain_depth = current_chain
+            current_chain = 0
 
-            # 4. Constants Analysis
-            for inp in p.getInputs():
-                if inp.isConstant():
-                    val = inp.getOffset()
-                    # Entropy collection (byte-wise)
-                    size = inp.getSize()
-                    if size > 0 and size <= 8:
-                        for b in range(size):
-                            immediates.append((val >> (b*8)) & 0xFF)
-                    
-                    # Magic Constant Check
-                    val32 = val & 0xFFFFFFFF
-                    for algo, consts in CRYPTO_CONSTANTS.items():
-                        if val32 in consts:
-                            features["crypto_constant_hits"] += 1
-                            features["crypto_constant_hits"] += 1
-                            features["constant_flags"][algo] = True
-
-            # 5. Global Memory Scan for S-Box (Direct & Indirect)
-            # Use ReferenceManager to ensure we get all references
-            refs = currentProgram.getReferenceManager().getReferencesFrom(inst.getAddress())
-            for ref in refs:
-                if ref.isMemoryReference() and not ref.isStackReference():
-                    try:
-                        to_addr = ref.getToAddress()
-                        memory = currentProgram.getMemory()
-                        
-                        # 1. Direct Reference Check
-                        mem_bytes = []
-                        for k in range(16):
-                            b = memory.getByte(to_addr.add(k)) & 0xFF
-                            mem_bytes.append(b)
-                        
-                        if mem_bytes == CRYPTO_CONSTANTS["AES_SBOX_BYTES"]:
-                            features["crypto_constant_hits"] += 1
-                            features["constant_flags"]["AES_SBOX"] = True
-                            continue
-
-                        # 2. Indirect Reference Check (Literal Pools)
-                        # Read pointer from the referenced address
-                        ptr_size = currentProgram.getDefaultPointerSize()
-                        if ptr_size == 4:
-                            ptr_val = memory.getInt(to_addr) & 0xFFFFFFFF
-                        else:
-                            ptr_val = memory.getLong(to_addr) & 0xFFFFFFFFFFFFFFFF
-                        
-                        indirect_addr = to_addr.getNewAddress(ptr_val)
-                        
-                        # Read bytes at indirect address
-                        mem_bytes_indirect = []
-                        for k in range(16):
-                            b = memory.getByte(indirect_addr.add(k)) & 0xFF
-                            mem_bytes_indirect.append(b)
-
-                        if mem_bytes_indirect == CRYPTO_CONSTANTS["AES_SBOX_BYTES"]:
-                            features["crypto_constant_hits"] += 1
-                            features["constant_flags"]["AES_SBOX"] = True
-
-                    except:
-                        pass
-
-    # --- Ratios ---
-    if counts["TOTAL"] > 0:
-        features["bitwise_op_density"] = float(counts["XOR"] + counts["LOGIC"] + counts["ROT"]) / counts["TOTAL"]
-        features["opcode_ratios"]["xor"] = float(counts["XOR"]) / counts["TOTAL"]
-        features["opcode_ratios"]["add"] = float(counts["ADD"]) / counts["TOTAL"]
-        features["opcode_ratios"]["multiply"] = float(counts["MUL"]) / counts["TOTAL"]
-        features["opcode_ratios"]["rotate"] = float(counts["ROT"]) / counts["TOTAL"]
-        features["opcode_ratios"]["logical"] = float(counts["LOGIC"]) / counts["TOTAL"]
-        features["opcode_ratios"]["load_store"] = float(counts["MEM"]) / counts["TOTAL"]
-
-    features["immediate_entropy"] = calculate_entropy(immediates)
-    features["carry_chain_depth"] = max_carry
-    features["immediates"] = immediates # Pass up for advanced analysis
+    # Finalize Features
+    bitwise_density = float(bitwise_ops) / total_ops if total_ops > 0 else 0.0
     
+    # Find most frequent N-Gram
+    most_frequent_ngram_count = 0
+    if ngram_counts:
+        most_frequent_ngram_count = max(ngram_counts.values())
+    
+    # Normalize N-Gram repetition
+    ngram_repetition = float(most_frequent_ngram_count) / total_ops if total_ops > 0 else 0.0
+
+    # Statistical Immediates
+    imm_min = min(immediates) if immediates else 0
+    imm_max = max(immediates) if immediates else 0
+    imm_entropy = calculate_entropy(immediates)
+
+    return {
+        "bitwise_density": bitwise_density,
+        "memory_stride": 0, # Placeholder for advanced stride analysis
+        "n_gram_repetition": ngram_repetition,
+        "carry_chain_depth": carry_chain_depth,
+        "imm_entropy": imm_entropy,
+        "detected_constants": list(detected_constants)
+    }
+
+def run_analysis():
+    """Main analysis loop."""
+    program_name = currentProgram.getName()
+    
+    # Metadata Extraction
+    lang = currentProgram.getLanguage()
+    arch_str = lang.getProcessor().toString()
+    endian_str = "little" if lang.isBigEndian() == False else "big"
+    bit_size_int = lang.getDefaultSpace().getPointerSize() * 8
+    
+    metadata = {
+        "filename": program_name,
+        "compiler_id": currentProgram.getCompilerSpec().getCompilerByID().toString()
+    }
+    
+    output_data = {
+        "metadata": metadata,
+        "functions": []
+    }
+    
+    print("Starting Feature Extraction for: " + program_name)
+    print("Arch: {} ({}-bit {})".format(arch_str, bit_size_int, endian_str))
+    
+    func_iter = currentProgram.getFunctionManager().getFunctions(True)
+    for func in func_iter:
+        # Skip stubs
+        if func.getBody().getNumAddresses() < 20:
+            continue
+            
+        f_name = func.getName()
+        f_addr = func.getEntryPoint().toString()
+        
+        try:
+            # Layer A: Structure
+            graph_feats = extract_graph_features(func)
+            
+            # Layer B & C: Semantics & Resilience
+            node_feats = extract_node_features(func)
+            
+            # Combine
+            func_entry = {
+                "name": f_name,
+                "address": f_addr,
+                "arch": arch_str,
+                "endian": endian_str,
+                "bit_size": bit_size_int,
+                "graph_features": graph_feats,
+                "node_features": [
+                    node_feats["bitwise_density"],
+                    node_feats["n_gram_repetition"],
+                    node_feats["carry_chain_depth"],
+                    node_feats["imm_entropy"]
+                ],
+                "constant_hits": node_feats["detected_constants"]
+            }
+            
+            output_data["functions"].append(func_entry)
+            
+        except Exception as e:
+            print("Error analyzing function {}: {}".format(f_name, e))
+
+    # Save Output
+    output_file = program_name + "_features.json"
+    # Get directory of current program if possible, else use current dir
+    # In Headless, usually writes to CWD
+    
+    print("Saving results to: " + output_file)
+    with open(output_file, "w") as f:
+        json.dump(output_data, f, indent=4)
+
+if __name__ == "__main__":
+    run_analysis()
     # N-Gram Repetition (Unrolled Loop Detector)
     if len(raw_opcodes) >= 6:
         trigrams = []
@@ -1010,6 +1097,7 @@ def extract_advanced_features(func, current_program, node_features):
         # PRNG
         "lcg_multiplier": 0, "lcg_increment": 0, "lcg_mod": 0,
         "mt19937_constants": False, "quarterround_score": 0, "feedback_polynomial": 0,
+        "has_chacha_constants": False,
         
         # General
         "string_refs_count": 0, "rodata_refs_count": 0, "data_refs_count": 0,
@@ -1063,6 +1151,9 @@ def extract_advanced_features(func, current_program, node_features):
         # PRNG Checks
         if nf["constant_flags"].get("MT19937_MATRIX_A", False):
             adv_features["mt19937_constants"] = True
+            
+        if nf["constant_flags"].get("CHACHA_SIG", False):
+            adv_features["has_chacha_constants"] = True
             
         # BigInt / RSA Heuristics
         if nf["carry_chain_depth"] > 2:

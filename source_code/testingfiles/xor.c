@@ -1,5 +1,13 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
+
+#ifdef __SDCC
+int putchar(int c) { (void)c; return c; }
+#endif
+
+#include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 

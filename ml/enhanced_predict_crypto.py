@@ -26,6 +26,24 @@ from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
 
+# Import the pipeline classes to ensure joblib can find them
+try:
+    from enhanced_crypto_pipeline import EnhancedCryptoPipeline, CryptoPredictionAnalyzer
+except ImportError:
+    try:
+        from ml.enhanced_crypto_pipeline import EnhancedCryptoPipeline, CryptoPredictionAnalyzer
+    except ImportError:
+        print("⚠️ Could not import pipeline classes. Joblib load might fail.")
+        pass
+
+# Hack to allow joblib to find the classes if they were saved from __main__
+if 'EnhancedCryptoPipeline' in locals():
+    import sys
+    sys.modules['__main__'].EnhancedCryptoPipeline = EnhancedCryptoPipeline
+if 'CryptoPredictionAnalyzer' in locals():
+    import sys
+    sys.modules['__main__'].CryptoPredictionAnalyzer = CryptoPredictionAnalyzer
+
 class EnhancedCryptoPredictor:
     """Enhanced cryptographic function predictor with LLM analysis"""
     
@@ -372,12 +390,69 @@ Examples:
             with open(args.features, 'r') as f:
                 features = json.load(f)
             
-            detail_label = features.pop('detail_label', None)
-            result = predictor.predict(features, detail_label, include_analysis)
-            print_prediction_results(result)
+            # Check if this is a Ghidra output with multiple functions
+            if 'functions' in features and isinstance(features['functions'], list):
+                print(f"📂 Loaded Ghidra output with {len(features['functions'])} functions")
+                print("🔄 Running batch analysis...")
+                
+                # Extract functions list
+                func_list = features['functions']
+                
+                # Run batch prediction
+                # We use the pipeline directly for batch efficiency if available, 
+                # but predictor wrapper is easier
+                
+                crypto_found = []
+                
+                for i, func_features in enumerate(func_list):
+                    # Skip small functions to save time/noise? No, let's process all.
+                    
+                    # Predict
+                    # We use include_analysis=False for speed, only analyze if crypto found?
+                    # Let's do a two-pass or just predict first.
+                    
+                    # Using the pipeline directly to avoid print overhead
+                    # But we need to use the predictor wrapper to get the nice formatting logic if we want it later
+                    # Let's just use predictor.predict but suppress output until we find something
+                    
+                    detail_label = func_features.pop('detail_label', None)
+                    result = predictor.predict(func_features, detail_label, return_analysis=False)
+                    
+                    if result['prediction'] != 'Non-Crypto':
+                        # If crypto found, maybe get full analysis?
+                        if include_analysis:
+                            result = predictor.predict(func_features, detail_label, return_analysis=True)
+                        
+                        func_name = func_features.get('function_name', f"func_{i}")
+                        result['function_name'] = func_name
+                        crypto_found.append(result)
+                
+                # Print Summary
+                print(f"\n🔎 ANALYSIS COMPLETE: Found {len(crypto_found)} potential crypto functions")
+                print("=" * 80)
+                
+                if not crypto_found:
+                    print("No cryptographic functions detected.")
+                else:
+                    for res in crypto_found:
+                        print(f"🔹 Function: {res['function_name']}")
+                        print(f"   🎯 Prediction: {res['prediction']}")
+                        print(f"   🎲 Confidence: {res['confidence']:.1%}")
+                        print(f"   ⚠️ Risk: {res['risk_level']}")
+                        if 'analysis' in res:
+                             print(f"   📝 Evidence: {res['analysis']['evidence_summary']}")
+                        print("-" * 40)
+                        
+            else:
+                # Single function mode (legacy)
+                detail_label = features.pop('detail_label', None)
+                result = predictor.predict(features, detail_label, include_analysis)
+                print_prediction_results(result)
             
         except Exception as e:
             print(f"❌ Error processing features file: {str(e)}")
+            import traceback
+            traceback.print_exc()
             sys.exit(1)
             
     elif args.csv:

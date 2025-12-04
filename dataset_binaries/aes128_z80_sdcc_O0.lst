@@ -1,0 +1,1751 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 4.0.0 #11528 (Linux)
+                              4 ;--------------------------------------------------------
+                              5 	.module aes128
+                              6 	.optsdcc -mz80
+                              7 	
+                              8 ;--------------------------------------------------------
+                              9 ; Public variables in this module
+                             10 ;--------------------------------------------------------
+                             11 	.globl _main
+                             12 	.globl _aes128_encrypt
+                             13 	.globl _puts
+                             14 	.globl _printf
+                             15 ;--------------------------------------------------------
+                             16 ; special function registers
+                             17 ;--------------------------------------------------------
+                             18 ;--------------------------------------------------------
+                             19 ; ram data
+                             20 ;--------------------------------------------------------
+                             21 	.area _DATA
+                             22 ;--------------------------------------------------------
+                             23 ; ram data
+                             24 ;--------------------------------------------------------
+                             25 	.area _INITIALIZED
+                             26 ;--------------------------------------------------------
+                             27 ; absolute external ram data
+                             28 ;--------------------------------------------------------
+                             29 	.area _DABS (ABS)
+                             30 ;--------------------------------------------------------
+                             31 ; global & static initialisations
+                             32 ;--------------------------------------------------------
+                             33 	.area _HOME
+                             34 	.area _GSINIT
+                             35 	.area _GSFINAL
+                             36 	.area _GSINIT
+                             37 ;--------------------------------------------------------
+                             38 ; Home
+                             39 ;--------------------------------------------------------
+                             40 	.area _HOME
+                             41 	.area _HOME
+                             42 ;--------------------------------------------------------
+                             43 ; code
+                             44 ;--------------------------------------------------------
+                             45 	.area _CODE
+                     0000    46 	Faes128$xtime$0$0	= .
+                             47 	.globl	Faes128$xtime$0$0
+                     0000    48 	C$aes128.c$38$0_0$35	= .
+                             49 	.globl	C$aes128.c$38$0_0$35
+                             50 ;/work/source_code/aes128.c:38: static uint8_t xtime(uint8_t x) {
+                             51 ;	---------------------------------
+                             52 ; Function xtime
+                             53 ; ---------------------------------
+   0000                      54 _xtime:
+   0000 DD E5         [15]   55 	push	ix
+   0002 DD 21 00 00   [14]   56 	ld	ix,#0
+   0006 DD 39         [15]   57 	add	ix,sp
+                     0008    58 	C$aes128.c$39$1_0$35	= .
+                             59 	.globl	C$aes128.c$39$1_0$35
+                             60 ;/work/source_code/aes128.c:39: return ((x << 1) ^ (((x >> 7) & 1) * 0x1b));
+   0008 DD 7E 04      [19]   61 	ld	a, 4 (ix)
+   000B 87            [ 4]   62 	add	a, a
+   000C 4F            [ 4]   63 	ld	c, a
+   000D DD 7E 04      [19]   64 	ld	a, 4 (ix)
+   0010 CB 07         [ 8]   65 	rlc	a
+   0012 E6 01         [ 7]   66 	and	a, #0x01
+   0014 5F            [ 4]   67 	ld	e, a
+   0015 16 00         [ 7]   68 	ld	d, #0x00
+   0017 6B            [ 4]   69 	ld	l, e
+   0018 62            [ 4]   70 	ld	h, d
+   0019 29            [11]   71 	add	hl, hl
+   001A 19            [11]   72 	add	hl, de
+   001B 29            [11]   73 	add	hl, hl
+   001C 29            [11]   74 	add	hl, hl
+   001D 19            [11]   75 	add	hl, de
+   001E 29            [11]   76 	add	hl, hl
+   001F 19            [11]   77 	add	hl, de
+   0020 79            [ 4]   78 	ld	a, c
+   0021 17            [ 4]   79 	rla
+   0022 9F            [ 4]   80 	sbc	a, a
+   0023 F5            [11]   81 	push	af
+   0024 79            [ 4]   82 	ld	a, c
+   0025 AD            [ 4]   83 	xor	a, l
+   0026 6F            [ 4]   84 	ld	l, a
+   0027 F1            [10]   85 	pop	af
+   0028 AC            [ 4]   86 	xor	a, h
+   0029                      87 00101$:
+                     0029    88 	C$aes128.c$40$1_0$35	= .
+                             89 	.globl	C$aes128.c$40$1_0$35
+                             90 ;/work/source_code/aes128.c:40: }
+   0029 DD E1         [14]   91 	pop	ix
+                     002B    92 	C$aes128.c$40$1_0$35	= .
+                             93 	.globl	C$aes128.c$40$1_0$35
+                     002B    94 	XFaes128$xtime$0$0	= .
+                             95 	.globl	XFaes128$xtime$0$0
+   002B C9            [10]   96 	ret
+                     002C    97 Faes128$sbox$0_0$0 == .
+   002C                      98 _sbox:
+   002C 63                   99 	.db #0x63	; 99	'c'
+   002D 7C                  100 	.db #0x7c	; 124
+   002E 77                  101 	.db #0x77	; 119	'w'
+   002F 7B                  102 	.db #0x7b	; 123
+   0030 F2                  103 	.db #0xf2	; 242
+   0031 6B                  104 	.db #0x6b	; 107	'k'
+   0032 6F                  105 	.db #0x6f	; 111	'o'
+   0033 C5                  106 	.db #0xc5	; 197
+   0034 30                  107 	.db #0x30	; 48	'0'
+   0035 01                  108 	.db #0x01	; 1
+   0036 67                  109 	.db #0x67	; 103	'g'
+   0037 2B                  110 	.db #0x2b	; 43
+   0038 FE                  111 	.db #0xfe	; 254
+   0039 D7                  112 	.db #0xd7	; 215
+   003A AB                  113 	.db #0xab	; 171
+   003B 76                  114 	.db #0x76	; 118	'v'
+   003C CA                  115 	.db #0xca	; 202
+   003D 82                  116 	.db #0x82	; 130
+   003E C9                  117 	.db #0xc9	; 201
+   003F 7D                  118 	.db #0x7d	; 125
+   0040 FA                  119 	.db #0xfa	; 250
+   0041 59                  120 	.db #0x59	; 89	'Y'
+   0042 47                  121 	.db #0x47	; 71	'G'
+   0043 F0                  122 	.db #0xf0	; 240
+   0044 AD                  123 	.db #0xad	; 173
+   0045 D4                  124 	.db #0xd4	; 212
+   0046 A2                  125 	.db #0xa2	; 162
+   0047 AF                  126 	.db #0xaf	; 175
+   0048 9C                  127 	.db #0x9c	; 156
+   0049 A4                  128 	.db #0xa4	; 164
+   004A 72                  129 	.db #0x72	; 114	'r'
+   004B C0                  130 	.db #0xc0	; 192
+   004C B7                  131 	.db #0xb7	; 183
+   004D FD                  132 	.db #0xfd	; 253
+   004E 93                  133 	.db #0x93	; 147
+   004F 26                  134 	.db #0x26	; 38
+   0050 36                  135 	.db #0x36	; 54	'6'
+   0051 3F                  136 	.db #0x3f	; 63
+   0052 F7                  137 	.db #0xf7	; 247
+   0053 CC                  138 	.db #0xcc	; 204
+   0054 34                  139 	.db #0x34	; 52	'4'
+   0055 A5                  140 	.db #0xa5	; 165
+   0056 E5                  141 	.db #0xe5	; 229
+   0057 F1                  142 	.db #0xf1	; 241
+   0058 71                  143 	.db #0x71	; 113	'q'
+   0059 D8                  144 	.db #0xd8	; 216
+   005A 31                  145 	.db #0x31	; 49	'1'
+   005B 15                  146 	.db #0x15	; 21
+   005C 04                  147 	.db #0x04	; 4
+   005D C7                  148 	.db #0xc7	; 199
+   005E 23                  149 	.db #0x23	; 35
+   005F C3                  150 	.db #0xc3	; 195
+   0060 18                  151 	.db #0x18	; 24
+   0061 96                  152 	.db #0x96	; 150
+   0062 05                  153 	.db #0x05	; 5
+   0063 9A                  154 	.db #0x9a	; 154
+   0064 07                  155 	.db #0x07	; 7
+   0065 12                  156 	.db #0x12	; 18
+   0066 80                  157 	.db #0x80	; 128
+   0067 E2                  158 	.db #0xe2	; 226
+   0068 EB                  159 	.db #0xeb	; 235
+   0069 27                  160 	.db #0x27	; 39
+   006A B2                  161 	.db #0xb2	; 178
+   006B 75                  162 	.db #0x75	; 117	'u'
+   006C 09                  163 	.db #0x09	; 9
+   006D 83                  164 	.db #0x83	; 131
+   006E 2C                  165 	.db #0x2c	; 44
+   006F 1A                  166 	.db #0x1a	; 26
+   0070 1B                  167 	.db #0x1b	; 27
+   0071 6E                  168 	.db #0x6e	; 110	'n'
+   0072 5A                  169 	.db #0x5a	; 90	'Z'
+   0073 A0                  170 	.db #0xa0	; 160
+   0074 52                  171 	.db #0x52	; 82	'R'
+   0075 3B                  172 	.db #0x3b	; 59
+   0076 D6                  173 	.db #0xd6	; 214
+   0077 B3                  174 	.db #0xb3	; 179
+   0078 29                  175 	.db #0x29	; 41
+   0079 E3                  176 	.db #0xe3	; 227
+   007A 2F                  177 	.db #0x2f	; 47
+   007B 84                  178 	.db #0x84	; 132
+   007C 53                  179 	.db #0x53	; 83	'S'
+   007D D1                  180 	.db #0xd1	; 209
+   007E 00                  181 	.db #0x00	; 0
+   007F ED                  182 	.db #0xed	; 237
+   0080 20                  183 	.db #0x20	; 32
+   0081 FC                  184 	.db #0xfc	; 252
+   0082 B1                  185 	.db #0xb1	; 177
+   0083 5B                  186 	.db #0x5b	; 91
+   0084 6A                  187 	.db #0x6a	; 106	'j'
+   0085 CB                  188 	.db #0xcb	; 203
+   0086 BE                  189 	.db #0xbe	; 190
+   0087 39                  190 	.db #0x39	; 57	'9'
+   0088 4A                  191 	.db #0x4a	; 74	'J'
+   0089 4C                  192 	.db #0x4c	; 76	'L'
+   008A 58                  193 	.db #0x58	; 88	'X'
+   008B CF                  194 	.db #0xcf	; 207
+   008C D0                  195 	.db #0xd0	; 208
+   008D EF                  196 	.db #0xef	; 239
+   008E AA                  197 	.db #0xaa	; 170
+   008F FB                  198 	.db #0xfb	; 251
+   0090 43                  199 	.db #0x43	; 67	'C'
+   0091 4D                  200 	.db #0x4d	; 77	'M'
+   0092 33                  201 	.db #0x33	; 51	'3'
+   0093 85                  202 	.db #0x85	; 133
+   0094 45                  203 	.db #0x45	; 69	'E'
+   0095 F9                  204 	.db #0xf9	; 249
+   0096 02                  205 	.db #0x02	; 2
+   0097 7F                  206 	.db #0x7f	; 127
+   0098 50                  207 	.db #0x50	; 80	'P'
+   0099 3C                  208 	.db #0x3c	; 60
+   009A 9F                  209 	.db #0x9f	; 159
+   009B A8                  210 	.db #0xa8	; 168
+   009C 51                  211 	.db #0x51	; 81	'Q'
+   009D A3                  212 	.db #0xa3	; 163
+   009E 40                  213 	.db #0x40	; 64
+   009F 8F                  214 	.db #0x8f	; 143
+   00A0 92                  215 	.db #0x92	; 146
+   00A1 9D                  216 	.db #0x9d	; 157
+   00A2 38                  217 	.db #0x38	; 56	'8'
+   00A3 F5                  218 	.db #0xf5	; 245
+   00A4 BC                  219 	.db #0xbc	; 188
+   00A5 B6                  220 	.db #0xb6	; 182
+   00A6 DA                  221 	.db #0xda	; 218
+   00A7 21                  222 	.db #0x21	; 33
+   00A8 10                  223 	.db #0x10	; 16
+   00A9 FF                  224 	.db #0xff	; 255
+   00AA F3                  225 	.db #0xf3	; 243
+   00AB D2                  226 	.db #0xd2	; 210
+   00AC CD                  227 	.db #0xcd	; 205
+   00AD 0C                  228 	.db #0x0c	; 12
+   00AE 13                  229 	.db #0x13	; 19
+   00AF EC                  230 	.db #0xec	; 236
+   00B0 5F                  231 	.db #0x5f	; 95
+   00B1 97                  232 	.db #0x97	; 151
+   00B2 44                  233 	.db #0x44	; 68	'D'
+   00B3 17                  234 	.db #0x17	; 23
+   00B4 C4                  235 	.db #0xc4	; 196
+   00B5 A7                  236 	.db #0xa7	; 167
+   00B6 7E                  237 	.db #0x7e	; 126
+   00B7 3D                  238 	.db #0x3d	; 61
+   00B8 64                  239 	.db #0x64	; 100	'd'
+   00B9 5D                  240 	.db #0x5d	; 93
+   00BA 19                  241 	.db #0x19	; 25
+   00BB 73                  242 	.db #0x73	; 115	's'
+   00BC 60                  243 	.db #0x60	; 96
+   00BD 81                  244 	.db #0x81	; 129
+   00BE 4F                  245 	.db #0x4f	; 79	'O'
+   00BF DC                  246 	.db #0xdc	; 220
+   00C0 22                  247 	.db #0x22	; 34
+   00C1 2A                  248 	.db #0x2a	; 42
+   00C2 90                  249 	.db #0x90	; 144
+   00C3 88                  250 	.db #0x88	; 136
+   00C4 46                  251 	.db #0x46	; 70	'F'
+   00C5 EE                  252 	.db #0xee	; 238
+   00C6 B8                  253 	.db #0xb8	; 184
+   00C7 14                  254 	.db #0x14	; 20
+   00C8 DE                  255 	.db #0xde	; 222
+   00C9 5E                  256 	.db #0x5e	; 94
+   00CA 0B                  257 	.db #0x0b	; 11
+   00CB DB                  258 	.db #0xdb	; 219
+   00CC E0                  259 	.db #0xe0	; 224
+   00CD 32                  260 	.db #0x32	; 50	'2'
+   00CE 3A                  261 	.db #0x3a	; 58
+   00CF 0A                  262 	.db #0x0a	; 10
+   00D0 49                  263 	.db #0x49	; 73	'I'
+   00D1 06                  264 	.db #0x06	; 6
+   00D2 24                  265 	.db #0x24	; 36
+   00D3 5C                  266 	.db #0x5c	; 92
+   00D4 C2                  267 	.db #0xc2	; 194
+   00D5 D3                  268 	.db #0xd3	; 211
+   00D6 AC                  269 	.db #0xac	; 172
+   00D7 62                  270 	.db #0x62	; 98	'b'
+   00D8 91                  271 	.db #0x91	; 145
+   00D9 95                  272 	.db #0x95	; 149
+   00DA E4                  273 	.db #0xe4	; 228
+   00DB 79                  274 	.db #0x79	; 121	'y'
+   00DC E7                  275 	.db #0xe7	; 231
+   00DD C8                  276 	.db #0xc8	; 200
+   00DE 37                  277 	.db #0x37	; 55	'7'
+   00DF 6D                  278 	.db #0x6d	; 109	'm'
+   00E0 8D                  279 	.db #0x8d	; 141
+   00E1 D5                  280 	.db #0xd5	; 213
+   00E2 4E                  281 	.db #0x4e	; 78	'N'
+   00E3 A9                  282 	.db #0xa9	; 169
+   00E4 6C                  283 	.db #0x6c	; 108	'l'
+   00E5 56                  284 	.db #0x56	; 86	'V'
+   00E6 F4                  285 	.db #0xf4	; 244
+   00E7 EA                  286 	.db #0xea	; 234
+   00E8 65                  287 	.db #0x65	; 101	'e'
+   00E9 7A                  288 	.db #0x7a	; 122	'z'
+   00EA AE                  289 	.db #0xae	; 174
+   00EB 08                  290 	.db #0x08	; 8
+   00EC BA                  291 	.db #0xba	; 186
+   00ED 78                  292 	.db #0x78	; 120	'x'
+   00EE 25                  293 	.db #0x25	; 37
+   00EF 2E                  294 	.db #0x2e	; 46
+   00F0 1C                  295 	.db #0x1c	; 28
+   00F1 A6                  296 	.db #0xa6	; 166
+   00F2 B4                  297 	.db #0xb4	; 180
+   00F3 C6                  298 	.db #0xc6	; 198
+   00F4 E8                  299 	.db #0xe8	; 232
+   00F5 DD                  300 	.db #0xdd	; 221
+   00F6 74                  301 	.db #0x74	; 116	't'
+   00F7 1F                  302 	.db #0x1f	; 31
+   00F8 4B                  303 	.db #0x4b	; 75	'K'
+   00F9 BD                  304 	.db #0xbd	; 189
+   00FA 8B                  305 	.db #0x8b	; 139
+   00FB 8A                  306 	.db #0x8a	; 138
+   00FC 70                  307 	.db #0x70	; 112	'p'
+   00FD 3E                  308 	.db #0x3e	; 62
+   00FE B5                  309 	.db #0xb5	; 181
+   00FF 66                  310 	.db #0x66	; 102	'f'
+   0100 48                  311 	.db #0x48	; 72	'H'
+   0101 03                  312 	.db #0x03	; 3
+   0102 F6                  313 	.db #0xf6	; 246
+   0103 0E                  314 	.db #0x0e	; 14
+   0104 61                  315 	.db #0x61	; 97	'a'
+   0105 35                  316 	.db #0x35	; 53	'5'
+   0106 57                  317 	.db #0x57	; 87	'W'
+   0107 B9                  318 	.db #0xb9	; 185
+   0108 86                  319 	.db #0x86	; 134
+   0109 C1                  320 	.db #0xc1	; 193
+   010A 1D                  321 	.db #0x1d	; 29
+   010B 9E                  322 	.db #0x9e	; 158
+   010C E1                  323 	.db #0xe1	; 225
+   010D F8                  324 	.db #0xf8	; 248
+   010E 98                  325 	.db #0x98	; 152
+   010F 11                  326 	.db #0x11	; 17
+   0110 69                  327 	.db #0x69	; 105	'i'
+   0111 D9                  328 	.db #0xd9	; 217
+   0112 8E                  329 	.db #0x8e	; 142
+   0113 94                  330 	.db #0x94	; 148
+   0114 9B                  331 	.db #0x9b	; 155
+   0115 1E                  332 	.db #0x1e	; 30
+   0116 87                  333 	.db #0x87	; 135
+   0117 E9                  334 	.db #0xe9	; 233
+   0118 CE                  335 	.db #0xce	; 206
+   0119 55                  336 	.db #0x55	; 85	'U'
+   011A 28                  337 	.db #0x28	; 40
+   011B DF                  338 	.db #0xdf	; 223
+   011C 8C                  339 	.db #0x8c	; 140
+   011D A1                  340 	.db #0xa1	; 161
+   011E 89                  341 	.db #0x89	; 137
+   011F 0D                  342 	.db #0x0d	; 13
+   0120 BF                  343 	.db #0xbf	; 191
+   0121 E6                  344 	.db #0xe6	; 230
+   0122 42                  345 	.db #0x42	; 66	'B'
+   0123 68                  346 	.db #0x68	; 104	'h'
+   0124 41                  347 	.db #0x41	; 65	'A'
+   0125 99                  348 	.db #0x99	; 153
+   0126 2D                  349 	.db #0x2d	; 45
+   0127 0F                  350 	.db #0x0f	; 15
+   0128 B0                  351 	.db #0xb0	; 176
+   0129 54                  352 	.db #0x54	; 84	'T'
+   012A BB                  353 	.db #0xbb	; 187
+   012B 16                  354 	.db #0x16	; 22
+                     012C   355 Faes128$rcon$0_0$0 == .
+   012C                     356 _rcon:
+   012C 00                  357 	.db #0x00	; 0
+   012D 01                  358 	.db #0x01	; 1
+   012E 02                  359 	.db #0x02	; 2
+   012F 04                  360 	.db #0x04	; 4
+   0130 08                  361 	.db #0x08	; 8
+   0131 10                  362 	.db #0x10	; 16
+   0132 20                  363 	.db #0x20	; 32
+   0133 40                  364 	.db #0x40	; 64
+   0134 80                  365 	.db #0x80	; 128
+   0135 1B                  366 	.db #0x1b	; 27
+   0136 36                  367 	.db #0x36	; 54	'6'
+                     0137   368 	Faes128$sub_bytes$0$0	= .
+                            369 	.globl	Faes128$sub_bytes$0$0
+                     0137   370 	C$aes128.c$42$1_0$38	= .
+                            371 	.globl	C$aes128.c$42$1_0$38
+                            372 ;/work/source_code/aes128.c:42: static void sub_bytes(uint8_t *state) {
+                            373 ;	---------------------------------
+                            374 ; Function sub_bytes
+                            375 ; ---------------------------------
+   0137                     376 _sub_bytes:
+   0137 DD E5         [15]  377 	push	ix
+   0139 DD 21 00 00   [14]  378 	ld	ix,#0
+   013D DD 39         [15]  379 	add	ix,sp
+                     013F   380 	C$aes128.c$43$3_0$39	= .
+                            381 	.globl	C$aes128.c$43$3_0$39
+                            382 ;/work/source_code/aes128.c:43: for (int i = 0; i < 16; i++) {
+   013F 01 00 00      [10]  383 	ld	bc, #0x0000
+   0142                     384 00103$:
+   0142 79            [ 4]  385 	ld	a, c
+   0143 D6 10         [ 7]  386 	sub	a, #0x10
+   0145 78            [ 4]  387 	ld	a, b
+   0146 17            [ 4]  388 	rla
+   0147 3F            [ 4]  389 	ccf
+   0148 1F            [ 4]  390 	rra
+   0149 DE 80         [ 7]  391 	sbc	a, #0x80
+   014B D2r67r01      [10]  392 	jp	NC, 00105$
+                     014E   393 	C$aes128.c$44$3_0$39	= .
+                            394 	.globl	C$aes128.c$44$3_0$39
+                            395 ;/work/source_code/aes128.c:44: state[i] = sbox[state[i]];
+   014E DD 7E 04      [19]  396 	ld	a, 4 (ix)
+   0151 81            [ 4]  397 	add	a, c
+   0152 5F            [ 4]  398 	ld	e, a
+   0153 DD 7E 05      [19]  399 	ld	a, 5 (ix)
+   0156 88            [ 4]  400 	adc	a, b
+   0157 57            [ 4]  401 	ld	d, a
+   0158 1A            [ 7]  402 	ld	a, (de)
+   0159 C6r2C         [ 7]  403 	add	a, #<(_sbox)
+   015B 6F            [ 4]  404 	ld	l, a
+   015C 3E 00         [ 7]  405 	ld	a, #0x00
+   015E CEs00         [ 7]  406 	adc	a, #>(_sbox)
+   0160 67            [ 4]  407 	ld	h, a
+   0161 7E            [ 7]  408 	ld	a, (hl)
+   0162 12            [ 7]  409 	ld	(de), a
+                     0163   410 	C$aes128.c$43$2_0$38	= .
+                            411 	.globl	C$aes128.c$43$2_0$38
+                            412 ;/work/source_code/aes128.c:43: for (int i = 0; i < 16; i++) {
+   0163 03            [ 6]  413 	inc	bc
+   0164 C3r42r01      [10]  414 	jp	00103$
+   0167                     415 00105$:
+                     0167   416 	C$aes128.c$46$2_0$38	= .
+                            417 	.globl	C$aes128.c$46$2_0$38
+                            418 ;/work/source_code/aes128.c:46: }
+   0167 DD E1         [14]  419 	pop	ix
+                     0169   420 	C$aes128.c$46$2_0$38	= .
+                            421 	.globl	C$aes128.c$46$2_0$38
+                     0169   422 	XFaes128$sub_bytes$0$0	= .
+                            423 	.globl	XFaes128$sub_bytes$0$0
+   0169 C9            [10]  424 	ret
+                     016A   425 	Faes128$shift_rows$0$0	= .
+                            426 	.globl	Faes128$shift_rows$0$0
+                     016A   427 	C$aes128.c$48$2_0$41	= .
+                            428 	.globl	C$aes128.c$48$2_0$41
+                            429 ;/work/source_code/aes128.c:48: static void shift_rows(uint8_t *state) {
+                            430 ;	---------------------------------
+                            431 ; Function shift_rows
+                            432 ; ---------------------------------
+   016A                     433 _shift_rows:
+   016A DD E5         [15]  434 	push	ix
+   016C DD 21 00 00   [14]  435 	ld	ix,#0
+   0170 DD 39         [15]  436 	add	ix,sp
+   0172 3B            [ 6]  437 	dec	sp
+                     0173   438 	C$aes128.c$51$1_0$41	= .
+                            439 	.globl	C$aes128.c$51$1_0$41
+                            440 ;/work/source_code/aes128.c:51: temp = state[1];
+   0173 DD 5E 04      [19]  441 	ld	e, 4 (ix)
+   0176 DD 56 05      [19]  442 	ld	d, 5 (ix)
+   0179 13            [ 6]  443 	inc	de
+   017A 1A            [ 7]  444 	ld	a, (de)
+   017B DD 77 FF      [19]  445 	ld	-1 (ix), a
+                     017E   446 	C$aes128.c$52$1_0$41	= .
+                            447 	.globl	C$aes128.c$52$1_0$41
+                            448 ;/work/source_code/aes128.c:52: state[1] = state[5];
+   017E DD 7E 04      [19]  449 	ld	a, 4 (ix)
+   0181 C6 05         [ 7]  450 	add	a, #0x05
+   0183 4F            [ 4]  451 	ld	c, a
+   0184 DD 7E 05      [19]  452 	ld	a, 5 (ix)
+   0187 CE 00         [ 7]  453 	adc	a, #0x00
+   0189 47            [ 4]  454 	ld	b, a
+   018A 0A            [ 7]  455 	ld	a, (bc)
+   018B 12            [ 7]  456 	ld	(de), a
+                     018C   457 	C$aes128.c$53$1_0$41	= .
+                            458 	.globl	C$aes128.c$53$1_0$41
+                            459 ;/work/source_code/aes128.c:53: state[5] = state[9];
+   018C DD 7E 04      [19]  460 	ld	a, 4 (ix)
+   018F C6 09         [ 7]  461 	add	a, #0x09
+   0191 5F            [ 4]  462 	ld	e, a
+   0192 DD 7E 05      [19]  463 	ld	a, 5 (ix)
+   0195 CE 00         [ 7]  464 	adc	a, #0x00
+   0197 57            [ 4]  465 	ld	d, a
+   0198 1A            [ 7]  466 	ld	a, (de)
+   0199 02            [ 7]  467 	ld	(bc), a
+                     019A   468 	C$aes128.c$54$1_0$41	= .
+                            469 	.globl	C$aes128.c$54$1_0$41
+                            470 ;/work/source_code/aes128.c:54: state[9] = state[13];
+   019A DD 7E 04      [19]  471 	ld	a, 4 (ix)
+   019D C6 0D         [ 7]  472 	add	a, #0x0d
+   019F 4F            [ 4]  473 	ld	c, a
+   01A0 DD 7E 05      [19]  474 	ld	a, 5 (ix)
+   01A3 CE 00         [ 7]  475 	adc	a, #0x00
+   01A5 47            [ 4]  476 	ld	b, a
+   01A6 0A            [ 7]  477 	ld	a, (bc)
+   01A7 12            [ 7]  478 	ld	(de), a
+                     01A8   479 	C$aes128.c$55$1_0$41	= .
+                            480 	.globl	C$aes128.c$55$1_0$41
+                            481 ;/work/source_code/aes128.c:55: state[13] = temp;
+   01A8 DD 7E FF      [19]  482 	ld	a, -1 (ix)
+   01AB 02            [ 7]  483 	ld	(bc), a
+                     01AC   484 	C$aes128.c$57$1_0$41	= .
+                            485 	.globl	C$aes128.c$57$1_0$41
+                            486 ;/work/source_code/aes128.c:57: temp = state[2];
+   01AC DD 5E 04      [19]  487 	ld	e, 4 (ix)
+   01AF DD 56 05      [19]  488 	ld	d, 5 (ix)
+   01B2 13            [ 6]  489 	inc	de
+   01B3 13            [ 6]  490 	inc	de
+   01B4 1A            [ 7]  491 	ld	a, (de)
+   01B5 DD 77 FF      [19]  492 	ld	-1 (ix), a
+                     01B8   493 	C$aes128.c$58$1_0$41	= .
+                            494 	.globl	C$aes128.c$58$1_0$41
+                            495 ;/work/source_code/aes128.c:58: state[2] = state[10];
+   01B8 DD 7E 04      [19]  496 	ld	a, 4 (ix)
+   01BB C6 0A         [ 7]  497 	add	a, #0x0a
+   01BD 4F            [ 4]  498 	ld	c, a
+   01BE DD 7E 05      [19]  499 	ld	a, 5 (ix)
+   01C1 CE 00         [ 7]  500 	adc	a, #0x00
+   01C3 47            [ 4]  501 	ld	b, a
+   01C4 0A            [ 7]  502 	ld	a, (bc)
+   01C5 12            [ 7]  503 	ld	(de), a
+                     01C6   504 	C$aes128.c$59$1_0$41	= .
+                            505 	.globl	C$aes128.c$59$1_0$41
+                            506 ;/work/source_code/aes128.c:59: state[10] = temp;
+   01C6 DD 7E FF      [19]  507 	ld	a, -1 (ix)
+   01C9 02            [ 7]  508 	ld	(bc), a
+                     01CA   509 	C$aes128.c$60$1_0$41	= .
+                            510 	.globl	C$aes128.c$60$1_0$41
+                            511 ;/work/source_code/aes128.c:60: temp = state[6];
+   01CA DD 7E 04      [19]  512 	ld	a, 4 (ix)
+   01CD C6 06         [ 7]  513 	add	a, #0x06
+   01CF 5F            [ 4]  514 	ld	e, a
+   01D0 DD 7E 05      [19]  515 	ld	a, 5 (ix)
+   01D3 CE 00         [ 7]  516 	adc	a, #0x00
+   01D5 57            [ 4]  517 	ld	d, a
+   01D6 1A            [ 7]  518 	ld	a, (de)
+   01D7 DD 77 FF      [19]  519 	ld	-1 (ix), a
+                     01DA   520 	C$aes128.c$61$1_0$41	= .
+                            521 	.globl	C$aes128.c$61$1_0$41
+                            522 ;/work/source_code/aes128.c:61: state[6] = state[14];
+   01DA DD 7E 04      [19]  523 	ld	a, 4 (ix)
+   01DD C6 0E         [ 7]  524 	add	a, #0x0e
+   01DF 4F            [ 4]  525 	ld	c, a
+   01E0 DD 7E 05      [19]  526 	ld	a, 5 (ix)
+   01E3 CE 00         [ 7]  527 	adc	a, #0x00
+   01E5 47            [ 4]  528 	ld	b, a
+   01E6 0A            [ 7]  529 	ld	a, (bc)
+   01E7 12            [ 7]  530 	ld	(de), a
+                     01E8   531 	C$aes128.c$62$1_0$41	= .
+                            532 	.globl	C$aes128.c$62$1_0$41
+                            533 ;/work/source_code/aes128.c:62: state[14] = temp;
+   01E8 DD 7E FF      [19]  534 	ld	a, -1 (ix)
+   01EB 02            [ 7]  535 	ld	(bc), a
+                     01EC   536 	C$aes128.c$64$1_0$41	= .
+                            537 	.globl	C$aes128.c$64$1_0$41
+                            538 ;/work/source_code/aes128.c:64: temp = state[15];
+   01EC DD 7E 04      [19]  539 	ld	a, 4 (ix)
+   01EF C6 0F         [ 7]  540 	add	a, #0x0f
+   01F1 5F            [ 4]  541 	ld	e, a
+   01F2 DD 7E 05      [19]  542 	ld	a, 5 (ix)
+   01F5 CE 00         [ 7]  543 	adc	a, #0x00
+   01F7 57            [ 4]  544 	ld	d, a
+   01F8 1A            [ 7]  545 	ld	a, (de)
+   01F9 DD 77 FF      [19]  546 	ld	-1 (ix), a
+                     01FC   547 	C$aes128.c$65$1_0$41	= .
+                            548 	.globl	C$aes128.c$65$1_0$41
+                            549 ;/work/source_code/aes128.c:65: state[15] = state[11];
+   01FC DD 7E 04      [19]  550 	ld	a, 4 (ix)
+   01FF C6 0B         [ 7]  551 	add	a, #0x0b
+   0201 4F            [ 4]  552 	ld	c, a
+   0202 DD 7E 05      [19]  553 	ld	a, 5 (ix)
+   0205 CE 00         [ 7]  554 	adc	a, #0x00
+   0207 47            [ 4]  555 	ld	b, a
+   0208 0A            [ 7]  556 	ld	a, (bc)
+   0209 12            [ 7]  557 	ld	(de), a
+                     020A   558 	C$aes128.c$66$1_0$41	= .
+                            559 	.globl	C$aes128.c$66$1_0$41
+                            560 ;/work/source_code/aes128.c:66: state[11] = state[7];
+   020A DD 7E 04      [19]  561 	ld	a, 4 (ix)
+   020D C6 07         [ 7]  562 	add	a, #0x07
+   020F 5F            [ 4]  563 	ld	e, a
+   0210 DD 7E 05      [19]  564 	ld	a, 5 (ix)
+   0213 CE 00         [ 7]  565 	adc	a, #0x00
+   0215 57            [ 4]  566 	ld	d, a
+   0216 1A            [ 7]  567 	ld	a, (de)
+   0217 02            [ 7]  568 	ld	(bc), a
+                     0218   569 	C$aes128.c$67$1_0$41	= .
+                            570 	.globl	C$aes128.c$67$1_0$41
+                            571 ;/work/source_code/aes128.c:67: state[7] = state[3];
+   0218 DD 4E 04      [19]  572 	ld	c, 4 (ix)
+   021B DD 46 05      [19]  573 	ld	b, 5 (ix)
+   021E 03            [ 6]  574 	inc	bc
+   021F 03            [ 6]  575 	inc	bc
+   0220 03            [ 6]  576 	inc	bc
+   0221 0A            [ 7]  577 	ld	a, (bc)
+   0222 12            [ 7]  578 	ld	(de), a
+                     0223   579 	C$aes128.c$68$1_0$41	= .
+                            580 	.globl	C$aes128.c$68$1_0$41
+                            581 ;/work/source_code/aes128.c:68: state[3] = temp;
+   0223 DD 7E FF      [19]  582 	ld	a, -1 (ix)
+   0226 02            [ 7]  583 	ld	(bc), a
+   0227                     584 00101$:
+                     0227   585 	C$aes128.c$69$1_0$41	= .
+                            586 	.globl	C$aes128.c$69$1_0$41
+                            587 ;/work/source_code/aes128.c:69: }
+   0227 33            [ 6]  588 	inc	sp
+   0228 DD E1         [14]  589 	pop	ix
+                     022A   590 	C$aes128.c$69$1_0$41	= .
+                            591 	.globl	C$aes128.c$69$1_0$41
+                     022A   592 	XFaes128$shift_rows$0$0	= .
+                            593 	.globl	XFaes128$shift_rows$0$0
+   022A C9            [10]  594 	ret
+                     022B   595 	Faes128$mix_columns$0$0	= .
+                            596 	.globl	Faes128$mix_columns$0$0
+                     022B   597 	C$aes128.c$71$1_0$43	= .
+                            598 	.globl	C$aes128.c$71$1_0$43
+                            599 ;/work/source_code/aes128.c:71: static void mix_columns(uint8_t *state) {
+                            600 ;	---------------------------------
+                            601 ; Function mix_columns
+                            602 ; ---------------------------------
+   022B                     603 _mix_columns:
+   022B DD E5         [15]  604 	push	ix
+   022D DD 21 00 00   [14]  605 	ld	ix,#0
+   0231 DD 39         [15]  606 	add	ix,sp
+   0233 21 E2 FF      [10]  607 	ld	hl, #-30
+   0236 39            [11]  608 	add	hl, sp
+   0237 F9            [ 6]  609 	ld	sp, hl
+                     0238   610 	C$aes128.c$74$3_0$45	= .
+                            611 	.globl	C$aes128.c$74$3_0$45
+                            612 ;/work/source_code/aes128.c:74: for (int i = 0; i < 4; i++) {
+   0238 21 02 00      [10]  613 	ld	hl, #2
+   023B 39            [11]  614 	add	hl, sp
+   023C DD 75 F4      [19]  615 	ld	-12 (ix), l
+   023F DD 74 F5      [19]  616 	ld	-11 (ix), h
+   0242 01 00 00      [10]  617 	ld	bc, #0x0000
+   0245                     618 00103$:
+   0245 79            [ 4]  619 	ld	a, c
+   0246 D6 04         [ 7]  620 	sub	a, #0x04
+   0248 78            [ 4]  621 	ld	a, b
+   0249 17            [ 4]  622 	rla
+   024A 3F            [ 4]  623 	ccf
+   024B 1F            [ 4]  624 	rra
+   024C DE 80         [ 7]  625 	sbc	a, #0x80
+   024E D2r28r04      [10]  626 	jp	NC, 00101$
+                     0251   627 	C$aes128.c$75$3_0$45	= .
+                            628 	.globl	C$aes128.c$75$3_0$45
+                            629 ;/work/source_code/aes128.c:75: int idx = i * 4;
+   0251 59            [ 4]  630 	ld	e, c
+   0252 50            [ 4]  631 	ld	d, b
+   0253 CB 23         [ 8]  632 	sla	e
+   0255 CB 12         [ 8]  633 	rl	d
+   0257 CB 23         [ 8]  634 	sla	e
+   0259 CB 12         [ 8]  635 	rl	d
+                     025B   636 	C$aes128.c$76$3_0$45	= .
+                            637 	.globl	C$aes128.c$76$3_0$45
+                            638 ;/work/source_code/aes128.c:76: tmp[idx + 0] = (uint8_t)(xtime(state[idx + 0]) ^ xtime(state[idx + 1]) ^ state[idx + 1] ^ state[idx + 2] ^ state[idx + 3]);
+   025B DD 73 F6      [19]  639 	ld	-10 (ix), e
+   025E DD 7E F6      [19]  640 	ld	a, -10 (ix)
+   0261 6F            [ 4]  641 	ld	l, a
+   0262 17            [ 4]  642 	rla
+   0263 9F            [ 4]  643 	sbc	a, a
+   0264 67            [ 4]  644 	ld	h, a
+   0265 7D            [ 4]  645 	ld	a, l
+   0266 DD 86 F4      [19]  646 	add	a, -12 (ix)
+   0269 DD 77 E2      [19]  647 	ld	-30 (ix), a
+   026C 7C            [ 4]  648 	ld	a, h
+   026D DD 8E F5      [19]  649 	adc	a, -11 (ix)
+   0270 DD 77 E3      [19]  650 	ld	-29 (ix), a
+   0273 DD 7E 04      [19]  651 	ld	a, 4 (ix)
+   0276 83            [ 4]  652 	add	a, e
+   0277 DD 77 F7      [19]  653 	ld	-9 (ix), a
+   027A DD 7E 05      [19]  654 	ld	a, 5 (ix)
+   027D 8A            [ 4]  655 	adc	a, d
+   027E DD 77 F8      [19]  656 	ld	-8 (ix), a
+   0281 DD 6E F7      [19]  657 	ld	l, -9 (ix)
+   0284 DD 66 F8      [19]  658 	ld	h, -8 (ix)
+   0287 7E            [ 7]  659 	ld	a, (hl)
+   0288 C5            [11]  660 	push	bc
+   0289 D5            [11]  661 	push	de
+   028A F5            [11]  662 	push	af
+   028B 33            [ 6]  663 	inc	sp
+   028C CDr00r00      [17]  664 	call	_xtime
+   028F 33            [ 6]  665 	inc	sp
+   0290 DD 75 FD      [19]  666 	ld	-3 (ix), l
+   0293 D1            [10]  667 	pop	de
+   0294 C1            [10]  668 	pop	bc
+   0295 21 01 00      [10]  669 	ld	hl, #0x0001
+   0298 19            [11]  670 	add	hl, de
+   0299 DD 75 FE      [19]  671 	ld	-2 (ix), l
+   029C DD 74 FF      [19]  672 	ld	-1 (ix), h
+   029F DD 7E FE      [19]  673 	ld	a, -2 (ix)
+   02A2 DD 86 04      [19]  674 	add	a, 4 (ix)
+   02A5 DD 77 F9      [19]  675 	ld	-7 (ix), a
+   02A8 DD 7E FF      [19]  676 	ld	a, -1 (ix)
+   02AB DD 8E 05      [19]  677 	adc	a, 5 (ix)
+   02AE DD 77 FA      [19]  678 	ld	-6 (ix), a
+   02B1 DD 6E F9      [19]  679 	ld	l, -7 (ix)
+   02B4 DD 66 FA      [19]  680 	ld	h, -6 (ix)
+   02B7 7E            [ 7]  681 	ld	a, (hl)
+   02B8 C5            [11]  682 	push	bc
+   02B9 D5            [11]  683 	push	de
+   02BA F5            [11]  684 	push	af
+   02BB 33            [ 6]  685 	inc	sp
+   02BC CDr00r00      [17]  686 	call	_xtime
+   02BF 33            [ 6]  687 	inc	sp
+   02C0 7D            [ 4]  688 	ld	a, l
+   02C1 D1            [10]  689 	pop	de
+   02C2 C1            [10]  690 	pop	bc
+   02C3 DD AE FD      [19]  691 	xor	a, -3 (ix)
+   02C6 DD 6E F9      [19]  692 	ld	l, -7 (ix)
+   02C9 DD 66 FA      [19]  693 	ld	h, -6 (ix)
+   02CC 6E            [ 7]  694 	ld	l, (hl)
+   02CD AD            [ 4]  695 	xor	a, l
+   02CE DD 77 FF      [19]  696 	ld	-1 (ix), a
+   02D1 21 02 00      [10]  697 	ld	hl, #0x0002
+   02D4 19            [11]  698 	add	hl, de
+   02D5 DD 75 FD      [19]  699 	ld	-3 (ix), l
+   02D8 DD 74 FE      [19]  700 	ld	-2 (ix), h
+   02DB DD 7E FD      [19]  701 	ld	a, -3 (ix)
+   02DE DD 86 04      [19]  702 	add	a, 4 (ix)
+   02E1 DD 77 FB      [19]  703 	ld	-5 (ix), a
+   02E4 DD 7E FE      [19]  704 	ld	a, -2 (ix)
+   02E7 DD 8E 05      [19]  705 	adc	a, 5 (ix)
+   02EA DD 77 FC      [19]  706 	ld	-4 (ix), a
+   02ED DD 6E FB      [19]  707 	ld	l, -5 (ix)
+   02F0 DD 66 FC      [19]  708 	ld	h, -4 (ix)
+   02F3 7E            [ 7]  709 	ld	a, (hl)
+   02F4 DD AE FF      [19]  710 	xor	a, -1 (ix)
+   02F7 DD 77 FF      [19]  711 	ld	-1 (ix), a
+   02FA 13            [ 6]  712 	inc	de
+   02FB 13            [ 6]  713 	inc	de
+   02FC 13            [ 6]  714 	inc	de
+   02FD 7B            [ 4]  715 	ld	a, e
+   02FE DD 86 04      [19]  716 	add	a, 4 (ix)
+   0301 DD 77 FD      [19]  717 	ld	-3 (ix), a
+   0304 7A            [ 4]  718 	ld	a, d
+   0305 DD 8E 05      [19]  719 	adc	a, 5 (ix)
+   0308 DD 77 FE      [19]  720 	ld	-2 (ix), a
+   030B DD 6E FD      [19]  721 	ld	l, -3 (ix)
+   030E DD 66 FE      [19]  722 	ld	h, -2 (ix)
+   0311 7E            [ 7]  723 	ld	a, (hl)
+   0312 DD AE FF      [19]  724 	xor	a, -1 (ix)
+   0315 E1            [10]  725 	pop	hl
+   0316 E5            [11]  726 	push	hl
+   0317 77            [ 7]  727 	ld	(hl), a
+                     0318   728 	C$aes128.c$77$3_0$45	= .
+                            729 	.globl	C$aes128.c$77$3_0$45
+                            730 ;/work/source_code/aes128.c:77: tmp[idx + 1] = (uint8_t)(state[idx + 0] ^ xtime(state[idx + 1]) ^ xtime(state[idx + 2]) ^ state[idx + 2] ^ state[idx + 3]);
+   0318 DD 7E F6      [19]  731 	ld	a, -10 (ix)
+   031B 3C            [ 4]  732 	inc	a
+   031C 5F            [ 4]  733 	ld	e, a
+   031D 17            [ 4]  734 	rla
+   031E 9F            [ 4]  735 	sbc	a, a
+   031F 57            [ 4]  736 	ld	d, a
+   0320 7B            [ 4]  737 	ld	a, e
+   0321 DD 86 F4      [19]  738 	add	a, -12 (ix)
+   0324 5F            [ 4]  739 	ld	e, a
+   0325 7A            [ 4]  740 	ld	a, d
+   0326 DD 8E F5      [19]  741 	adc	a, -11 (ix)
+   0329 57            [ 4]  742 	ld	d, a
+   032A DD 6E F7      [19]  743 	ld	l, -9 (ix)
+   032D DD 66 F8      [19]  744 	ld	h, -8 (ix)
+   0330 7E            [ 7]  745 	ld	a, (hl)
+   0331 DD 77 FF      [19]  746 	ld	-1 (ix), a
+   0334 DD 6E F9      [19]  747 	ld	l, -7 (ix)
+   0337 DD 66 FA      [19]  748 	ld	h, -6 (ix)
+   033A 7E            [ 7]  749 	ld	a, (hl)
+   033B C5            [11]  750 	push	bc
+   033C D5            [11]  751 	push	de
+   033D F5            [11]  752 	push	af
+   033E 33            [ 6]  753 	inc	sp
+   033F CDr00r00      [17]  754 	call	_xtime
+   0342 33            [ 6]  755 	inc	sp
+   0343 7D            [ 4]  756 	ld	a, l
+   0344 D1            [10]  757 	pop	de
+   0345 C1            [10]  758 	pop	bc
+   0346 DD AE FF      [19]  759 	xor	a, -1 (ix)
+   0349 DD 77 FF      [19]  760 	ld	-1 (ix), a
+   034C DD 6E FB      [19]  761 	ld	l, -5 (ix)
+   034F DD 66 FC      [19]  762 	ld	h, -4 (ix)
+   0352 7E            [ 7]  763 	ld	a, (hl)
+   0353 C5            [11]  764 	push	bc
+   0354 D5            [11]  765 	push	de
+   0355 F5            [11]  766 	push	af
+   0356 33            [ 6]  767 	inc	sp
+   0357 CDr00r00      [17]  768 	call	_xtime
+   035A 33            [ 6]  769 	inc	sp
+   035B 7D            [ 4]  770 	ld	a, l
+   035C D1            [10]  771 	pop	de
+   035D C1            [10]  772 	pop	bc
+   035E DD AE FF      [19]  773 	xor	a, -1 (ix)
+   0361 DD 6E FB      [19]  774 	ld	l, -5 (ix)
+   0364 DD 66 FC      [19]  775 	ld	h, -4 (ix)
+   0367 6E            [ 7]  776 	ld	l, (hl)
+   0368 AD            [ 4]  777 	xor	a, l
+   0369 DD 6E FD      [19]  778 	ld	l, -3 (ix)
+   036C DD 66 FE      [19]  779 	ld	h, -2 (ix)
+   036F 6E            [ 7]  780 	ld	l, (hl)
+   0370 AD            [ 4]  781 	xor	a, l
+   0371 12            [ 7]  782 	ld	(de), a
+                     0372   783 	C$aes128.c$78$3_0$45	= .
+                            784 	.globl	C$aes128.c$78$3_0$45
+                            785 ;/work/source_code/aes128.c:78: tmp[idx + 2] = (uint8_t)(state[idx + 0] ^ state[idx + 1] ^ xtime(state[idx + 2]) ^ xtime(state[idx + 3]) ^ state[idx + 3]);
+   0372 DD 7E F6      [19]  786 	ld	a, -10 (ix)
+   0375 3C            [ 4]  787 	inc	a
+   0376 3C            [ 4]  788 	inc	a
+   0377 5F            [ 4]  789 	ld	e, a
+   0378 17            [ 4]  790 	rla
+   0379 9F            [ 4]  791 	sbc	a, a
+   037A 57            [ 4]  792 	ld	d, a
+   037B 7B            [ 4]  793 	ld	a, e
+   037C DD 86 F4      [19]  794 	add	a, -12 (ix)
+   037F 5F            [ 4]  795 	ld	e, a
+   0380 7A            [ 4]  796 	ld	a, d
+   0381 DD 8E F5      [19]  797 	adc	a, -11 (ix)
+   0384 57            [ 4]  798 	ld	d, a
+   0385 DD 6E F7      [19]  799 	ld	l, -9 (ix)
+   0388 DD 66 F8      [19]  800 	ld	h, -8 (ix)
+   038B 7E            [ 7]  801 	ld	a, (hl)
+   038C DD 6E F9      [19]  802 	ld	l, -7 (ix)
+   038F DD 66 FA      [19]  803 	ld	h, -6 (ix)
+   0392 6E            [ 7]  804 	ld	l, (hl)
+   0393 AD            [ 4]  805 	xor	a, l
+   0394 DD 77 FF      [19]  806 	ld	-1 (ix), a
+   0397 DD 6E FB      [19]  807 	ld	l, -5 (ix)
+   039A DD 66 FC      [19]  808 	ld	h, -4 (ix)
+   039D 7E            [ 7]  809 	ld	a, (hl)
+   039E C5            [11]  810 	push	bc
+   039F D5            [11]  811 	push	de
+   03A0 F5            [11]  812 	push	af
+   03A1 33            [ 6]  813 	inc	sp
+   03A2 CDr00r00      [17]  814 	call	_xtime
+   03A5 33            [ 6]  815 	inc	sp
+   03A6 7D            [ 4]  816 	ld	a, l
+   03A7 D1            [10]  817 	pop	de
+   03A8 C1            [10]  818 	pop	bc
+   03A9 DD AE FF      [19]  819 	xor	a, -1 (ix)
+   03AC DD 77 FF      [19]  820 	ld	-1 (ix), a
+   03AF DD 6E FD      [19]  821 	ld	l, -3 (ix)
+   03B2 DD 66 FE      [19]  822 	ld	h, -2 (ix)
+   03B5 7E            [ 7]  823 	ld	a, (hl)
+   03B6 C5            [11]  824 	push	bc
+   03B7 D5            [11]  825 	push	de
+   03B8 F5            [11]  826 	push	af
+   03B9 33            [ 6]  827 	inc	sp
+   03BA CDr00r00      [17]  828 	call	_xtime
+   03BD 33            [ 6]  829 	inc	sp
+   03BE 7D            [ 4]  830 	ld	a, l
+   03BF D1            [10]  831 	pop	de
+   03C0 C1            [10]  832 	pop	bc
+   03C1 DD AE FF      [19]  833 	xor	a, -1 (ix)
+   03C4 DD 6E FD      [19]  834 	ld	l, -3 (ix)
+   03C7 DD 66 FE      [19]  835 	ld	h, -2 (ix)
+   03CA 6E            [ 7]  836 	ld	l, (hl)
+   03CB AD            [ 4]  837 	xor	a, l
+   03CC 12            [ 7]  838 	ld	(de), a
+                     03CD   839 	C$aes128.c$79$3_0$45	= .
+                            840 	.globl	C$aes128.c$79$3_0$45
+                            841 ;/work/source_code/aes128.c:79: tmp[idx + 3] = (uint8_t)(xtime(state[idx + 0]) ^ state[idx + 0] ^ state[idx + 1] ^ state[idx + 2] ^ xtime(state[idx + 3]));
+   03CD DD 7E F6      [19]  842 	ld	a, -10 (ix)
+   03D0 3C            [ 4]  843 	inc	a
+   03D1 3C            [ 4]  844 	inc	a
+   03D2 3C            [ 4]  845 	inc	a
+   03D3 5F            [ 4]  846 	ld	e, a
+   03D4 17            [ 4]  847 	rla
+   03D5 9F            [ 4]  848 	sbc	a, a
+   03D6 57            [ 4]  849 	ld	d, a
+   03D7 7B            [ 4]  850 	ld	a, e
+   03D8 DD 86 F4      [19]  851 	add	a, -12 (ix)
+   03DB 5F            [ 4]  852 	ld	e, a
+   03DC 7A            [ 4]  853 	ld	a, d
+   03DD DD 8E F5      [19]  854 	adc	a, -11 (ix)
+   03E0 57            [ 4]  855 	ld	d, a
+   03E1 DD 6E F7      [19]  856 	ld	l, -9 (ix)
+   03E4 DD 66 F8      [19]  857 	ld	h, -8 (ix)
+   03E7 7E            [ 7]  858 	ld	a, (hl)
+   03E8 C5            [11]  859 	push	bc
+   03E9 D5            [11]  860 	push	de
+   03EA F5            [11]  861 	push	af
+   03EB 33            [ 6]  862 	inc	sp
+   03EC CDr00r00      [17]  863 	call	_xtime
+   03EF 33            [ 6]  864 	inc	sp
+   03F0 7D            [ 4]  865 	ld	a, l
+   03F1 D1            [10]  866 	pop	de
+   03F2 C1            [10]  867 	pop	bc
+   03F3 DD 6E F7      [19]  868 	ld	l, -9 (ix)
+   03F6 DD 66 F8      [19]  869 	ld	h, -8 (ix)
+   03F9 6E            [ 7]  870 	ld	l, (hl)
+   03FA AD            [ 4]  871 	xor	a, l
+   03FB DD 6E F9      [19]  872 	ld	l, -7 (ix)
+   03FE DD 66 FA      [19]  873 	ld	h, -6 (ix)
+   0401 6E            [ 7]  874 	ld	l, (hl)
+   0402 AD            [ 4]  875 	xor	a, l
+   0403 DD 6E FB      [19]  876 	ld	l, -5 (ix)
+   0406 DD 66 FC      [19]  877 	ld	h, -4 (ix)
+   0409 6E            [ 7]  878 	ld	l, (hl)
+   040A AD            [ 4]  879 	xor	a, l
+   040B DD 77 FF      [19]  880 	ld	-1 (ix), a
+   040E DD 6E FD      [19]  881 	ld	l, -3 (ix)
+   0411 DD 66 FE      [19]  882 	ld	h, -2 (ix)
+   0414 7E            [ 7]  883 	ld	a, (hl)
+   0415 C5            [11]  884 	push	bc
+   0416 D5            [11]  885 	push	de
+   0417 F5            [11]  886 	push	af
+   0418 33            [ 6]  887 	inc	sp
+   0419 CDr00r00      [17]  888 	call	_xtime
+   041C 33            [ 6]  889 	inc	sp
+   041D 7D            [ 4]  890 	ld	a, l
+   041E D1            [10]  891 	pop	de
+   041F C1            [10]  892 	pop	bc
+   0420 DD AE FF      [19]  893 	xor	a, -1 (ix)
+   0423 12            [ 7]  894 	ld	(de), a
+                     0424   895 	C$aes128.c$74$2_0$44	= .
+                            896 	.globl	C$aes128.c$74$2_0$44
+                            897 ;/work/source_code/aes128.c:74: for (int i = 0; i < 4; i++) {
+   0424 03            [ 6]  898 	inc	bc
+   0425 C3r45r02      [10]  899 	jp	00103$
+   0428                     900 00101$:
+                     0428   901 	C$aes128.c$82$1_0$43	= .
+                            902 	.globl	C$aes128.c$82$1_0$43
+                            903 ;/work/source_code/aes128.c:82: memcpy(state, tmp, 16);
+   0428 DD 5E 04      [19]  904 	ld	e, 4 (ix)
+   042B DD 56 05      [19]  905 	ld	d, 5 (ix)
+   042E DD 6E F4      [19]  906 	ld	l, -12 (ix)
+   0431 DD 66 F5      [19]  907 	ld	h, -11 (ix)
+   0434 01 10 00      [10]  908 	ld	bc, #0x0010
+   0437 ED B0         [21]  909 	ldir
+   0439                     910 00105$:
+                     0439   911 	C$aes128.c$83$1_0$43	= .
+                            912 	.globl	C$aes128.c$83$1_0$43
+                            913 ;/work/source_code/aes128.c:83: }
+   0439 DD F9         [10]  914 	ld	sp, ix
+   043B DD E1         [14]  915 	pop	ix
+                     043D   916 	C$aes128.c$83$1_0$43	= .
+                            917 	.globl	C$aes128.c$83$1_0$43
+                     043D   918 	XFaes128$mix_columns$0$0	= .
+                            919 	.globl	XFaes128$mix_columns$0$0
+   043D C9            [10]  920 	ret
+                     043E   921 	Faes128$add_round_key$0$0	= .
+                            922 	.globl	Faes128$add_round_key$0$0
+                     043E   923 	C$aes128.c$85$1_0$48	= .
+                            924 	.globl	C$aes128.c$85$1_0$48
+                            925 ;/work/source_code/aes128.c:85: static void add_round_key(uint8_t *state, const uint8_t *round_key) {
+                            926 ;	---------------------------------
+                            927 ; Function add_round_key
+                            928 ; ---------------------------------
+   043E                     929 _add_round_key:
+   043E DD E5         [15]  930 	push	ix
+   0440 DD 21 00 00   [14]  931 	ld	ix,#0
+   0444 DD 39         [15]  932 	add	ix,sp
+   0446 3B            [ 6]  933 	dec	sp
+                     0447   934 	C$aes128.c$86$2_0$48	= .
+                            935 	.globl	C$aes128.c$86$2_0$48
+                            936 ;/work/source_code/aes128.c:86: for (int i = 0; i < 16; i++) {
+   0447 01 00 00      [10]  937 	ld	bc, #0x0000
+   044A                     938 00103$:
+   044A 79            [ 4]  939 	ld	a, c
+   044B D6 10         [ 7]  940 	sub	a, #0x10
+   044D 78            [ 4]  941 	ld	a, b
+   044E 17            [ 4]  942 	rla
+   044F 3F            [ 4]  943 	ccf
+   0450 1F            [ 4]  944 	rra
+   0451 DE 80         [ 7]  945 	sbc	a, #0x80
+   0453 D2r74r04      [10]  946 	jp	NC, 00105$
+                     0456   947 	C$aes128.c$87$3_0$49	= .
+                            948 	.globl	C$aes128.c$87$3_0$49
+                            949 ;/work/source_code/aes128.c:87: state[i] ^= round_key[i];
+   0456 DD 7E 04      [19]  950 	ld	a, 4 (ix)
+   0459 81            [ 4]  951 	add	a, c
+   045A 5F            [ 4]  952 	ld	e, a
+   045B DD 7E 05      [19]  953 	ld	a, 5 (ix)
+   045E 88            [ 4]  954 	adc	a, b
+   045F 57            [ 4]  955 	ld	d, a
+   0460 1A            [ 7]  956 	ld	a, (de)
+   0461 DD 77 FF      [19]  957 	ld	-1 (ix), a
+   0464 DD 6E 06      [19]  958 	ld	l, 6 (ix)
+   0467 DD 66 07      [19]  959 	ld	h, 7 (ix)
+   046A 09            [11]  960 	add	hl, bc
+   046B 7E            [ 7]  961 	ld	a, (hl)
+   046C DD AE FF      [19]  962 	xor	a, -1 (ix)
+   046F 12            [ 7]  963 	ld	(de), a
+                     0470   964 	C$aes128.c$86$2_0$48	= .
+                            965 	.globl	C$aes128.c$86$2_0$48
+                            966 ;/work/source_code/aes128.c:86: for (int i = 0; i < 16; i++) {
+   0470 03            [ 6]  967 	inc	bc
+   0471 C3r4Ar04      [10]  968 	jp	00103$
+   0474                     969 00105$:
+                     0474   970 	C$aes128.c$89$2_0$48	= .
+                            971 	.globl	C$aes128.c$89$2_0$48
+                            972 ;/work/source_code/aes128.c:89: }
+   0474 33            [ 6]  973 	inc	sp
+   0475 DD E1         [14]  974 	pop	ix
+                     0477   975 	C$aes128.c$89$2_0$48	= .
+                            976 	.globl	C$aes128.c$89$2_0$48
+                     0477   977 	XFaes128$add_round_key$0$0	= .
+                            978 	.globl	XFaes128$add_round_key$0$0
+   0477 C9            [10]  979 	ret
+                     0478   980 	Faes128$key_expansion$0$0	= .
+                            981 	.globl	Faes128$key_expansion$0$0
+                     0478   982 	C$aes128.c$91$2_0$51	= .
+                            983 	.globl	C$aes128.c$91$2_0$51
+                            984 ;/work/source_code/aes128.c:91: static void key_expansion(const uint8_t *key, AES128_CTX *ctx) {
+                            985 ;	---------------------------------
+                            986 ; Function key_expansion
+                            987 ; ---------------------------------
+   0478                     988 _key_expansion:
+   0478 DD E5         [15]  989 	push	ix
+   047A DD 21 00 00   [14]  990 	ld	ix,#0
+   047E DD 39         [15]  991 	add	ix,sp
+   0480 21 F7 FF      [10]  992 	ld	hl, #-9
+   0483 39            [11]  993 	add	hl, sp
+   0484 F9            [ 6]  994 	ld	sp, hl
+                     0485   995 	C$aes128.c$92$1_0$51	= .
+                            996 	.globl	C$aes128.c$92$1_0$51
+                            997 ;/work/source_code/aes128.c:92: memcpy(ctx->round_keys[0], key, 16);
+   0485 DD 4E 06      [19]  998 	ld	c, 6 (ix)
+   0488 DD 46 07      [19]  999 	ld	b, 7 (ix)
+   048B 59            [ 4] 1000 	ld	e, c
+   048C 50            [ 4] 1001 	ld	d, b
+   048D DD 6E 04      [19] 1002 	ld	l, 4 (ix)
+   0490 DD 66 05      [19] 1003 	ld	h, 5 (ix)
+   0493 C5            [11] 1004 	push	bc
+   0494 01 10 00      [10] 1005 	ld	bc, #0x0010
+   0497 ED B0         [21] 1006 	ldir
+   0499 C1            [10] 1007 	pop	bc
+                     049A  1008 	C$aes128.c$94$3_0$53	= .
+                           1009 	.globl	C$aes128.c$94$3_0$53
+                           1010 ;/work/source_code/aes128.c:94: for (int round = 1; round <= AES_ROUNDS; round++) {
+   049A 11 01 00      [10] 1011 	ld	de, #0x0001
+   049D                    1012 00107$:
+   049D 3E 0A         [ 7] 1013 	ld	a, #0x0a
+   049F BB            [ 4] 1014 	cp	a, e
+   04A0 3E 00         [ 7] 1015 	ld	a, #0x00
+   04A2 9A            [ 4] 1016 	sbc	a, d
+   04A3 E2rA8r04      [10] 1017 	jp	PO, 00133$
+   04A6 EE 80         [ 7] 1018 	xor	a, #0x80
+   04A8                    1019 00133$:
+   04A8 FArF9r05      [10] 1020 	jp	M, 00109$
+                     04AB  1021 	C$aes128.c$95$3_0$53	= .
+                           1022 	.globl	C$aes128.c$95$3_0$53
+                           1023 ;/work/source_code/aes128.c:95: uint8_t *prev = ctx->round_keys[round - 1];
+   04AB 6B            [ 4] 1024 	ld	l, e
+   04AC 62            [ 4] 1025 	ld	h, d
+   04AD 2B            [ 6] 1026 	dec	hl
+   04AE 29            [11] 1027 	add	hl, hl
+   04AF 29            [11] 1028 	add	hl, hl
+   04B0 29            [11] 1029 	add	hl, hl
+   04B1 29            [11] 1030 	add	hl, hl
+   04B2 09            [11] 1031 	add	hl, bc
+   04B3 33            [ 6] 1032 	inc	sp
+   04B4 33            [ 6] 1033 	inc	sp
+   04B5 E5            [11] 1034 	push	hl
+                     04B6  1035 	C$aes128.c$96$3_0$53	= .
+                           1036 	.globl	C$aes128.c$96$3_0$53
+                           1037 ;/work/source_code/aes128.c:96: uint8_t *curr = ctx->round_keys[round];
+   04B6 6B            [ 4] 1038 	ld	l, e
+   04B7 62            [ 4] 1039 	ld	h, d
+   04B8 29            [11] 1040 	add	hl, hl
+   04B9 29            [11] 1041 	add	hl, hl
+   04BA 29            [11] 1042 	add	hl, hl
+   04BB 29            [11] 1043 	add	hl, hl
+   04BC 09            [11] 1044 	add	hl, bc
+   04BD DD 75 F9      [19] 1045 	ld	-7 (ix), l
+   04C0 DD 74 FA      [19] 1046 	ld	-6 (ix), h
+                     04C3  1047 	C$aes128.c$98$3_0$53	= .
+                           1048 	.globl	C$aes128.c$98$3_0$53
+                           1049 ;/work/source_code/aes128.c:98: curr[0] = prev[0] ^ sbox[prev[13]] ^ rcon[round];
+   04C3 E1            [10] 1050 	pop	hl
+   04C4 E5            [11] 1051 	push	hl
+   04C5 7E            [ 7] 1052 	ld	a, (hl)
+   04C6 DD 77 FF      [19] 1053 	ld	-1 (ix), a
+   04C9 E1            [10] 1054 	pop	hl
+   04CA E5            [11] 1055 	push	hl
+   04CB C5            [11] 1056 	push	bc
+   04CC 01 0D 00      [10] 1057 	ld	bc, #0x000d
+   04CF 09            [11] 1058 	add	hl, bc
+   04D0 C1            [10] 1059 	pop	bc
+   04D1 7E            [ 7] 1060 	ld	a, (hl)
+   04D2 C6r2C         [ 7] 1061 	add	a, #<(_sbox)
+   04D4 6F            [ 4] 1062 	ld	l, a
+   04D5 3E 00         [ 7] 1063 	ld	a, #0x00
+   04D7 CEs00         [ 7] 1064 	adc	a, #>(_sbox)
+   04D9 67            [ 4] 1065 	ld	h, a
+   04DA 7E            [ 7] 1066 	ld	a, (hl)
+   04DB DD AE FF      [19] 1067 	xor	a, -1 (ix)
+   04DE DD 77 FF      [19] 1068 	ld	-1 (ix), a
+   04E1 21r2Cr01      [10] 1069 	ld	hl, #_rcon
+   04E4 19            [11] 1070 	add	hl, de
+   04E5 7E            [ 7] 1071 	ld	a, (hl)
+   04E6 DD AE FF      [19] 1072 	xor	a, -1 (ix)
+   04E9 DD 6E F9      [19] 1073 	ld	l, -7 (ix)
+   04EC DD 66 FA      [19] 1074 	ld	h, -6 (ix)
+   04EF 77            [ 7] 1075 	ld	(hl), a
+                     04F0  1076 	C$aes128.c$99$3_0$53	= .
+                           1077 	.globl	C$aes128.c$99$3_0$53
+                           1078 ;/work/source_code/aes128.c:99: curr[1] = prev[1] ^ sbox[prev[14]];
+   04F0 DD 7E F9      [19] 1079 	ld	a, -7 (ix)
+   04F3 C6 01         [ 7] 1080 	add	a, #0x01
+   04F5 DD 77 FD      [19] 1081 	ld	-3 (ix), a
+   04F8 DD 7E FA      [19] 1082 	ld	a, -6 (ix)
+   04FB CE 00         [ 7] 1083 	adc	a, #0x00
+   04FD DD 77 FE      [19] 1084 	ld	-2 (ix), a
+   0500 E1            [10] 1085 	pop	hl
+   0501 E5            [11] 1086 	push	hl
+   0502 23            [ 6] 1087 	inc	hl
+   0503 7E            [ 7] 1088 	ld	a, (hl)
+   0504 DD 77 FF      [19] 1089 	ld	-1 (ix), a
+   0507 E1            [10] 1090 	pop	hl
+   0508 E5            [11] 1091 	push	hl
+   0509 C5            [11] 1092 	push	bc
+   050A 01 0E 00      [10] 1093 	ld	bc, #0x000e
+   050D 09            [11] 1094 	add	hl, bc
+   050E C1            [10] 1095 	pop	bc
+   050F 7E            [ 7] 1096 	ld	a, (hl)
+   0510 C6r2C         [ 7] 1097 	add	a, #<(_sbox)
+   0512 6F            [ 4] 1098 	ld	l, a
+   0513 3E 00         [ 7] 1099 	ld	a, #0x00
+   0515 CEs00         [ 7] 1100 	adc	a, #>(_sbox)
+   0517 67            [ 4] 1101 	ld	h, a
+   0518 7E            [ 7] 1102 	ld	a, (hl)
+   0519 DD AE FF      [19] 1103 	xor	a, -1 (ix)
+   051C DD 6E FD      [19] 1104 	ld	l, -3 (ix)
+   051F DD 66 FE      [19] 1105 	ld	h, -2 (ix)
+   0522 77            [ 7] 1106 	ld	(hl), a
+                     0523  1107 	C$aes128.c$100$3_0$53	= .
+                           1108 	.globl	C$aes128.c$100$3_0$53
+                           1109 ;/work/source_code/aes128.c:100: curr[2] = prev[2] ^ sbox[prev[15]];
+   0523 DD 7E F9      [19] 1110 	ld	a, -7 (ix)
+   0526 C6 02         [ 7] 1111 	add	a, #0x02
+   0528 DD 77 FD      [19] 1112 	ld	-3 (ix), a
+   052B DD 7E FA      [19] 1113 	ld	a, -6 (ix)
+   052E CE 00         [ 7] 1114 	adc	a, #0x00
+   0530 DD 77 FE      [19] 1115 	ld	-2 (ix), a
+   0533 E1            [10] 1116 	pop	hl
+   0534 E5            [11] 1117 	push	hl
+   0535 23            [ 6] 1118 	inc	hl
+   0536 23            [ 6] 1119 	inc	hl
+   0537 7E            [ 7] 1120 	ld	a, (hl)
+   0538 DD 77 FF      [19] 1121 	ld	-1 (ix), a
+   053B E1            [10] 1122 	pop	hl
+   053C E5            [11] 1123 	push	hl
+   053D C5            [11] 1124 	push	bc
+   053E 01 0F 00      [10] 1125 	ld	bc, #0x000f
+   0541 09            [11] 1126 	add	hl, bc
+   0542 C1            [10] 1127 	pop	bc
+   0543 7E            [ 7] 1128 	ld	a, (hl)
+   0544 C6r2C         [ 7] 1129 	add	a, #<(_sbox)
+   0546 6F            [ 4] 1130 	ld	l, a
+   0547 3E 00         [ 7] 1131 	ld	a, #0x00
+   0549 CEs00         [ 7] 1132 	adc	a, #>(_sbox)
+   054B 67            [ 4] 1133 	ld	h, a
+   054C 7E            [ 7] 1134 	ld	a, (hl)
+   054D DD AE FF      [19] 1135 	xor	a, -1 (ix)
+   0550 DD 6E FD      [19] 1136 	ld	l, -3 (ix)
+   0553 DD 66 FE      [19] 1137 	ld	h, -2 (ix)
+   0556 77            [ 7] 1138 	ld	(hl), a
+                     0557  1139 	C$aes128.c$101$3_0$53	= .
+                           1140 	.globl	C$aes128.c$101$3_0$53
+                           1141 ;/work/source_code/aes128.c:101: curr[3] = prev[3] ^ sbox[prev[12]];
+   0557 DD 7E F9      [19] 1142 	ld	a, -7 (ix)
+   055A C6 03         [ 7] 1143 	add	a, #0x03
+   055C DD 77 FD      [19] 1144 	ld	-3 (ix), a
+   055F DD 7E FA      [19] 1145 	ld	a, -6 (ix)
+   0562 CE 00         [ 7] 1146 	adc	a, #0x00
+   0564 DD 77 FE      [19] 1147 	ld	-2 (ix), a
+   0567 E1            [10] 1148 	pop	hl
+   0568 E5            [11] 1149 	push	hl
+   0569 23            [ 6] 1150 	inc	hl
+   056A 23            [ 6] 1151 	inc	hl
+   056B 23            [ 6] 1152 	inc	hl
+   056C 7E            [ 7] 1153 	ld	a, (hl)
+   056D DD 77 FF      [19] 1154 	ld	-1 (ix), a
+   0570 E1            [10] 1155 	pop	hl
+   0571 E5            [11] 1156 	push	hl
+   0572 C5            [11] 1157 	push	bc
+   0573 01 0C 00      [10] 1158 	ld	bc, #0x000c
+   0576 09            [11] 1159 	add	hl, bc
+   0577 C1            [10] 1160 	pop	bc
+   0578 7E            [ 7] 1161 	ld	a, (hl)
+   0579 C6r2C         [ 7] 1162 	add	a, #<(_sbox)
+   057B 6F            [ 4] 1163 	ld	l, a
+   057C 3E 00         [ 7] 1164 	ld	a, #0x00
+   057E CEs00         [ 7] 1165 	adc	a, #>(_sbox)
+   0580 67            [ 4] 1166 	ld	h, a
+   0581 7E            [ 7] 1167 	ld	a, (hl)
+   0582 DD AE FF      [19] 1168 	xor	a, -1 (ix)
+   0585 DD 6E FD      [19] 1169 	ld	l, -3 (ix)
+   0588 DD 66 FE      [19] 1170 	ld	h, -2 (ix)
+   058B 77            [ 7] 1171 	ld	(hl), a
+                     058C  1172 	C$aes128.c$103$2_0$51	= .
+                           1173 	.globl	C$aes128.c$103$2_0$51
+                           1174 ;/work/source_code/aes128.c:103: for (int i = 4; i < 16; i++) {
+   058C DD 36 FE 04   [19] 1175 	ld	-2 (ix), #0x04
+   0590 AF            [ 4] 1176 	xor	a, a
+   0591 DD 77 FF      [19] 1177 	ld	-1 (ix), a
+   0594                    1178 00104$:
+   0594 DD 7E FE      [19] 1179 	ld	a, -2 (ix)
+   0597 D6 10         [ 7] 1180 	sub	a, #0x10
+   0599 DD 7E FF      [19] 1181 	ld	a, -1 (ix)
+   059C 17            [ 4] 1182 	rla
+   059D 3F            [ 4] 1183 	ccf
+   059E 1F            [ 4] 1184 	rra
+   059F DE 80         [ 7] 1185 	sbc	a, #0x80
+   05A1 D2rF5r05      [10] 1186 	jp	NC, 00108$
+                     05A4  1187 	C$aes128.c$104$5_0$55	= .
+                           1188 	.globl	C$aes128.c$104$5_0$55
+                           1189 ;/work/source_code/aes128.c:104: curr[i] = prev[i] ^ curr[i - 4];
+   05A4 DD 7E F9      [19] 1190 	ld	a, -7 (ix)
+   05A7 DD 86 FE      [19] 1191 	add	a, -2 (ix)
+   05AA DD 77 FB      [19] 1192 	ld	-5 (ix), a
+   05AD DD 7E FA      [19] 1193 	ld	a, -6 (ix)
+   05B0 DD 8E FF      [19] 1194 	adc	a, -1 (ix)
+   05B3 DD 77 FC      [19] 1195 	ld	-4 (ix), a
+   05B6 DD 7E F7      [19] 1196 	ld	a, -9 (ix)
+   05B9 DD 86 FE      [19] 1197 	add	a, -2 (ix)
+   05BC 6F            [ 4] 1198 	ld	l, a
+   05BD DD 7E F8      [19] 1199 	ld	a, -8 (ix)
+   05C0 DD 8E FF      [19] 1200 	adc	a, -1 (ix)
+   05C3 67            [ 4] 1201 	ld	h, a
+   05C4 7E            [ 7] 1202 	ld	a, (hl)
+   05C5 DD 77 FD      [19] 1203 	ld	-3 (ix), a
+   05C8 DD 7E FE      [19] 1204 	ld	a, -2 (ix)
+   05CB C6 FC         [ 7] 1205 	add	a, #0xfc
+   05CD 6F            [ 4] 1206 	ld	l, a
+   05CE DD 7E FF      [19] 1207 	ld	a, -1 (ix)
+   05D1 CE FF         [ 7] 1208 	adc	a, #0xff
+   05D3 67            [ 4] 1209 	ld	h, a
+   05D4 7D            [ 4] 1210 	ld	a, l
+   05D5 DD 86 F9      [19] 1211 	add	a, -7 (ix)
+   05D8 6F            [ 4] 1212 	ld	l, a
+   05D9 7C            [ 4] 1213 	ld	a, h
+   05DA DD 8E FA      [19] 1214 	adc	a, -6 (ix)
+   05DD 67            [ 4] 1215 	ld	h, a
+   05DE 7E            [ 7] 1216 	ld	a, (hl)
+   05DF DD AE FD      [19] 1217 	xor	a, -3 (ix)
+   05E2 DD 6E FB      [19] 1218 	ld	l, -5 (ix)
+   05E5 DD 66 FC      [19] 1219 	ld	h, -4 (ix)
+   05E8 77            [ 7] 1220 	ld	(hl), a
+                     05E9  1221 	C$aes128.c$103$4_0$54	= .
+                           1222 	.globl	C$aes128.c$103$4_0$54
+                           1223 ;/work/source_code/aes128.c:103: for (int i = 4; i < 16; i++) {
+   05E9 DD 34 FE      [23] 1224 	inc	-2 (ix)
+   05EC C2rF2r05      [10] 1225 	jp	NZ, 00134$
+   05EF DD 34 FF      [23] 1226 	inc	-1 (ix)
+   05F2                    1227 00134$:
+   05F2 C3r94r05      [10] 1228 	jp	00104$
+   05F5                    1229 00108$:
+                     05F5  1230 	C$aes128.c$94$2_0$52	= .
+                           1231 	.globl	C$aes128.c$94$2_0$52
+                           1232 ;/work/source_code/aes128.c:94: for (int round = 1; round <= AES_ROUNDS; round++) {
+   05F5 13            [ 6] 1233 	inc	de
+   05F6 C3r9Dr04      [10] 1234 	jp	00107$
+   05F9                    1235 00109$:
+                     05F9  1236 	C$aes128.c$107$2_0$51	= .
+                           1237 	.globl	C$aes128.c$107$2_0$51
+                           1238 ;/work/source_code/aes128.c:107: }
+   05F9 DD F9         [10] 1239 	ld	sp, ix
+   05FB DD E1         [14] 1240 	pop	ix
+                     05FD  1241 	C$aes128.c$107$2_0$51	= .
+                           1242 	.globl	C$aes128.c$107$2_0$51
+                     05FD  1243 	XFaes128$key_expansion$0$0	= .
+                           1244 	.globl	XFaes128$key_expansion$0$0
+   05FD C9            [10] 1245 	ret
+                     05FE  1246 	G$aes128_encrypt$0$0	= .
+                           1247 	.globl	G$aes128_encrypt$0$0
+                     05FE  1248 	C$aes128.c$109$2_0$57	= .
+                           1249 	.globl	C$aes128.c$109$2_0$57
+                           1250 ;/work/source_code/aes128.c:109: void aes128_encrypt(const uint8_t *plaintext, uint8_t *ciphertext, const uint8_t *key) {
+                           1251 ;	---------------------------------
+                           1252 ; Function aes128_encrypt
+                           1253 ; ---------------------------------
+   05FE                    1254 _aes128_encrypt::
+   05FE DD E5         [15] 1255 	push	ix
+   0600 DD 21 00 00   [14] 1256 	ld	ix,#0
+   0604 DD 39         [15] 1257 	add	ix,sp
+   0606 21 34 FF      [10] 1258 	ld	hl, #-204
+   0609 39            [11] 1259 	add	hl, sp
+   060A F9            [ 6] 1260 	ld	sp, hl
+                     060B  1261 	C$aes128.c$113$1_0$57	= .
+                           1262 	.globl	C$aes128.c$113$1_0$57
+                           1263 ;/work/source_code/aes128.c:113: key_expansion(key, &ctx);
+   060B 21 00 00      [10] 1264 	ld	hl, #0
+   060E 39            [11] 1265 	add	hl, sp
+   060F DD 75 F4      [19] 1266 	ld	-12 (ix), l
+   0612 DD 74 F5      [19] 1267 	ld	-11 (ix), h
+   0615 DD 4E F4      [19] 1268 	ld	c, -12 (ix)
+   0618 DD 46 F5      [19] 1269 	ld	b, -11 (ix)
+   061B C5            [11] 1270 	push	bc
+   061C DD 6E 08      [19] 1271 	ld	l, 8 (ix)
+   061F DD 66 09      [19] 1272 	ld	h, 9 (ix)
+   0622 E5            [11] 1273 	push	hl
+   0623 CDr78r04      [17] 1274 	call	_key_expansion
+   0626 F1            [10] 1275 	pop	af
+   0627 F1            [10] 1276 	pop	af
+                     0628  1277 	C$aes128.c$114$1_0$57	= .
+                           1278 	.globl	C$aes128.c$114$1_0$57
+                           1279 ;/work/source_code/aes128.c:114: memcpy(state, plaintext, 16);
+   0628 21 B0 00      [10] 1280 	ld	hl, #176
+   062B 39            [11] 1281 	add	hl, sp
+   062C 4D            [ 4] 1282 	ld	c, l
+   062D 44            [ 4] 1283 	ld	b, h
+   062E 59            [ 4] 1284 	ld	e, c
+   062F 50            [ 4] 1285 	ld	d, b
+   0630 DD 6E 04      [19] 1286 	ld	l, 4 (ix)
+   0633 DD 66 05      [19] 1287 	ld	h, 5 (ix)
+   0636 C5            [11] 1288 	push	bc
+   0637 01 10 00      [10] 1289 	ld	bc, #0x0010
+   063A ED B0         [21] 1290 	ldir
+   063C C1            [10] 1291 	pop	bc
+                     063D  1292 	C$aes128.c$116$1_0$57	= .
+                           1293 	.globl	C$aes128.c$116$1_0$57
+                           1294 ;/work/source_code/aes128.c:116: add_round_key(state, ctx.round_keys[0]);
+   063D DD 6E F4      [19] 1295 	ld	l, -12 (ix)
+   0640 DD 66 F5      [19] 1296 	ld	h, -11 (ix)
+   0643 59            [ 4] 1297 	ld	e, c
+   0644 50            [ 4] 1298 	ld	d, b
+   0645 C5            [11] 1299 	push	bc
+   0646 E5            [11] 1300 	push	hl
+   0647 D5            [11] 1301 	push	de
+   0648 CDr3Er04      [17] 1302 	call	_add_round_key
+   064B F1            [10] 1303 	pop	af
+   064C F1            [10] 1304 	pop	af
+   064D C1            [10] 1305 	pop	bc
+                     064E  1306 	C$aes128.c$118$3_0$59	= .
+                           1307 	.globl	C$aes128.c$118$3_0$59
+                           1308 ;/work/source_code/aes128.c:118: for (int round = 1; round < AES_ROUNDS; round++) {
+   064E DD 71 F6      [19] 1309 	ld	-10 (ix), c
+   0651 DD 70 F7      [19] 1310 	ld	-9 (ix), b
+   0654 DD 71 F8      [19] 1311 	ld	-8 (ix), c
+   0657 DD 70 F9      [19] 1312 	ld	-7 (ix), b
+   065A DD 71 FA      [19] 1313 	ld	-6 (ix), c
+   065D DD 70 FB      [19] 1314 	ld	-5 (ix), b
+   0660 DD 71 FC      [19] 1315 	ld	-4 (ix), c
+   0663 DD 70 FD      [19] 1316 	ld	-3 (ix), b
+   0666 DD 36 FE 01   [19] 1317 	ld	-2 (ix), #0x01
+   066A AF            [ 4] 1318 	xor	a, a
+   066B DD 77 FF      [19] 1319 	ld	-1 (ix), a
+   066E                    1320 00103$:
+   066E DD 7E FE      [19] 1321 	ld	a, -2 (ix)
+   0671 D6 0A         [ 7] 1322 	sub	a, #0x0a
+   0673 DD 7E FF      [19] 1323 	ld	a, -1 (ix)
+   0676 17            [ 4] 1324 	rla
+   0677 3F            [ 4] 1325 	ccf
+   0678 1F            [ 4] 1326 	rra
+   0679 DE 80         [ 7] 1327 	sbc	a, #0x80
+   067B D2rE0r06      [10] 1328 	jp	NC, 00101$
+                     067E  1329 	C$aes128.c$119$3_0$59	= .
+                           1330 	.globl	C$aes128.c$119$3_0$59
+                           1331 ;/work/source_code/aes128.c:119: sub_bytes(state);
+   067E DD 5E F6      [19] 1332 	ld	e, -10 (ix)
+   0681 DD 56 F7      [19] 1333 	ld	d, -9 (ix)
+   0684 C5            [11] 1334 	push	bc
+   0685 D5            [11] 1335 	push	de
+   0686 CDr37r01      [17] 1336 	call	_sub_bytes
+   0689 F1            [10] 1337 	pop	af
+   068A C1            [10] 1338 	pop	bc
+                     068B  1339 	C$aes128.c$120$3_0$59	= .
+                           1340 	.globl	C$aes128.c$120$3_0$59
+                           1341 ;/work/source_code/aes128.c:120: shift_rows(state);
+   068B DD 5E F8      [19] 1342 	ld	e, -8 (ix)
+   068E DD 56 F9      [19] 1343 	ld	d, -7 (ix)
+   0691 C5            [11] 1344 	push	bc
+   0692 D5            [11] 1345 	push	de
+   0693 CDr6Ar01      [17] 1346 	call	_shift_rows
+   0696 F1            [10] 1347 	pop	af
+   0697 C1            [10] 1348 	pop	bc
+                     0698  1349 	C$aes128.c$121$3_0$59	= .
+                           1350 	.globl	C$aes128.c$121$3_0$59
+                           1351 ;/work/source_code/aes128.c:121: mix_columns(state);
+   0698 DD 5E FA      [19] 1352 	ld	e, -6 (ix)
+   069B DD 56 FB      [19] 1353 	ld	d, -5 (ix)
+   069E C5            [11] 1354 	push	bc
+   069F D5            [11] 1355 	push	de
+   06A0 CDr2Br02      [17] 1356 	call	_mix_columns
+   06A3 F1            [10] 1357 	pop	af
+   06A4 C1            [10] 1358 	pop	bc
+                     06A5  1359 	C$aes128.c$122$3_0$59	= .
+                           1360 	.globl	C$aes128.c$122$3_0$59
+                           1361 ;/work/source_code/aes128.c:122: add_round_key(state, ctx.round_keys[round]);
+   06A5 DD 5E FE      [19] 1362 	ld	e, -2 (ix)
+   06A8 DD 56 FF      [19] 1363 	ld	d, -1 (ix)
+   06AB CB 23         [ 8] 1364 	sla	e
+   06AD CB 12         [ 8] 1365 	rl	d
+   06AF CB 23         [ 8] 1366 	sla	e
+   06B1 CB 12         [ 8] 1367 	rl	d
+   06B3 CB 23         [ 8] 1368 	sla	e
+   06B5 CB 12         [ 8] 1369 	rl	d
+   06B7 CB 23         [ 8] 1370 	sla	e
+   06B9 CB 12         [ 8] 1371 	rl	d
+   06BB 7B            [ 4] 1372 	ld	a, e
+   06BC DD 86 F4      [19] 1373 	add	a, -12 (ix)
+   06BF 5F            [ 4] 1374 	ld	e, a
+   06C0 7A            [ 4] 1375 	ld	a, d
+   06C1 DD 8E F5      [19] 1376 	adc	a, -11 (ix)
+   06C4 57            [ 4] 1377 	ld	d, a
+   06C5 DD 6E FC      [19] 1378 	ld	l, -4 (ix)
+   06C8 DD 66 FD      [19] 1379 	ld	h, -3 (ix)
+   06CB C5            [11] 1380 	push	bc
+   06CC D5            [11] 1381 	push	de
+   06CD E5            [11] 1382 	push	hl
+   06CE CDr3Er04      [17] 1383 	call	_add_round_key
+   06D1 F1            [10] 1384 	pop	af
+   06D2 F1            [10] 1385 	pop	af
+   06D3 C1            [10] 1386 	pop	bc
+                     06D4  1387 	C$aes128.c$118$2_0$58	= .
+                           1388 	.globl	C$aes128.c$118$2_0$58
+                           1389 ;/work/source_code/aes128.c:118: for (int round = 1; round < AES_ROUNDS; round++) {
+   06D4 DD 34 FE      [23] 1390 	inc	-2 (ix)
+   06D7 C2rDDr06      [10] 1391 	jp	NZ, 00120$
+   06DA DD 34 FF      [23] 1392 	inc	-1 (ix)
+   06DD                    1393 00120$:
+   06DD C3r6Er06      [10] 1394 	jp	00103$
+   06E0                    1395 00101$:
+                     06E0  1396 	C$aes128.c$125$1_0$57	= .
+                           1397 	.globl	C$aes128.c$125$1_0$57
+                           1398 ;/work/source_code/aes128.c:125: sub_bytes(state);
+   06E0 59            [ 4] 1399 	ld	e, c
+   06E1 50            [ 4] 1400 	ld	d, b
+   06E2 C5            [11] 1401 	push	bc
+   06E3 D5            [11] 1402 	push	de
+   06E4 CDr37r01      [17] 1403 	call	_sub_bytes
+   06E7 F1            [10] 1404 	pop	af
+   06E8 C1            [10] 1405 	pop	bc
+                     06E9  1406 	C$aes128.c$126$1_0$57	= .
+                           1407 	.globl	C$aes128.c$126$1_0$57
+                           1408 ;/work/source_code/aes128.c:126: shift_rows(state);
+   06E9 59            [ 4] 1409 	ld	e, c
+   06EA 50            [ 4] 1410 	ld	d, b
+   06EB C5            [11] 1411 	push	bc
+   06EC D5            [11] 1412 	push	de
+   06ED CDr6Ar01      [17] 1413 	call	_shift_rows
+   06F0 F1            [10] 1414 	pop	af
+   06F1 C1            [10] 1415 	pop	bc
+                     06F2  1416 	C$aes128.c$127$1_0$57	= .
+                           1417 	.globl	C$aes128.c$127$1_0$57
+                           1418 ;/work/source_code/aes128.c:127: add_round_key(state, ctx.round_keys[AES_ROUNDS]);
+   06F2 DD 7E F4      [19] 1419 	ld	a, -12 (ix)
+   06F5 C6 A0         [ 7] 1420 	add	a, #0xa0
+   06F7 5F            [ 4] 1421 	ld	e, a
+   06F8 DD 7E F5      [19] 1422 	ld	a, -11 (ix)
+   06FB CE 00         [ 7] 1423 	adc	a, #0x00
+   06FD 57            [ 4] 1424 	ld	d, a
+   06FE 69            [ 4] 1425 	ld	l, c
+   06FF 60            [ 4] 1426 	ld	h, b
+   0700 C5            [11] 1427 	push	bc
+   0701 D5            [11] 1428 	push	de
+   0702 E5            [11] 1429 	push	hl
+   0703 CDr3Er04      [17] 1430 	call	_add_round_key
+   0706 F1            [10] 1431 	pop	af
+   0707 F1            [10] 1432 	pop	af
+   0708 C1            [10] 1433 	pop	bc
+                     0709  1434 	C$aes128.c$129$1_0$57	= .
+                           1435 	.globl	C$aes128.c$129$1_0$57
+                           1436 ;/work/source_code/aes128.c:129: memcpy(ciphertext, state, 16);
+   0709 DD 5E 06      [19] 1437 	ld	e, 6 (ix)
+   070C DD 56 07      [19] 1438 	ld	d, 7 (ix)
+   070F 69            [ 4] 1439 	ld	l, c
+   0710 60            [ 4] 1440 	ld	h, b
+   0711 01 10 00      [10] 1441 	ld	bc, #0x0010
+   0714 ED B0         [21] 1442 	ldir
+   0716                    1443 00105$:
+                     0716  1444 	C$aes128.c$130$1_0$57	= .
+                           1445 	.globl	C$aes128.c$130$1_0$57
+                           1446 ;/work/source_code/aes128.c:130: }
+   0716 DD F9         [10] 1447 	ld	sp, ix
+   0718 DD E1         [14] 1448 	pop	ix
+                     071A  1449 	C$aes128.c$130$1_0$57	= .
+                           1450 	.globl	C$aes128.c$130$1_0$57
+                     071A  1451 	XG$aes128_encrypt$0$0	= .
+                           1452 	.globl	XG$aes128_encrypt$0$0
+   071A C9            [10] 1453 	ret
+                     071B  1454 	G$main$0$0	= .
+                           1455 	.globl	G$main$0$0
+                     071B  1456 	C$aes128.c$132$1_0$60	= .
+                           1457 	.globl	C$aes128.c$132$1_0$60
+                           1458 ;/work/source_code/aes128.c:132: int main() {
+                           1459 ;	---------------------------------
+                           1460 ; Function main
+                           1461 ; ---------------------------------
+   071B                    1462 _main::
+   071B DD E5         [15] 1463 	push	ix
+   071D DD 21 00 00   [14] 1464 	ld	ix,#0
+   0721 DD 39         [15] 1465 	add	ix,sp
+   0723 21 CC FF      [10] 1466 	ld	hl, #-52
+   0726 39            [11] 1467 	add	hl, sp
+   0727 F9            [ 6] 1468 	ld	sp, hl
+                     0728  1469 	C$aes128.c$133$2_0$60	= .
+                           1470 	.globl	C$aes128.c$133$2_0$60
+                           1471 ;/work/source_code/aes128.c:133: uint8_t key[16] = {
+   0728 21 00 00      [10] 1472 	ld	hl, #0
+   072B 39            [11] 1473 	add	hl, sp
+   072C EB            [ 4] 1474 	ex	de, hl
+   072D 3E 2B         [ 7] 1475 	ld	a, #0x2b
+   072F 12            [ 7] 1476 	ld	(de), a
+   0730 6B            [ 4] 1477 	ld	l, e
+   0731 62            [ 4] 1478 	ld	h, d
+   0732 23            [ 6] 1479 	inc	hl
+   0733 36 7E         [10] 1480 	ld	(hl), #0x7e
+   0735 6B            [ 4] 1481 	ld	l, e
+   0736 62            [ 4] 1482 	ld	h, d
+   0737 23            [ 6] 1483 	inc	hl
+   0738 23            [ 6] 1484 	inc	hl
+   0739 36 15         [10] 1485 	ld	(hl), #0x15
+   073B 6B            [ 4] 1486 	ld	l, e
+   073C 62            [ 4] 1487 	ld	h, d
+   073D 23            [ 6] 1488 	inc	hl
+   073E 23            [ 6] 1489 	inc	hl
+   073F 23            [ 6] 1490 	inc	hl
+   0740 36 16         [10] 1491 	ld	(hl), #0x16
+   0742 21 04 00      [10] 1492 	ld	hl, #0x0004
+   0745 19            [11] 1493 	add	hl, de
+   0746 36 28         [10] 1494 	ld	(hl), #0x28
+   0748 21 05 00      [10] 1495 	ld	hl, #0x0005
+   074B 19            [11] 1496 	add	hl, de
+   074C 36 AE         [10] 1497 	ld	(hl), #0xae
+   074E 21 06 00      [10] 1498 	ld	hl, #0x0006
+   0751 19            [11] 1499 	add	hl, de
+   0752 36 D2         [10] 1500 	ld	(hl), #0xd2
+   0754 21 07 00      [10] 1501 	ld	hl, #0x0007
+   0757 19            [11] 1502 	add	hl, de
+   0758 36 A6         [10] 1503 	ld	(hl), #0xa6
+   075A 21 08 00      [10] 1504 	ld	hl, #0x0008
+   075D 19            [11] 1505 	add	hl, de
+   075E 36 AB         [10] 1506 	ld	(hl), #0xab
+   0760 21 09 00      [10] 1507 	ld	hl, #0x0009
+   0763 19            [11] 1508 	add	hl, de
+   0764 36 F7         [10] 1509 	ld	(hl), #0xf7
+   0766 21 0A 00      [10] 1510 	ld	hl, #0x000a
+   0769 19            [11] 1511 	add	hl, de
+   076A 36 15         [10] 1512 	ld	(hl), #0x15
+   076C 21 0B 00      [10] 1513 	ld	hl, #0x000b
+   076F 19            [11] 1514 	add	hl, de
+   0770 36 88         [10] 1515 	ld	(hl), #0x88
+   0772 21 0C 00      [10] 1516 	ld	hl, #0x000c
+   0775 19            [11] 1517 	add	hl, de
+   0776 36 09         [10] 1518 	ld	(hl), #0x09
+   0778 21 0D 00      [10] 1519 	ld	hl, #0x000d
+   077B 19            [11] 1520 	add	hl, de
+   077C 36 CF         [10] 1521 	ld	(hl), #0xcf
+   077E 21 0E 00      [10] 1522 	ld	hl, #0x000e
+   0781 19            [11] 1523 	add	hl, de
+   0782 36 4F         [10] 1524 	ld	(hl), #0x4f
+   0784 21 0F 00      [10] 1525 	ld	hl, #0x000f
+   0787 19            [11] 1526 	add	hl, de
+   0788 36 3C         [10] 1527 	ld	(hl), #0x3c
+                     078A  1528 	C$aes128.c$138$2_0$60	= .
+                           1529 	.globl	C$aes128.c$138$2_0$60
+                           1530 ;/work/source_code/aes128.c:138: uint8_t plaintext[16] = {
+   078A 21 10 00      [10] 1531 	ld	hl, #16
+   078D 39            [11] 1532 	add	hl, sp
+   078E 4D            [ 4] 1533 	ld	c, l
+   078F 44            [ 4] 1534 	ld	b, h
+   0790 3E 32         [ 7] 1535 	ld	a, #0x32
+   0792 02            [ 7] 1536 	ld	(bc), a
+   0793 69            [ 4] 1537 	ld	l, c
+   0794 60            [ 4] 1538 	ld	h, b
+   0795 23            [ 6] 1539 	inc	hl
+   0796 36 43         [10] 1540 	ld	(hl), #0x43
+   0798 69            [ 4] 1541 	ld	l, c
+   0799 60            [ 4] 1542 	ld	h, b
+   079A 23            [ 6] 1543 	inc	hl
+   079B 23            [ 6] 1544 	inc	hl
+   079C 36 F6         [10] 1545 	ld	(hl), #0xf6
+   079E 69            [ 4] 1546 	ld	l, c
+   079F 60            [ 4] 1547 	ld	h, b
+   07A0 23            [ 6] 1548 	inc	hl
+   07A1 23            [ 6] 1549 	inc	hl
+   07A2 23            [ 6] 1550 	inc	hl
+   07A3 36 A8         [10] 1551 	ld	(hl), #0xa8
+   07A5 21 04 00      [10] 1552 	ld	hl, #0x0004
+   07A8 09            [11] 1553 	add	hl, bc
+   07A9 36 88         [10] 1554 	ld	(hl), #0x88
+   07AB 21 05 00      [10] 1555 	ld	hl, #0x0005
+   07AE 09            [11] 1556 	add	hl, bc
+   07AF 36 5A         [10] 1557 	ld	(hl), #0x5a
+   07B1 21 06 00      [10] 1558 	ld	hl, #0x0006
+   07B4 09            [11] 1559 	add	hl, bc
+   07B5 36 30         [10] 1560 	ld	(hl), #0x30
+   07B7 21 07 00      [10] 1561 	ld	hl, #0x0007
+   07BA 09            [11] 1562 	add	hl, bc
+   07BB 36 8D         [10] 1563 	ld	(hl), #0x8d
+   07BD 21 08 00      [10] 1564 	ld	hl, #0x0008
+   07C0 09            [11] 1565 	add	hl, bc
+   07C1 36 31         [10] 1566 	ld	(hl), #0x31
+   07C3 21 09 00      [10] 1567 	ld	hl, #0x0009
+   07C6 09            [11] 1568 	add	hl, bc
+   07C7 36 31         [10] 1569 	ld	(hl), #0x31
+   07C9 21 0A 00      [10] 1570 	ld	hl, #0x000a
+   07CC 09            [11] 1571 	add	hl, bc
+   07CD 36 98         [10] 1572 	ld	(hl), #0x98
+   07CF 21 0B 00      [10] 1573 	ld	hl, #0x000b
+   07D2 09            [11] 1574 	add	hl, bc
+   07D3 36 A2         [10] 1575 	ld	(hl), #0xa2
+   07D5 21 0C 00      [10] 1576 	ld	hl, #0x000c
+   07D8 09            [11] 1577 	add	hl, bc
+   07D9 36 E0         [10] 1578 	ld	(hl), #0xe0
+   07DB 21 0D 00      [10] 1579 	ld	hl, #0x000d
+   07DE 09            [11] 1580 	add	hl, bc
+   07DF 36 37         [10] 1581 	ld	(hl), #0x37
+   07E1 21 0E 00      [10] 1582 	ld	hl, #0x000e
+   07E4 09            [11] 1583 	add	hl, bc
+   07E5 36 07         [10] 1584 	ld	(hl), #0x07
+   07E7 21 0F 00      [10] 1585 	ld	hl, #0x000f
+   07EA 09            [11] 1586 	add	hl, bc
+   07EB 36 34         [10] 1587 	ld	(hl), #0x34
+                     07ED  1588 	C$aes128.c$145$1_0$60	= .
+                           1589 	.globl	C$aes128.c$145$1_0$60
+                           1590 ;/work/source_code/aes128.c:145: aes128_encrypt(plaintext, ciphertext, key);
+   07ED 21 20 00      [10] 1591 	ld	hl, #32
+   07F0 39            [11] 1592 	add	hl, sp
+   07F1 DD 75 FC      [19] 1593 	ld	-4 (ix), l
+   07F4 DD 74 FD      [19] 1594 	ld	-3 (ix), h
+   07F7 DD 7E FC      [19] 1595 	ld	a, -4 (ix)
+   07FA DD 77 FE      [19] 1596 	ld	-2 (ix), a
+   07FD DD 7E FD      [19] 1597 	ld	a, -3 (ix)
+   0800 DD 77 FF      [19] 1598 	ld	-1 (ix), a
+   0803 69            [ 4] 1599 	ld	l, c
+   0804 60            [ 4] 1600 	ld	h, b
+   0805 C5            [11] 1601 	push	bc
+   0806 D5            [11] 1602 	push	de
+   0807 DD 5E FE      [19] 1603 	ld	e, -2 (ix)
+   080A DD 56 FF      [19] 1604 	ld	d, -1 (ix)
+   080D D5            [11] 1605 	push	de
+   080E E5            [11] 1606 	push	hl
+   080F CDrFEr05      [17] 1607 	call	_aes128_encrypt
+   0812 21 06 00      [10] 1608 	ld	hl, #6
+   0815 39            [11] 1609 	add	hl, sp
+   0816 F9            [ 6] 1610 	ld	sp, hl
+   0817 C1            [10] 1611 	pop	bc
+                     0818  1612 	C$aes128.c$147$1_0$60	= .
+                           1613 	.globl	C$aes128.c$147$1_0$60
+                           1614 ;/work/source_code/aes128.c:147: printf("AES-128 Encryption\n");
+   0818 C5            [11] 1615 	push	bc
+   0819 21r9Cr08      [10] 1616 	ld	hl, #___str_1
+   081C E5            [11] 1617 	push	hl
+   081D CDr00r00      [17] 1618 	call	_puts
+   0820 F1            [10] 1619 	pop	af
+   0821 C1            [10] 1620 	pop	bc
+                     0822  1621 	C$aes128.c$148$1_0$60	= .
+                           1622 	.globl	C$aes128.c$148$1_0$60
+                           1623 ;/work/source_code/aes128.c:148: printf("Plaintext:  ");
+   0822 C5            [11] 1624 	push	bc
+   0823 21rAFr08      [10] 1625 	ld	hl, #___str_2
+   0826 E5            [11] 1626 	push	hl
+   0827 CDr00r00      [17] 1627 	call	_printf
+   082A F1            [10] 1628 	pop	af
+   082B C1            [10] 1629 	pop	bc
+                     082C  1630 	C$aes128.c$149$2_0$61	= .
+                           1631 	.globl	C$aes128.c$149$2_0$61
+                           1632 ;/work/source_code/aes128.c:149: for (int i = 0; i < 16; i++) printf("%02x ", plaintext[i]);
+   082C 11 00 00      [10] 1633 	ld	de, #0x0000
+   082F                    1634 00104$:
+   082F 7B            [ 4] 1635 	ld	a, e
+   0830 D6 10         [ 7] 1636 	sub	a, #0x10
+   0832 7A            [ 4] 1637 	ld	a, d
+   0833 17            [ 4] 1638 	rla
+   0834 3F            [ 4] 1639 	ccf
+   0835 1F            [ 4] 1640 	rra
+   0836 DE 80         [ 7] 1641 	sbc	a, #0x80
+   0838 D2r53r08      [10] 1642 	jp	NC, 00101$
+   083B 69            [ 4] 1643 	ld	l, c
+   083C 60            [ 4] 1644 	ld	h, b
+   083D 19            [11] 1645 	add	hl, de
+   083E 6E            [ 7] 1646 	ld	l, (hl)
+   083F 26 00         [ 7] 1647 	ld	h, #0x00
+   0841 C5            [11] 1648 	push	bc
+   0842 D5            [11] 1649 	push	de
+   0843 E5            [11] 1650 	push	hl
+   0844 21rBCr08      [10] 1651 	ld	hl, #___str_3
+   0847 E5            [11] 1652 	push	hl
+   0848 CDr00r00      [17] 1653 	call	_printf
+   084B F1            [10] 1654 	pop	af
+   084C F1            [10] 1655 	pop	af
+   084D D1            [10] 1656 	pop	de
+   084E C1            [10] 1657 	pop	bc
+   084F 13            [ 6] 1658 	inc	de
+   0850 C3r2Fr08      [10] 1659 	jp	00104$
+   0853                    1660 00101$:
+                     0853  1661 	C$aes128.c$150$1_0$60	= .
+                           1662 	.globl	C$aes128.c$150$1_0$60
+                           1663 ;/work/source_code/aes128.c:150: printf("\n");
+   0853 21rC2r08      [10] 1664 	ld	hl, #___str_5
+   0856 E5            [11] 1665 	push	hl
+   0857 CDr00r00      [17] 1666 	call	_puts
+   085A F1            [10] 1667 	pop	af
+                     085B  1668 	C$aes128.c$152$1_0$60	= .
+                           1669 	.globl	C$aes128.c$152$1_0$60
+                           1670 ;/work/source_code/aes128.c:152: printf("Ciphertext: ");
+   085B 21rC3r08      [10] 1671 	ld	hl, #___str_6
+   085E E5            [11] 1672 	push	hl
+   085F CDr00r00      [17] 1673 	call	_printf
+   0862 F1            [10] 1674 	pop	af
+                     0863  1675 	C$aes128.c$153$2_0$62	= .
+                           1676 	.globl	C$aes128.c$153$2_0$62
+                           1677 ;/work/source_code/aes128.c:153: for (int i = 0; i < 16; i++) printf("%02x ", ciphertext[i]);
+   0863 01 00 00      [10] 1678 	ld	bc, #0x0000
+   0866                    1679 00107$:
+   0866 79            [ 4] 1680 	ld	a, c
+   0867 D6 10         [ 7] 1681 	sub	a, #0x10
+   0869 78            [ 4] 1682 	ld	a, b
+   086A 17            [ 4] 1683 	rla
+   086B 3F            [ 4] 1684 	ccf
+   086C 1F            [ 4] 1685 	rra
+   086D DE 80         [ 7] 1686 	sbc	a, #0x80
+   086F D2r8Cr08      [10] 1687 	jp	NC, 00102$
+   0872 DD 6E FC      [19] 1688 	ld	l, -4 (ix)
+   0875 DD 66 FD      [19] 1689 	ld	h, -3 (ix)
+   0878 09            [11] 1690 	add	hl, bc
+   0879 5E            [ 7] 1691 	ld	e, (hl)
+   087A 16 00         [ 7] 1692 	ld	d, #0x00
+   087C C5            [11] 1693 	push	bc
+   087D D5            [11] 1694 	push	de
+   087E 21rBCr08      [10] 1695 	ld	hl, #___str_3
+   0881 E5            [11] 1696 	push	hl
+   0882 CDr00r00      [17] 1697 	call	_printf
+   0885 F1            [10] 1698 	pop	af
+   0886 F1            [10] 1699 	pop	af
+   0887 C1            [10] 1700 	pop	bc
+   0888 03            [ 6] 1701 	inc	bc
+   0889 C3r66r08      [10] 1702 	jp	00107$
+   088C                    1703 00102$:
+                     088C  1704 	C$aes128.c$154$1_0$60	= .
+                           1705 	.globl	C$aes128.c$154$1_0$60
+                           1706 ;/work/source_code/aes128.c:154: printf("\n");
+   088C 21rC2r08      [10] 1707 	ld	hl, #___str_5
+   088F E5            [11] 1708 	push	hl
+   0890 CDr00r00      [17] 1709 	call	_puts
+   0893 F1            [10] 1710 	pop	af
+                     0894  1711 	C$aes128.c$156$1_0$60	= .
+                           1712 	.globl	C$aes128.c$156$1_0$60
+                           1713 ;/work/source_code/aes128.c:156: return 0;
+   0894 21 00 00      [10] 1714 	ld	hl, #0x0000
+   0897                    1715 00109$:
+                     0897  1716 	C$aes128.c$157$1_0$60	= .
+                           1717 	.globl	C$aes128.c$157$1_0$60
+                           1718 ;/work/source_code/aes128.c:157: }
+   0897 DD F9         [10] 1719 	ld	sp, ix
+   0899 DD E1         [14] 1720 	pop	ix
+                     089B  1721 	C$aes128.c$157$1_0$60	= .
+                           1722 	.globl	C$aes128.c$157$1_0$60
+                     089B  1723 	XG$main$0$0	= .
+                           1724 	.globl	XG$main$0$0
+   089B C9            [10] 1725 	ret
+                     089C  1726 Faes128$__str_1$0_0$0 == .
+   089C                    1727 ___str_1:
+   089C 41 45 53 2D 31 32  1728 	.ascii "AES-128 Encryption"
+        38 20 45 6E 63 72
+        79 70 74 69 6F 6E
+   08AE 00                 1729 	.db 0x00
+                     08AF  1730 Faes128$__str_2$0_0$0 == .
+   08AF                    1731 ___str_2:
+   08AF 50 6C 61 69 6E 74  1732 	.ascii "Plaintext:  "
+        65 78 74 3A 20 20
+   08BB 00                 1733 	.db 0x00
+                     08BC  1734 Faes128$__str_3$0_0$0 == .
+   08BC                    1735 ___str_3:
+   08BC 25 30 32 78 20     1736 	.ascii "%02x "
+   08C1 00                 1737 	.db 0x00
+                     08C2  1738 Faes128$__str_5$0_0$0 == .
+   08C2                    1739 ___str_5:
+   08C2 00                 1740 	.db 0x00
+                     08C3  1741 Faes128$__str_6$0_0$0 == .
+   08C3                    1742 ___str_6:
+   08C3 43 69 70 68 65 72  1743 	.ascii "Ciphertext: "
+        74 65 78 74 3A 20
+   08CF 00                 1744 	.db 0x00
+                           1745 	.area _CODE
+                           1746 	.area _INITIALIZER
+                           1747 	.area _CABS (ABS)

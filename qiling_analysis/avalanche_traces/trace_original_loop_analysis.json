@@ -1,0 +1,323 @@
+{
+  "high_confidence_crypto": [],
+  "medium_confidence_crypto": [
+    {
+      "address": "0x8060e46",
+      "execution_count": 8,
+      "has_crypto_patterns": false,
+      "mnemonics": [
+        "rep movsd"
+      ],
+      "signature_match": {
+        "algorithms": [
+          "ChaCha8",
+          "DES round"
+        ],
+        "confidence": "MEDIUM",
+        "description": "Reduced-round cipher or DES iteration"
+      },
+      "confidence_score": 6
+    },
+    {
+      "address": "0x8060efc",
+      "execution_count": 8,
+      "has_crypto_patterns": false,
+      "mnemonics": [
+        "rep movsd"
+      ],
+      "signature_match": {
+        "algorithms": [
+          "ChaCha8",
+          "DES round"
+        ],
+        "confidence": "MEDIUM",
+        "description": "Reduced-round cipher or DES iteration"
+      },
+      "confidence_score": 6
+    },
+    {
+      "address": "0x8060e61",
+      "execution_count": 8,
+      "has_crypto_patterns": false,
+      "mnemonics": [
+        "rep movsd"
+      ],
+      "signature_match": {
+        "algorithms": [
+          "ChaCha8",
+          "DES round"
+        ],
+        "confidence": "MEDIUM",
+        "description": "Reduced-round cipher or DES iteration"
+      },
+      "confidence_score": 6
+    }
+  ],
+  "low_confidence_loops": [
+    {
+      "address": "0x8059bd0",
+      "execution_count": 126,
+      "has_crypto_patterns": false,
+      "mnemonics": [
+        "mov",
+        "mov",
+        "add",
+        "cmp",
+        "jne"
+      ],
+      "signature_match": null,
+      "confidence_score": 1
+    },
+    {
+      "address": "0x805cb95",
+      "execution_count": 95,
+      "has_crypto_patterns": false,
+      "mnemonics": [
+        "rep stosd"
+      ],
+      "signature_match": null,
+      "confidence_score": 1
+    },
+    {
+      "address": "0x8065168",
+      "execution_count": 52,
+      "has_crypto_patterns": false,
+      "mnemonics": [
+        "rep stosd"
+      ],
+      "signature_match": null,
+      "confidence_score": 1
+    },
+    {
+      "address": "0x804a950",
+      "execution_count": 34,
+      "has_crypto_patterns": true,
+      "mnemonics": [
+        "movzx",
+        "xor",
+        "mov",
+        "add",
+        "cmp",
+        "jne"
+      ],
+      "signature_match": null,
+      "confidence_score": 4
+    },
+    {
+      "address": "0x804a630",
+      "execution_count": 9,
+      "has_crypto_patterns": true,
+      "mnemonics": [
+        "add",
+        "mov",
+        "xor",
+        "rol",
+        "add",
+        "xor",
+        "rol",
+        "add",
+        "xor",
+        "rol",
+        "add",
+        "mov",
+        "xor",
+        "mov",
+        "mov",
+        "rol",
+        "mov",
+        "mov",
+        "add",
+        "xor",
+        "mov",
+        "rol",
+        "add",
+        "xor",
+        "mov",
+        "rol",
+        "lea",
+        "mov",
+        "xor",
+        "mov",
+        "rol",
+        "add",
+        "mov",
+        "mov",
+        "xor",
+        "mov",
+        "mov",
+        "rol",
+        "add",
+        "xor",
+        "rol",
+        "add",
+        "xor",
+        "mov",
+        "rol",
+        "lea",
+        "mov",
+        "xor",
+        "mov",
+        "rol",
+        "lea",
+        "mov",
+        "mov",
+        "xor",
+        "mov",
+        "mov",
+        "mov",
+        "mov",
+        "rol",
+        "add",
+        "add",
+        "xor",
+        "mov",
+        "rol",
+        "add",
+        "xor",
+        "mov",
+        "mov",
+        "rol",
+        "add",
+        "xor",
+        "mov",
+        "mov",
+        "rol",
+        "add",
+        "xor",
+        "rol",
+        "xor",
+        "add",
+        "rol",
+        "xor",
+        "rol",
+        "add",
+        "xor",
+        "rol",
+        "mov",
+        "add",
+        "xor",
+        "mov",
+        "mov",
+        "rol",
+        "mov",
+        "mov",
+        "add",
+        "xor",
+        "rol",
+        "add",
+        "xor",
+        "rol",
+        "add",
+        "xor",
+        "mov",
+        "rol",
+        "lea",
+        "xor",
+        "mov",
+        "mov",
+        "rol",
+        "mov",
+        "mov",
+        "lea",
+        "mov",
+        "xor",
+        "rol",
+        "add",
+        "xor",
+        "rol",
+        "lea",
+        "mov",
+        "xor",
+        "mov",
+        "rol",
+        "lea",
+        "mov",
+        "xor",
+        "mov",
+        "mov",
+        "mov",
+        "rol",
+        "mov",
+        "mov",
+        "add",
+        "xor",
+        "rol",
+        "add",
+        "xor",
+        "rol",
+        "add",
+        "xor",
+        "mov",
+        "rol",
+        "add",
+        "xor",
+        "rol",
+        "sub",
+        "jne"
+      ],
+      "signature_match": null,
+      "confidence_score": 3
+    },
+    {
+      "address": "0x804e4f0",
+      "execution_count": 2,
+      "has_crypto_patterns": true,
+      "mnemonics": [
+        "mov",
+        "sub",
+        "and",
+        "movzx",
+        "mov",
+        "mov",
+        "shr",
+        "cmp",
+        "ja"
+      ],
+      "signature_match": null,
+      "confidence_score": 3
+    }
+  ],
+  "nested_loop_analysis": {
+    "nested_loop_candidates": [
+      {
+        "total_iterations": 126,
+        "possible_inner_loop": 14,
+        "possible_outer_loop": 9,
+        "hypothesis": "9 blocks \u00d7 14 rounds",
+        "crypto_match": [
+          "AES-256"
+        ]
+      },
+      {
+        "total_iterations": 8,
+        "possible_inner_loop": 8,
+        "possible_outer_loop": 1,
+        "hypothesis": "1 blocks \u00d7 8 rounds",
+        "crypto_match": [
+          "ChaCha8",
+          "DES round"
+        ]
+      },
+      {
+        "total_iterations": 8,
+        "possible_inner_loop": 8,
+        "possible_outer_loop": 1,
+        "hypothesis": "1 blocks \u00d7 8 rounds",
+        "crypto_match": [
+          "ChaCha8",
+          "DES round"
+        ]
+      },
+      {
+        "total_iterations": 8,
+        "possible_inner_loop": 8,
+        "possible_outer_loop": 1,
+        "hypothesis": "1 blocks \u00d7 8 rounds",
+        "crypto_match": [
+          "ChaCha8",
+          "DES round"
+        ]
+      }
+    ]
+  }
+}

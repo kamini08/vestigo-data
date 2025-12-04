@@ -2,6 +2,14 @@
 #include <stdint.h>
 #include <string.h>
 
+#ifdef __SDCC
+int putchar(int c) { (void)c; return c; }
+#endif
+
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
 #define Nb 4
 #define Nk 8    // 256-bit key = 8 words
 #define Nr 14   // 14 rounds

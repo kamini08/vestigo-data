@@ -1,0 +1,1991 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 4.0.0 #11528 (Linux)
+                              4 ;--------------------------------------------------------
+                              5 	.module sha1
+                              6 	.optsdcc -mz80
+                              7 	
+                              8 ;--------------------------------------------------------
+                              9 ; Public variables in this module
+                             10 ;--------------------------------------------------------
+                             11 	.globl _main
+                             12 	.globl _strlen
+                             13 	.globl _puts
+                             14 	.globl _printf
+                             15 ;--------------------------------------------------------
+                             16 ; special function registers
+                             17 ;--------------------------------------------------------
+                             18 ;--------------------------------------------------------
+                             19 ; ram data
+                             20 ;--------------------------------------------------------
+                             21 	.area _DATA
+                             22 ;--------------------------------------------------------
+                             23 ; ram data
+                             24 ;--------------------------------------------------------
+                             25 	.area _INITIALIZED
+                             26 ;--------------------------------------------------------
+                             27 ; absolute external ram data
+                             28 ;--------------------------------------------------------
+                             29 	.area _DABS (ABS)
+                             30 ;--------------------------------------------------------
+                             31 ; global & static initialisations
+                             32 ;--------------------------------------------------------
+                             33 	.area _HOME
+                             34 	.area _GSINIT
+                             35 	.area _GSFINAL
+                             36 	.area _GSINIT
+                             37 ;--------------------------------------------------------
+                             38 ; Home
+                             39 ;--------------------------------------------------------
+                             40 	.area _HOME
+                             41 	.area _HOME
+                             42 ;--------------------------------------------------------
+                             43 ; code
+                             44 ;--------------------------------------------------------
+                             45 	.area _CODE
+                     0000    46 	Fsha1$sha1_compress$0$0	= .
+                             47 	.globl	Fsha1$sha1_compress$0$0
+                     0000    48 	C$sha1.c$21$0_0$35	= .
+                             49 	.globl	C$sha1.c$21$0_0$35
+                             50 ;/work/source_code/testingfiles/sha1.c:21: static void sha1_compress(SHA1_ALT *ctx, const uint8_t block[64]) {
+                             51 ;	---------------------------------
+                             52 ; Function sha1_compress
+                             53 ; ---------------------------------
+   0000                      54 _sha1_compress:
+   0000 CDr00r00      [17]   55 	call	___sdcc_enter_ix
+   0003 21 88 FE      [10]   56 	ld	hl, #-376
+   0006 39            [11]   57 	add	hl, sp
+   0007 F9            [ 6]   58 	ld	sp, hl
+                     0008    59 	C$sha1.c$26$3_0$37	= .
+                             60 	.globl	C$sha1.c$26$3_0$37
+                             61 ;/work/source_code/testingfiles/sha1.c:26: for (int i = 0; i < 16; i++) {
+   0008 21 00 00      [10]   62 	ld	hl, #0
+   000B 39            [11]   63 	add	hl, sp
+   000C DD 75 FE      [19]   64 	ld	-2 (ix), l
+   000F DD 74 FF      [19]   65 	ld	-1 (ix), h
+   0012 AF            [ 4]   66 	xor	a, a
+   0013 DD 77 FC      [19]   67 	ld	-4 (ix), a
+   0016 DD 77 FD      [19]   68 	ld	-3 (ix), a
+   0019                      69 00114$:
+   0019 DD 7E FC      [19]   70 	ld	a, -4 (ix)
+   001C D6 10         [ 7]   71 	sub	a, #0x10
+   001E DD 7E FD      [19]   72 	ld	a, -3 (ix)
+   0021 17            [ 4]   73 	rla
+   0022 3F            [ 4]   74 	ccf
+   0023 1F            [ 4]   75 	rra
+   0024 DE 80         [ 7]   76 	sbc	a, #0x80
+   0026 30 60         [12]   77 	jr	NC,00101$
+                     0028    78 	C$sha1.c$27$3_0$37	= .
+                             79 	.globl	C$sha1.c$27$3_0$37
+                             80 ;/work/source_code/testingfiles/sha1.c:27: w[i] = (block[4*i] << 24)
+   0028 DD 5E FC      [19]   81 	ld	e, -4 (ix)
+   002B DD 56 FD      [19]   82 	ld	d, -3 (ix)
+   002E CB 23         [ 8]   83 	sla	e
+   0030 CB 12         [ 8]   84 	rl	d
+   0032 CB 23         [ 8]   85 	sla	e
+   0034 CB 12         [ 8]   86 	rl	d
+   0036 DD 7E FE      [19]   87 	ld	a, -2 (ix)
+   0039 83            [ 4]   88 	add	a, e
+   003A DD 77 FA      [19]   89 	ld	-6 (ix), a
+   003D DD 7E FF      [19]   90 	ld	a, -1 (ix)
+   0040 8A            [ 4]   91 	adc	a, d
+   0041 DD 77 FB      [19]   92 	ld	-5 (ix), a
+                     0044    93 	C$sha1.c$29$3_0$37	= .
+                             94 	.globl	C$sha1.c$29$3_0$37
+                             95 ;/work/source_code/testingfiles/sha1.c:29: | (block[4*i+2] << 8)
+   0044 4B            [ 4]   96 	ld	c, e
+   0045 42            [ 4]   97 	ld	b, d
+   0046 03            [ 6]   98 	inc	bc
+   0047 03            [ 6]   99 	inc	bc
+   0048 DD 7E 06      [19]  100 	ld	a, 6 (ix)
+   004B 81            [ 4]  101 	add	a, c
+   004C 4F            [ 4]  102 	ld	c, a
+   004D DD 7E 07      [19]  103 	ld	a, 7 (ix)
+   0050 88            [ 4]  104 	adc	a, b
+   0051 47            [ 4]  105 	ld	b, a
+   0052 0A            [ 7]  106 	ld	a, (bc)
+   0053 47            [ 4]  107 	ld	b, a
+   0054 0E 00         [ 7]  108 	ld	c, #0x00
+                     0056   109 	C$sha1.c$30$3_0$37	= .
+                            110 	.globl	C$sha1.c$30$3_0$37
+                            111 ;/work/source_code/testingfiles/sha1.c:30: | (block[4*i+3]);
+   0056 13            [ 6]  112 	inc	de
+   0057 13            [ 6]  113 	inc	de
+   0058 13            [ 6]  114 	inc	de
+   0059 DD 7E 06      [19]  115 	ld	a, 6 (ix)
+   005C 83            [ 4]  116 	add	a, e
+   005D 5F            [ 4]  117 	ld	e, a
+   005E DD 7E 07      [19]  118 	ld	a, 7 (ix)
+   0061 8A            [ 4]  119 	adc	a, d
+   0062 57            [ 4]  120 	ld	d, a
+   0063 1A            [ 7]  121 	ld	a, (de)
+   0064 5F            [ 4]  122 	ld	e, a
+   0065 16 00         [ 7]  123 	ld	d, #0x00
+   0067 79            [ 4]  124 	ld	a, c
+   0068 B3            [ 4]  125 	or	a, e
+   0069 4F            [ 4]  126 	ld	c, a
+   006A 78            [ 4]  127 	ld	a, b
+   006B B2            [ 4]  128 	or	a, d
+   006C 47            [ 4]  129 	ld	b, a
+   006D 17            [ 4]  130 	rla
+   006E 9F            [ 4]  131 	sbc	a, a
+   006F 5F            [ 4]  132 	ld	e, a
+   0070 57            [ 4]  133 	ld	d, a
+   0071 DD 6E FA      [19]  134 	ld	l, -6 (ix)
+   0074 DD 66 FB      [19]  135 	ld	h, -5 (ix)
+   0077 71            [ 7]  136 	ld	(hl), c
+   0078 23            [ 6]  137 	inc	hl
+   0079 70            [ 7]  138 	ld	(hl), b
+   007A 23            [ 6]  139 	inc	hl
+   007B 73            [ 7]  140 	ld	(hl), e
+   007C 23            [ 6]  141 	inc	hl
+   007D 72            [ 7]  142 	ld	(hl), d
+                     007E   143 	C$sha1.c$26$2_0$36	= .
+                            144 	.globl	C$sha1.c$26$2_0$36
+                            145 ;/work/source_code/testingfiles/sha1.c:26: for (int i = 0; i < 16; i++) {
+   007E DD 34 FC      [23]  146 	inc	-4 (ix)
+   0081 20 96         [12]  147 	jr	NZ,00114$
+   0083 DD 34 FD      [23]  148 	inc	-3 (ix)
+   0086 18 91         [12]  149 	jr	00114$
+   0088                     150 00101$:
+                     0088   151 	C$sha1.c$34$2_0$38	= .
+                            152 	.globl	C$sha1.c$34$2_0$38
+                            153 ;/work/source_code/testingfiles/sha1.c:34: for (int i = 16; i < 80; i++)
+   0088 DD 7E FE      [19]  154 	ld	a, -2 (ix)
+   008B DD 77 F0      [19]  155 	ld	-16 (ix), a
+   008E DD 7E FF      [19]  156 	ld	a, -1 (ix)
+   0091 DD 77 F1      [19]  157 	ld	-15 (ix), a
+   0094 DD 36 FC 10   [19]  158 	ld	-4 (ix), #0x10
+   0098 AF            [ 4]  159 	xor	a, a
+   0099 DD 77 FD      [19]  160 	ld	-3 (ix), a
+   009C                     161 00117$:
+   009C DD 7E FC      [19]  162 	ld	a, -4 (ix)
+   009F D6 50         [ 7]  163 	sub	a, #0x50
+   00A1 DD 7E FD      [19]  164 	ld	a, -3 (ix)
+   00A4 17            [ 4]  165 	rla
+   00A5 3F            [ 4]  166 	ccf
+   00A6 1F            [ 4]  167 	rra
+   00A7 DE 80         [ 7]  168 	sbc	a, #0x80
+   00A9 D2r06r02      [10]  169 	jp	NC, 00102$
+                     00AC   170 	C$sha1.c$35$2_0$38	= .
+                            171 	.globl	C$sha1.c$35$2_0$38
+                            172 ;/work/source_code/testingfiles/sha1.c:35: w[i] = ROL32(w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16], 1);
+   00AC DD 7E FC      [19]  173 	ld	a, -4 (ix)
+   00AF DD 77 FA      [19]  174 	ld	-6 (ix), a
+   00B2 DD 7E FD      [19]  175 	ld	a, -3 (ix)
+   00B5 DD 77 FB      [19]  176 	ld	-5 (ix), a
+   00B8 3E 03         [ 7]  177 	ld	a, #0x02+1
+   00BA 18 08         [12]  178 	jr	00176$
+   00BC                     179 00175$:
+   00BC DD CB FA 26   [23]  180 	sla	-6 (ix)
+   00C0 DD CB FB 16   [23]  181 	rl	-5 (ix)
+   00C4                     182 00176$:
+   00C4 3D            [ 4]  183 	dec	a
+   00C5 20 F5         [12]  184 	jr	NZ,00175$
+   00C7 DD 7E FA      [19]  185 	ld	a, -6 (ix)
+   00CA DD 86 F0      [19]  186 	add	a, -16 (ix)
+   00CD DD 77 F2      [19]  187 	ld	-14 (ix), a
+   00D0 DD 7E FB      [19]  188 	ld	a, -5 (ix)
+   00D3 DD 8E F1      [19]  189 	adc	a, -15 (ix)
+   00D6 DD 77 F3      [19]  190 	ld	-13 (ix), a
+   00D9 DD 7E FC      [19]  191 	ld	a, -4 (ix)
+   00DC C6 FD         [ 7]  192 	add	a, #0xfd
+   00DE 4F            [ 4]  193 	ld	c, a
+   00DF DD 7E FD      [19]  194 	ld	a, -3 (ix)
+   00E2 CE FF         [ 7]  195 	adc	a, #0xff
+   00E4 47            [ 4]  196 	ld	b, a
+   00E5 CB 21         [ 8]  197 	sla	c
+   00E7 CB 10         [ 8]  198 	rl	b
+   00E9 CB 21         [ 8]  199 	sla	c
+   00EB CB 10         [ 8]  200 	rl	b
+   00ED DD 6E F0      [19]  201 	ld	l, -16 (ix)
+   00F0 DD 66 F1      [19]  202 	ld	h, -15 (ix)
+   00F3 09            [11]  203 	add	hl, bc
+   00F4 EB            [ 4]  204 	ex	de,hl
+   00F5 21 70 01      [10]  205 	ld	hl, #0x0170
+   00F8 39            [11]  206 	add	hl, sp
+   00F9 EB            [ 4]  207 	ex	de, hl
+   00FA 01 04 00      [10]  208 	ld	bc, #0x0004
+   00FD ED B0         [21]  209 	ldir
+   00FF DD 7E FC      [19]  210 	ld	a, -4 (ix)
+   0102 C6 F8         [ 7]  211 	add	a, #0xf8
+   0104 4F            [ 4]  212 	ld	c, a
+   0105 DD 7E FD      [19]  213 	ld	a, -3 (ix)
+   0108 CE FF         [ 7]  214 	adc	a, #0xff
+   010A 47            [ 4]  215 	ld	b, a
+   010B CB 21         [ 8]  216 	sla	c
+   010D CB 10         [ 8]  217 	rl	b
+   010F CB 21         [ 8]  218 	sla	c
+   0111 CB 10         [ 8]  219 	rl	b
+   0113 DD 6E F0      [19]  220 	ld	l, -16 (ix)
+   0116 DD 66 F1      [19]  221 	ld	h, -15 (ix)
+   0119 09            [11]  222 	add	hl, bc
+   011A 4E            [ 7]  223 	ld	c, (hl)
+   011B 23            [ 6]  224 	inc	hl
+   011C 46            [ 7]  225 	ld	b, (hl)
+   011D 23            [ 6]  226 	inc	hl
+   011E 5E            [ 7]  227 	ld	e, (hl)
+   011F 23            [ 6]  228 	inc	hl
+   0120 56            [ 7]  229 	ld	d, (hl)
+   0121 DD 7E F8      [19]  230 	ld	a, -8 (ix)
+   0124 A9            [ 4]  231 	xor	a, c
+   0125 DD 77 F4      [19]  232 	ld	-12 (ix), a
+   0128 DD 7E F9      [19]  233 	ld	a, -7 (ix)
+   012B A8            [ 4]  234 	xor	a, b
+   012C DD 77 F5      [19]  235 	ld	-11 (ix), a
+   012F DD 7E FA      [19]  236 	ld	a, -6 (ix)
+   0132 AB            [ 4]  237 	xor	a, e
+   0133 DD 77 F6      [19]  238 	ld	-10 (ix), a
+   0136 DD 7E FB      [19]  239 	ld	a, -5 (ix)
+   0139 AA            [ 4]  240 	xor	a, d
+   013A DD 77 F7      [19]  241 	ld	-9 (ix), a
+   013D DD 7E FC      [19]  242 	ld	a, -4 (ix)
+   0140 C6 F2         [ 7]  243 	add	a, #0xf2
+   0142 4F            [ 4]  244 	ld	c, a
+   0143 DD 7E FD      [19]  245 	ld	a, -3 (ix)
+   0146 CE FF         [ 7]  246 	adc	a, #0xff
+   0148 47            [ 4]  247 	ld	b, a
+   0149 CB 21         [ 8]  248 	sla	c
+   014B CB 10         [ 8]  249 	rl	b
+   014D CB 21         [ 8]  250 	sla	c
+   014F CB 10         [ 8]  251 	rl	b
+   0151 DD 6E F0      [19]  252 	ld	l, -16 (ix)
+   0154 DD 66 F1      [19]  253 	ld	h, -15 (ix)
+   0157 09            [11]  254 	add	hl, bc
+   0158 4E            [ 7]  255 	ld	c, (hl)
+   0159 23            [ 6]  256 	inc	hl
+   015A 46            [ 7]  257 	ld	b, (hl)
+   015B 23            [ 6]  258 	inc	hl
+   015C 5E            [ 7]  259 	ld	e, (hl)
+   015D 23            [ 6]  260 	inc	hl
+   015E 56            [ 7]  261 	ld	d, (hl)
+   015F DD 7E F4      [19]  262 	ld	a, -12 (ix)
+   0162 A9            [ 4]  263 	xor	a, c
+   0163 DD 77 F8      [19]  264 	ld	-8 (ix), a
+   0166 DD 7E F5      [19]  265 	ld	a, -11 (ix)
+   0169 A8            [ 4]  266 	xor	a, b
+   016A DD 77 F9      [19]  267 	ld	-7 (ix), a
+   016D DD 7E F6      [19]  268 	ld	a, -10 (ix)
+   0170 AB            [ 4]  269 	xor	a, e
+   0171 DD 77 FA      [19]  270 	ld	-6 (ix), a
+   0174 DD 7E F7      [19]  271 	ld	a, -9 (ix)
+   0177 AA            [ 4]  272 	xor	a, d
+   0178 DD 77 FB      [19]  273 	ld	-5 (ix), a
+   017B DD 7E FC      [19]  274 	ld	a, -4 (ix)
+   017E C6 F0         [ 7]  275 	add	a, #0xf0
+   0180 4F            [ 4]  276 	ld	c, a
+   0181 DD 7E FD      [19]  277 	ld	a, -3 (ix)
+   0184 CE FF         [ 7]  278 	adc	a, #0xff
+   0186 47            [ 4]  279 	ld	b, a
+   0187 CB 21         [ 8]  280 	sla	c
+   0189 CB 10         [ 8]  281 	rl	b
+   018B CB 21         [ 8]  282 	sla	c
+   018D CB 10         [ 8]  283 	rl	b
+   018F DD 6E F0      [19]  284 	ld	l, -16 (ix)
+   0192 DD 66 F1      [19]  285 	ld	h, -15 (ix)
+   0195 09            [11]  286 	add	hl, bc
+   0196 5E            [ 7]  287 	ld	e, (hl)
+   0197 23            [ 6]  288 	inc	hl
+   0198 56            [ 7]  289 	ld	d, (hl)
+   0199 23            [ 6]  290 	inc	hl
+   019A 4E            [ 7]  291 	ld	c, (hl)
+   019B 23            [ 6]  292 	inc	hl
+   019C 46            [ 7]  293 	ld	b, (hl)
+   019D DD 7E F8      [19]  294 	ld	a, -8 (ix)
+   01A0 AB            [ 4]  295 	xor	a, e
+   01A1 5F            [ 4]  296 	ld	e, a
+   01A2 DD 7E F9      [19]  297 	ld	a, -7 (ix)
+   01A5 AA            [ 4]  298 	xor	a, d
+   01A6 57            [ 4]  299 	ld	d, a
+   01A7 DD 7E FA      [19]  300 	ld	a, -6 (ix)
+   01AA A9            [ 4]  301 	xor	a, c
+   01AB 6F            [ 4]  302 	ld	l, a
+   01AC DD 7E FB      [19]  303 	ld	a, -5 (ix)
+   01AF A8            [ 4]  304 	xor	a, b
+   01B0 67            [ 4]  305 	ld	h, a
+   01B1 DD 73 F8      [19]  306 	ld	-8 (ix), e
+   01B4 DD 72 F9      [19]  307 	ld	-7 (ix), d
+   01B7 DD 75 FA      [19]  308 	ld	-6 (ix), l
+   01BA DD 74 FB      [19]  309 	ld	-5 (ix), h
+   01BD DD CB F8 26   [23]  310 	sla	-8 (ix)
+   01C1 DD CB F9 16   [23]  311 	rl	-7 (ix)
+   01C5 DD CB FA 16   [23]  312 	rl	-6 (ix)
+   01C9 DD CB FB 16   [23]  313 	rl	-5 (ix)
+   01CD 06 1F         [ 7]  314 	ld	b, #0x1f
+   01CF                     315 00187$:
+   01CF CB 3C         [ 8]  316 	srl	h
+   01D1 CB 1D         [ 8]  317 	rr	l
+   01D3 CB 1A         [ 8]  318 	rr	d
+   01D5 CB 1B         [ 8]  319 	rr	e
+   01D7 10 F6         [13]  320 	djnz	00187$
+   01D9 DD 7E F8      [19]  321 	ld	a, -8 (ix)
+   01DC B3            [ 4]  322 	or	a, e
+   01DD 4F            [ 4]  323 	ld	c, a
+   01DE DD 7E F9      [19]  324 	ld	a, -7 (ix)
+   01E1 B2            [ 4]  325 	or	a, d
+   01E2 47            [ 4]  326 	ld	b, a
+   01E3 DD 7E FA      [19]  327 	ld	a, -6 (ix)
+   01E6 B5            [ 4]  328 	or	a, l
+   01E7 5F            [ 4]  329 	ld	e, a
+   01E8 DD 7E FB      [19]  330 	ld	a, -5 (ix)
+   01EB B4            [ 4]  331 	or	a, h
+   01EC 57            [ 4]  332 	ld	d, a
+   01ED DD 6E F2      [19]  333 	ld	l, -14 (ix)
+   01F0 DD 66 F3      [19]  334 	ld	h, -13 (ix)
+   01F3 71            [ 7]  335 	ld	(hl), c
+   01F4 23            [ 6]  336 	inc	hl
+   01F5 70            [ 7]  337 	ld	(hl), b
+   01F6 23            [ 6]  338 	inc	hl
+   01F7 73            [ 7]  339 	ld	(hl), e
+   01F8 23            [ 6]  340 	inc	hl
+   01F9 72            [ 7]  341 	ld	(hl), d
+                     01FA   342 	C$sha1.c$34$2_0$38	= .
+                            343 	.globl	C$sha1.c$34$2_0$38
+                            344 ;/work/source_code/testingfiles/sha1.c:34: for (int i = 16; i < 80; i++)
+   01FA DD 34 FC      [23]  345 	inc	-4 (ix)
+   01FD C2r9Cr00      [10]  346 	jp	NZ,00117$
+   0200 DD 34 FD      [23]  347 	inc	-3 (ix)
+   0203 C3r9Cr00      [10]  348 	jp	00117$
+   0206                     349 00102$:
+                     0206   350 	C$sha1.c$38$1_0$35	= .
+                            351 	.globl	C$sha1.c$38$1_0$35
+                            352 ;/work/source_code/testingfiles/sha1.c:38: a = ctx->h[0];
+   0206 DD 5E 04      [19]  353 	ld	e, 4 (ix)
+   0209 DD 56 05      [19]  354 	ld	d, 5 (ix)
+   020C D5            [11]  355 	push	de
+   020D 21 42 01      [10]  356 	ld	hl, #0x0142
+   0210 39            [11]  357 	add	hl, sp
+   0211 EB            [ 4]  358 	ex	de, hl
+   0212 01 04 00      [10]  359 	ld	bc, #0x0004
+   0215 ED B0         [21]  360 	ldir
+   0217 D1            [10]  361 	pop	de
+   0218 D5            [11]  362 	push	de
+   0219 21 46 01      [10]  363 	ld	hl, #326
+   021C 39            [11]  364 	add	hl, sp
+   021D EB            [ 4]  365 	ex	de, hl
+   021E 21 42 01      [10]  366 	ld	hl, #322
+   0221 39            [11]  367 	add	hl, sp
+   0222 01 04 00      [10]  368 	ld	bc, #4
+   0225 ED B0         [21]  369 	ldir
+   0227 D1            [10]  370 	pop	de
+                     0228   371 	C$sha1.c$39$1_0$35	= .
+                            372 	.globl	C$sha1.c$39$1_0$35
+                            373 ;/work/source_code/testingfiles/sha1.c:39: b = ctx->h[1];
+   0228 21 04 00      [10]  374 	ld	hl, #0x0004
+   022B 19            [11]  375 	add	hl, de
+   022C DD 75 D0      [19]  376 	ld	-48 (ix), l
+   022F DD 74 D1      [19]  377 	ld	-47 (ix), h
+   0232 D5            [11]  378 	push	de
+   0233 DD 5E D0      [19]  379 	ld	e, -48 (ix)
+   0236 DD 56 D1      [19]  380 	ld	d, -47 (ix)
+   0239 21 4C 01      [10]  381 	ld	hl, #0x014c
+   023C 39            [11]  382 	add	hl, sp
+   023D EB            [ 4]  383 	ex	de, hl
+   023E 01 04 00      [10]  384 	ld	bc, #0x0004
+   0241 ED B0         [21]  385 	ldir
+   0243 D1            [10]  386 	pop	de
+                     0244   387 	C$sha1.c$40$1_0$35	= .
+                            388 	.globl	C$sha1.c$40$1_0$35
+                            389 ;/work/source_code/testingfiles/sha1.c:40: c = ctx->h[2];
+   0244 21 08 00      [10]  390 	ld	hl, #0x0008
+   0247 19            [11]  391 	add	hl, de
+   0248 DD 75 D6      [19]  392 	ld	-42 (ix), l
+   024B DD 74 D7      [19]  393 	ld	-41 (ix), h
+   024E D5            [11]  394 	push	de
+   024F DD 5E D6      [19]  395 	ld	e, -42 (ix)
+   0252 DD 56 D7      [19]  396 	ld	d, -41 (ix)
+   0255 21 52 01      [10]  397 	ld	hl, #0x0152
+   0258 39            [11]  398 	add	hl, sp
+   0259 EB            [ 4]  399 	ex	de, hl
+   025A 01 04 00      [10]  400 	ld	bc, #0x0004
+   025D ED B0         [21]  401 	ldir
+   025F D1            [10]  402 	pop	de
+                     0260   403 	C$sha1.c$41$1_0$35	= .
+                            404 	.globl	C$sha1.c$41$1_0$35
+                            405 ;/work/source_code/testingfiles/sha1.c:41: d = ctx->h[3];
+   0260 21 0C 00      [10]  406 	ld	hl, #0x000c
+   0263 19            [11]  407 	add	hl, de
+   0264 DD 75 DC      [19]  408 	ld	-36 (ix), l
+   0267 DD 74 DD      [19]  409 	ld	-35 (ix), h
+   026A D5            [11]  410 	push	de
+   026B DD 5E DC      [19]  411 	ld	e, -36 (ix)
+   026E DD 56 DD      [19]  412 	ld	d, -35 (ix)
+   0271 21 58 01      [10]  413 	ld	hl, #0x0158
+   0274 39            [11]  414 	add	hl, sp
+   0275 EB            [ 4]  415 	ex	de, hl
+   0276 01 04 00      [10]  416 	ld	bc, #0x0004
+   0279 ED B0         [21]  417 	ldir
+   027B D1            [10]  418 	pop	de
+                     027C   419 	C$sha1.c$42$1_0$35	= .
+                            420 	.globl	C$sha1.c$42$1_0$35
+                            421 ;/work/source_code/testingfiles/sha1.c:42: e = ctx->h[4];
+   027C 21 10 00      [10]  422 	ld	hl, #0x0010
+   027F 19            [11]  423 	add	hl, de
+   0280 DD 75 E2      [19]  424 	ld	-30 (ix), l
+   0283 DD 74 E3      [19]  425 	ld	-29 (ix), h
+   0286 D5            [11]  426 	push	de
+   0287 DD 5E E2      [19]  427 	ld	e, -30 (ix)
+   028A DD 56 E3      [19]  428 	ld	d, -29 (ix)
+   028D 21 5E 01      [10]  429 	ld	hl, #0x015e
+   0290 39            [11]  430 	add	hl, sp
+   0291 EB            [ 4]  431 	ex	de, hl
+   0292 01 04 00      [10]  432 	ld	bc, #0x0004
+   0295 ED B0         [21]  433 	ldir
+   0297 D1            [10]  434 	pop	de
+                     0298   435 	C$sha1.c$44$3_0$40	= .
+                            436 	.globl	C$sha1.c$44$3_0$40
+                            437 ;/work/source_code/testingfiles/sha1.c:44: for (int i = 0; i < 80; i++) {
+   0298 DD 7E FE      [19]  438 	ld	a, -2 (ix)
+   029B DD 77 E8      [19]  439 	ld	-24 (ix), a
+   029E DD 7E FF      [19]  440 	ld	a, -1 (ix)
+   02A1 DD 77 E9      [19]  441 	ld	-23 (ix), a
+   02A4 AF            [ 4]  442 	xor	a, a
+   02A5 DD 77 FE      [19]  443 	ld	-2 (ix), a
+   02A8 DD 77 FF      [19]  444 	ld	-1 (ix), a
+   02AB                     445 00120$:
+   02AB DD 7E FE      [19]  446 	ld	a, -2 (ix)
+   02AE D6 50         [ 7]  447 	sub	a, #0x50
+   02B0 DD 7E FF      [19]  448 	ld	a, -1 (ix)
+   02B3 17            [ 4]  449 	rla
+   02B4 3F            [ 4]  450 	ccf
+   02B5 1F            [ 4]  451 	rra
+   02B6 DE 80         [ 7]  452 	sbc	a, #0x80
+   02B8 D2r8Dr06      [10]  453 	jp	NC, 00112$
+                     02BB   454 	C$sha1.c$48$1_0$35	= .
+                            455 	.globl	C$sha1.c$48$1_0$35
+                            456 ;/work/source_code/testingfiles/sha1.c:48: f = (b & c) | ((~b) & d);
+   02BB DD 7E D2      [19]  457 	ld	a, -46 (ix)
+   02BE DD A6 D8      [19]  458 	and	a, -40 (ix)
+   02C1 DD 77 F6      [19]  459 	ld	-10 (ix), a
+   02C4 DD 7E D3      [19]  460 	ld	a, -45 (ix)
+   02C7 DD A6 D9      [19]  461 	and	a, -39 (ix)
+   02CA DD 77 F7      [19]  462 	ld	-9 (ix), a
+   02CD DD 7E D4      [19]  463 	ld	a, -44 (ix)
+   02D0 DD A6 DA      [19]  464 	and	a, -38 (ix)
+   02D3 DD 77 F8      [19]  465 	ld	-8 (ix), a
+   02D6 DD 7E D5      [19]  466 	ld	a, -43 (ix)
+   02D9 DD A6 DB      [19]  467 	and	a, -37 (ix)
+   02DC DD 77 F9      [19]  468 	ld	-7 (ix), a
+                     02DF   469 	C$sha1.c$47$3_0$40	= .
+                            470 	.globl	C$sha1.c$47$3_0$40
+                            471 ;/work/source_code/testingfiles/sha1.c:47: if (i < 20) {
+   02DF DD 7E FE      [19]  472 	ld	a, -2 (ix)
+   02E2 D6 14         [ 7]  473 	sub	a, #0x14
+   02E4 DD 7E FF      [19]  474 	ld	a, -1 (ix)
+   02E7 17            [ 4]  475 	rla
+   02E8 3F            [ 4]  476 	ccf
+   02E9 1F            [ 4]  477 	rra
+   02EA DE 80         [ 7]  478 	sbc	a, #0x80
+   02EC D2r76r03      [10]  479 	jp	NC, 00110$
+                     02EF   480 	C$sha1.c$48$4_0$41	= .
+                            481 	.globl	C$sha1.c$48$4_0$41
+                            482 ;/work/source_code/testingfiles/sha1.c:48: f = (b & c) | ((~b) & d);
+   02EF DD 7E D2      [19]  483 	ld	a, -46 (ix)
+   02F2 2F            [ 4]  484 	cpl
+   02F3 DD 77 FA      [19]  485 	ld	-6 (ix), a
+   02F6 DD 7E D3      [19]  486 	ld	a, -45 (ix)
+   02F9 2F            [ 4]  487 	cpl
+   02FA DD 77 FB      [19]  488 	ld	-5 (ix), a
+   02FD DD 7E D4      [19]  489 	ld	a, -44 (ix)
+   0300 2F            [ 4]  490 	cpl
+   0301 DD 77 FC      [19]  491 	ld	-4 (ix), a
+   0304 DD 7E D5      [19]  492 	ld	a, -43 (ix)
+   0307 2F            [ 4]  493 	cpl
+   0308 DD 77 FD      [19]  494 	ld	-3 (ix), a
+   030B DD 7E FA      [19]  495 	ld	a, -6 (ix)
+   030E DD A6 DE      [19]  496 	and	a, -34 (ix)
+   0311 DD 77 F2      [19]  497 	ld	-14 (ix), a
+   0314 DD 7E FB      [19]  498 	ld	a, -5 (ix)
+   0317 DD A6 DF      [19]  499 	and	a, -33 (ix)
+   031A DD 77 F3      [19]  500 	ld	-13 (ix), a
+   031D DD 7E FC      [19]  501 	ld	a, -4 (ix)
+   0320 DD A6 E0      [19]  502 	and	a, -32 (ix)
+   0323 DD 77 F4      [19]  503 	ld	-12 (ix), a
+   0326 DD 7E FD      [19]  504 	ld	a, -3 (ix)
+   0329 DD A6 E1      [19]  505 	and	a, -31 (ix)
+   032C DD 77 F5      [19]  506 	ld	-11 (ix), a
+   032F DD 7E F6      [19]  507 	ld	a, -10 (ix)
+   0332 DD B6 F2      [19]  508 	or	a, -14 (ix)
+   0335 DD 77 FA      [19]  509 	ld	-6 (ix), a
+   0338 DD 7E F7      [19]  510 	ld	a, -9 (ix)
+   033B DD B6 F3      [19]  511 	or	a, -13 (ix)
+   033E DD 77 FB      [19]  512 	ld	-5 (ix), a
+   0341 DD 7E F8      [19]  513 	ld	a, -8 (ix)
+   0344 DD B6 F4      [19]  514 	or	a, -12 (ix)
+   0347 DD 77 FC      [19]  515 	ld	-4 (ix), a
+   034A DD 7E F9      [19]  516 	ld	a, -7 (ix)
+   034D DD B6 F5      [19]  517 	or	a, -11 (ix)
+   0350 DD 77 FD      [19]  518 	ld	-3 (ix), a
+   0353 D5            [11]  519 	push	de
+   0354 21 64 01      [10]  520 	ld	hl, #356
+   0357 39            [11]  521 	add	hl, sp
+   0358 EB            [ 4]  522 	ex	de, hl
+   0359 21 74 01      [10]  523 	ld	hl, #372
+   035C 39            [11]  524 	add	hl, sp
+   035D 01 04 00      [10]  525 	ld	bc, #4
+   0360 ED B0         [21]  526 	ldir
+   0362 D1            [10]  527 	pop	de
+                     0363   528 	C$sha1.c$49$4_0$41	= .
+                            529 	.globl	C$sha1.c$49$4_0$41
+                            530 ;/work/source_code/testingfiles/sha1.c:49: k = 0x5A827999;
+   0363 DD 36 EE 99   [19]  531 	ld	-18 (ix), #0x99
+   0367 DD 36 EF 79   [19]  532 	ld	-17 (ix), #0x79
+   036B DD 36 F0 82   [19]  533 	ld	-16 (ix), #0x82
+   036F DD 36 F1 5A   [19]  534 	ld	-15 (ix), #0x5a
+   0373 C3rD2r04      [10]  535 	jp	00111$
+   0376                     536 00110$:
+                     0376   537 	C$sha1.c$51$1_0$35	= .
+                            538 	.globl	C$sha1.c$51$1_0$35
+                            539 ;/work/source_code/testingfiles/sha1.c:51: f = b ^ c ^ d;
+   0376 DD 7E D2      [19]  540 	ld	a, -46 (ix)
+   0379 DD AE D8      [19]  541 	xor	a, -40 (ix)
+   037C DD 77 F2      [19]  542 	ld	-14 (ix), a
+   037F DD 7E D3      [19]  543 	ld	a, -45 (ix)
+   0382 DD AE D9      [19]  544 	xor	a, -39 (ix)
+   0385 DD 77 F3      [19]  545 	ld	-13 (ix), a
+   0388 DD 7E D4      [19]  546 	ld	a, -44 (ix)
+   038B DD AE DA      [19]  547 	xor	a, -38 (ix)
+   038E DD 77 F4      [19]  548 	ld	-12 (ix), a
+   0391 DD 7E D5      [19]  549 	ld	a, -43 (ix)
+   0394 DD AE DB      [19]  550 	xor	a, -37 (ix)
+   0397 DD 77 F5      [19]  551 	ld	-11 (ix), a
+   039A DD 7E F2      [19]  552 	ld	a, -14 (ix)
+   039D DD AE DE      [19]  553 	xor	a, -34 (ix)
+   03A0 DD 77 FA      [19]  554 	ld	-6 (ix), a
+   03A3 DD 7E F3      [19]  555 	ld	a, -13 (ix)
+   03A6 DD AE DF      [19]  556 	xor	a, -33 (ix)
+   03A9 DD 77 FB      [19]  557 	ld	-5 (ix), a
+   03AC DD 7E F4      [19]  558 	ld	a, -12 (ix)
+   03AF DD AE E0      [19]  559 	xor	a, -32 (ix)
+   03B2 DD 77 FC      [19]  560 	ld	-4 (ix), a
+   03B5 DD 7E F5      [19]  561 	ld	a, -11 (ix)
+   03B8 DD AE E1      [19]  562 	xor	a, -31 (ix)
+   03BB DD 77 FD      [19]  563 	ld	-3 (ix), a
+                     03BE   564 	C$sha1.c$50$3_0$40	= .
+                            565 	.globl	C$sha1.c$50$3_0$40
+                            566 ;/work/source_code/testingfiles/sha1.c:50: } else if (i < 40) {
+   03BE DD 7E FE      [19]  567 	ld	a, -2 (ix)
+   03C1 D6 28         [ 7]  568 	sub	a, #0x28
+   03C3 DD 7E FF      [19]  569 	ld	a, -1 (ix)
+   03C6 17            [ 4]  570 	rla
+   03C7 3F            [ 4]  571 	ccf
+   03C8 1F            [ 4]  572 	rra
+   03C9 DE 80         [ 7]  573 	sbc	a, #0x80
+   03CB 30 23         [12]  574 	jr	NC,00107$
+                     03CD   575 	C$sha1.c$51$4_0$42	= .
+                            576 	.globl	C$sha1.c$51$4_0$42
+                            577 ;/work/source_code/testingfiles/sha1.c:51: f = b ^ c ^ d;
+   03CD D5            [11]  578 	push	de
+   03CE 21 64 01      [10]  579 	ld	hl, #356
+   03D1 39            [11]  580 	add	hl, sp
+   03D2 EB            [ 4]  581 	ex	de, hl
+   03D3 21 74 01      [10]  582 	ld	hl, #372
+   03D6 39            [11]  583 	add	hl, sp
+   03D7 01 04 00      [10]  584 	ld	bc, #4
+   03DA ED B0         [21]  585 	ldir
+   03DC D1            [10]  586 	pop	de
+                     03DD   587 	C$sha1.c$52$4_0$42	= .
+                            588 	.globl	C$sha1.c$52$4_0$42
+                            589 ;/work/source_code/testingfiles/sha1.c:52: k = 0x6ED9EBA1;
+   03DD DD 36 EE A1   [19]  590 	ld	-18 (ix), #0xa1
+   03E1 DD 36 EF EB   [19]  591 	ld	-17 (ix), #0xeb
+   03E5 DD 36 F0 D9   [19]  592 	ld	-16 (ix), #0xd9
+   03E9 DD 36 F1 6E   [19]  593 	ld	-15 (ix), #0x6e
+   03ED C3rD2r04      [10]  594 	jp	00111$
+   03F0                     595 00107$:
+                     03F0   596 	C$sha1.c$53$3_0$40	= .
+                            597 	.globl	C$sha1.c$53$3_0$40
+                            598 ;/work/source_code/testingfiles/sha1.c:53: } else if (i < 60) {
+   03F0 DD 7E FE      [19]  599 	ld	a, -2 (ix)
+   03F3 D6 3C         [ 7]  600 	sub	a, #0x3c
+   03F5 DD 7E FF      [19]  601 	ld	a, -1 (ix)
+   03F8 17            [ 4]  602 	rla
+   03F9 3F            [ 4]  603 	ccf
+   03FA 1F            [ 4]  604 	rra
+   03FB DE 80         [ 7]  605 	sbc	a, #0x80
+   03FD D2rB2r04      [10]  606 	jp	NC, 00104$
+                     0400   607 	C$sha1.c$54$4_0$43	= .
+                            608 	.globl	C$sha1.c$54$4_0$43
+                            609 ;/work/source_code/testingfiles/sha1.c:54: f = (b & c) | (b & d) | (c & d);
+   0400 DD 7E D2      [19]  610 	ld	a, -46 (ix)
+   0403 DD A6 DE      [19]  611 	and	a, -34 (ix)
+   0406 DD 77 FA      [19]  612 	ld	-6 (ix), a
+   0409 DD 7E D3      [19]  613 	ld	a, -45 (ix)
+   040C DD A6 DF      [19]  614 	and	a, -33 (ix)
+   040F DD 77 FB      [19]  615 	ld	-5 (ix), a
+   0412 DD 7E D4      [19]  616 	ld	a, -44 (ix)
+   0415 DD A6 E0      [19]  617 	and	a, -32 (ix)
+   0418 DD 77 FC      [19]  618 	ld	-4 (ix), a
+   041B DD 7E D5      [19]  619 	ld	a, -43 (ix)
+   041E DD A6 E1      [19]  620 	and	a, -31 (ix)
+   0421 DD 77 FD      [19]  621 	ld	-3 (ix), a
+   0424 DD 7E F6      [19]  622 	ld	a, -10 (ix)
+   0427 DD B6 FA      [19]  623 	or	a, -6 (ix)
+   042A DD 77 F2      [19]  624 	ld	-14 (ix), a
+   042D DD 7E F7      [19]  625 	ld	a, -9 (ix)
+   0430 DD B6 FB      [19]  626 	or	a, -5 (ix)
+   0433 DD 77 F3      [19]  627 	ld	-13 (ix), a
+   0436 DD 7E F8      [19]  628 	ld	a, -8 (ix)
+   0439 DD B6 FC      [19]  629 	or	a, -4 (ix)
+   043C DD 77 F4      [19]  630 	ld	-12 (ix), a
+   043F DD 7E F9      [19]  631 	ld	a, -7 (ix)
+   0442 DD B6 FD      [19]  632 	or	a, -3 (ix)
+   0445 DD 77 F5      [19]  633 	ld	-11 (ix), a
+   0448 DD 7E D8      [19]  634 	ld	a, -40 (ix)
+   044B DD A6 DE      [19]  635 	and	a, -34 (ix)
+   044E DD 77 F6      [19]  636 	ld	-10 (ix), a
+   0451 DD 7E D9      [19]  637 	ld	a, -39 (ix)
+   0454 DD A6 DF      [19]  638 	and	a, -33 (ix)
+   0457 DD 77 F7      [19]  639 	ld	-9 (ix), a
+   045A DD 7E DA      [19]  640 	ld	a, -38 (ix)
+   045D DD A6 E0      [19]  641 	and	a, -32 (ix)
+   0460 DD 77 F8      [19]  642 	ld	-8 (ix), a
+   0463 DD 7E DB      [19]  643 	ld	a, -37 (ix)
+   0466 DD A6 E1      [19]  644 	and	a, -31 (ix)
+   0469 DD 77 F9      [19]  645 	ld	-7 (ix), a
+   046C DD 7E F2      [19]  646 	ld	a, -14 (ix)
+   046F DD B6 F6      [19]  647 	or	a, -10 (ix)
+   0472 DD 77 FA      [19]  648 	ld	-6 (ix), a
+   0475 DD 7E F3      [19]  649 	ld	a, -13 (ix)
+   0478 DD B6 F7      [19]  650 	or	a, -9 (ix)
+   047B DD 77 FB      [19]  651 	ld	-5 (ix), a
+   047E DD 7E F4      [19]  652 	ld	a, -12 (ix)
+   0481 DD B6 F8      [19]  653 	or	a, -8 (ix)
+   0484 DD 77 FC      [19]  654 	ld	-4 (ix), a
+   0487 DD 7E F5      [19]  655 	ld	a, -11 (ix)
+   048A DD B6 F9      [19]  656 	or	a, -7 (ix)
+   048D DD 77 FD      [19]  657 	ld	-3 (ix), a
+   0490 D5            [11]  658 	push	de
+   0491 21 64 01      [10]  659 	ld	hl, #356
+   0494 39            [11]  660 	add	hl, sp
+   0495 EB            [ 4]  661 	ex	de, hl
+   0496 21 74 01      [10]  662 	ld	hl, #372
+   0499 39            [11]  663 	add	hl, sp
+   049A 01 04 00      [10]  664 	ld	bc, #4
+   049D ED B0         [21]  665 	ldir
+   049F D1            [10]  666 	pop	de
+                     04A0   667 	C$sha1.c$55$4_0$43	= .
+                            668 	.globl	C$sha1.c$55$4_0$43
+                            669 ;/work/source_code/testingfiles/sha1.c:55: k = 0x8F1BBCDC;
+   04A0 DD 36 EE DC   [19]  670 	ld	-18 (ix), #0xdc
+   04A4 DD 36 EF BC   [19]  671 	ld	-17 (ix), #0xbc
+   04A8 DD 36 F0 1B   [19]  672 	ld	-16 (ix), #0x1b
+   04AC DD 36 F1 8F   [19]  673 	ld	-15 (ix), #0x8f
+   04B0 18 20         [12]  674 	jr	00111$
+   04B2                     675 00104$:
+                     04B2   676 	C$sha1.c$57$4_0$44	= .
+                            677 	.globl	C$sha1.c$57$4_0$44
+                            678 ;/work/source_code/testingfiles/sha1.c:57: f = b ^ c ^ d;
+   04B2 D5            [11]  679 	push	de
+   04B3 21 64 01      [10]  680 	ld	hl, #356
+   04B6 39            [11]  681 	add	hl, sp
+   04B7 EB            [ 4]  682 	ex	de, hl
+   04B8 21 74 01      [10]  683 	ld	hl, #372
+   04BB 39            [11]  684 	add	hl, sp
+   04BC 01 04 00      [10]  685 	ld	bc, #4
+   04BF ED B0         [21]  686 	ldir
+   04C1 D1            [10]  687 	pop	de
+                     04C2   688 	C$sha1.c$58$4_0$44	= .
+                            689 	.globl	C$sha1.c$58$4_0$44
+                            690 ;/work/source_code/testingfiles/sha1.c:58: k = 0xCA62C1D6;
+   04C2 DD 36 EE D6   [19]  691 	ld	-18 (ix), #0xd6
+   04C6 DD 36 EF C1   [19]  692 	ld	-17 (ix), #0xc1
+   04CA DD 36 F0 62   [19]  693 	ld	-16 (ix), #0x62
+   04CE DD 36 F1 CA   [19]  694 	ld	-15 (ix), #0xca
+   04D2                     695 00111$:
+                     04D2   696 	C$sha1.c$61$3_0$40	= .
+                            697 	.globl	C$sha1.c$61$3_0$40
+                            698 ;/work/source_code/testingfiles/sha1.c:61: temp = ROL32(a, 5) + f + e + k + w[i];
+   04D2 DD 7E CC      [19]  699 	ld	a, -52 (ix)
+   04D5 DD 77 F2      [19]  700 	ld	-14 (ix), a
+   04D8 DD 7E CD      [19]  701 	ld	a, -51 (ix)
+   04DB DD 77 F3      [19]  702 	ld	-13 (ix), a
+   04DE DD 7E CE      [19]  703 	ld	a, -50 (ix)
+   04E1 DD 77 F4      [19]  704 	ld	-12 (ix), a
+   04E4 DD 7E CF      [19]  705 	ld	a, -49 (ix)
+   04E7 DD 77 F5      [19]  706 	ld	-11 (ix), a
+   04EA 06 05         [ 7]  707 	ld	b, #0x05
+   04EC                     708 00190$:
+   04EC DD CB F2 26   [23]  709 	sla	-14 (ix)
+   04F0 DD CB F3 16   [23]  710 	rl	-13 (ix)
+   04F4 DD CB F4 16   [23]  711 	rl	-12 (ix)
+   04F8 DD CB F5 16   [23]  712 	rl	-11 (ix)
+   04FC 10 EE         [13]  713 	djnz	00190$
+   04FE DD 7E CF      [19]  714 	ld	a, -49 (ix)
+   0501 DD 77 F6      [19]  715 	ld	-10 (ix), a
+   0504 AF            [ 4]  716 	xor	a, a
+   0505 DD 77 F7      [19]  717 	ld	-9 (ix), a
+   0508 DD 77 F8      [19]  718 	ld	-8 (ix), a
+   050B DD 77 F9      [19]  719 	ld	-7 (ix), a
+   050E 06 03         [ 7]  720 	ld	b, #0x03
+   0510                     721 00192$:
+   0510 DD CB F6 3E   [23]  722 	srl	-10 (ix)
+   0514 10 FA         [13]  723 	djnz	00192$
+   0516 DD 7E F2      [19]  724 	ld	a, -14 (ix)
+   0519 DD B6 F6      [19]  725 	or	a, -10 (ix)
+   051C DD 77 FA      [19]  726 	ld	-6 (ix), a
+   051F DD 7E F3      [19]  727 	ld	a, -13 (ix)
+   0522 DD B6 F7      [19]  728 	or	a, -9 (ix)
+   0525 DD 77 FB      [19]  729 	ld	-5 (ix), a
+   0528 DD 7E F4      [19]  730 	ld	a, -12 (ix)
+   052B DD B6 F8      [19]  731 	or	a, -8 (ix)
+   052E DD 77 FC      [19]  732 	ld	-4 (ix), a
+   0531 DD 7E F5      [19]  733 	ld	a, -11 (ix)
+   0534 DD B6 F9      [19]  734 	or	a, -7 (ix)
+   0537 DD 77 FD      [19]  735 	ld	-3 (ix), a
+   053A DD 7E FA      [19]  736 	ld	a, -6 (ix)
+   053D DD 86 EA      [19]  737 	add	a, -22 (ix)
+   0540 DD 77 F6      [19]  738 	ld	-10 (ix), a
+   0543 DD 7E FB      [19]  739 	ld	a, -5 (ix)
+   0546 DD 8E EB      [19]  740 	adc	a, -21 (ix)
+   0549 DD 77 F7      [19]  741 	ld	-9 (ix), a
+   054C DD 7E FC      [19]  742 	ld	a, -4 (ix)
+   054F DD 8E EC      [19]  743 	adc	a, -20 (ix)
+   0552 DD 77 F8      [19]  744 	ld	-8 (ix), a
+   0555 DD 7E FD      [19]  745 	ld	a, -3 (ix)
+   0558 DD 8E ED      [19]  746 	adc	a, -19 (ix)
+   055B DD 77 F9      [19]  747 	ld	-7 (ix), a
+   055E DD 7E F6      [19]  748 	ld	a, -10 (ix)
+   0561 DD 86 E4      [19]  749 	add	a, -28 (ix)
+   0564 DD 77 FA      [19]  750 	ld	-6 (ix), a
+   0567 DD 7E F7      [19]  751 	ld	a, -9 (ix)
+   056A DD 8E E5      [19]  752 	adc	a, -27 (ix)
+   056D DD 77 FB      [19]  753 	ld	-5 (ix), a
+   0570 DD 7E F8      [19]  754 	ld	a, -8 (ix)
+   0573 DD 8E E6      [19]  755 	adc	a, -26 (ix)
+   0576 DD 77 FC      [19]  756 	ld	-4 (ix), a
+   0579 DD 7E F9      [19]  757 	ld	a, -7 (ix)
+   057C DD 8E E7      [19]  758 	adc	a, -25 (ix)
+   057F DD 77 FD      [19]  759 	ld	-3 (ix), a
+   0582 DD 7E FA      [19]  760 	ld	a, -6 (ix)
+   0585 DD 86 EE      [19]  761 	add	a, -18 (ix)
+   0588 DD 77 F6      [19]  762 	ld	-10 (ix), a
+   058B DD 7E FB      [19]  763 	ld	a, -5 (ix)
+   058E DD 8E EF      [19]  764 	adc	a, -17 (ix)
+   0591 DD 77 F7      [19]  765 	ld	-9 (ix), a
+   0594 DD 7E FC      [19]  766 	ld	a, -4 (ix)
+   0597 DD 8E F0      [19]  767 	adc	a, -16 (ix)
+   059A DD 77 F8      [19]  768 	ld	-8 (ix), a
+   059D DD 7E FD      [19]  769 	ld	a, -3 (ix)
+   05A0 DD 8E F1      [19]  770 	adc	a, -15 (ix)
+   05A3 DD 77 F9      [19]  771 	ld	-7 (ix), a
+   05A6 DD 4E FE      [19]  772 	ld	c, -2 (ix)
+   05A9 DD 46 FF      [19]  773 	ld	b, -1 (ix)
+   05AC CB 21         [ 8]  774 	sla	c
+   05AE CB 10         [ 8]  775 	rl	b
+   05B0 CB 21         [ 8]  776 	sla	c
+   05B2 CB 10         [ 8]  777 	rl	b
+   05B4 79            [ 4]  778 	ld	a, c
+   05B5 DD 86 E8      [19]  779 	add	a, -24 (ix)
+   05B8 4F            [ 4]  780 	ld	c, a
+   05B9 78            [ 4]  781 	ld	a, b
+   05BA DD 8E E9      [19]  782 	adc	a, -23 (ix)
+   05BD 47            [ 4]  783 	ld	b, a
+   05BE D5            [11]  784 	push	de
+   05BF 59            [ 4]  785 	ld	e, c
+   05C0 50            [ 4]  786 	ld	d, b
+   05C1 21 6C 01      [10]  787 	ld	hl, #0x016c
+   05C4 39            [11]  788 	add	hl, sp
+   05C5 EB            [ 4]  789 	ex	de, hl
+   05C6 01 04 00      [10]  790 	ld	bc, #0x0004
+   05C9 ED B0         [21]  791 	ldir
+   05CB D1            [10]  792 	pop	de
+   05CC DD 7E F6      [19]  793 	ld	a, -10 (ix)
+   05CF DD 86 F2      [19]  794 	add	a, -14 (ix)
+   05D2 DD 77 FA      [19]  795 	ld	-6 (ix), a
+   05D5 DD 7E F7      [19]  796 	ld	a, -9 (ix)
+   05D8 DD 8E F3      [19]  797 	adc	a, -13 (ix)
+   05DB DD 77 FB      [19]  798 	ld	-5 (ix), a
+   05DE DD 7E F8      [19]  799 	ld	a, -8 (ix)
+   05E1 DD 8E F4      [19]  800 	adc	a, -12 (ix)
+   05E4 DD 77 FC      [19]  801 	ld	-4 (ix), a
+   05E7 DD 7E F9      [19]  802 	ld	a, -7 (ix)
+   05EA DD 8E F5      [19]  803 	adc	a, -11 (ix)
+   05ED DD 77 FD      [19]  804 	ld	-3 (ix), a
+                     05F0   805 	C$sha1.c$62$3_0$40	= .
+                            806 	.globl	C$sha1.c$62$3_0$40
+                            807 ;/work/source_code/testingfiles/sha1.c:62: e = d;
+   05F0 D5            [11]  808 	push	de
+   05F1 21 5E 01      [10]  809 	ld	hl, #350
+   05F4 39            [11]  810 	add	hl, sp
+   05F5 EB            [ 4]  811 	ex	de, hl
+   05F6 21 58 01      [10]  812 	ld	hl, #344
+   05F9 39            [11]  813 	add	hl, sp
+   05FA 01 04 00      [10]  814 	ld	bc, #4
+   05FD ED B0         [21]  815 	ldir
+   05FF D1            [10]  816 	pop	de
+                     0600   817 	C$sha1.c$63$3_0$40	= .
+                            818 	.globl	C$sha1.c$63$3_0$40
+                            819 ;/work/source_code/testingfiles/sha1.c:63: d = c;
+   0600 D5            [11]  820 	push	de
+   0601 21 58 01      [10]  821 	ld	hl, #344
+   0604 39            [11]  822 	add	hl, sp
+   0605 EB            [ 4]  823 	ex	de, hl
+   0606 21 52 01      [10]  824 	ld	hl, #338
+   0609 39            [11]  825 	add	hl, sp
+   060A 01 04 00      [10]  826 	ld	bc, #4
+   060D ED B0         [21]  827 	ldir
+   060F D1            [10]  828 	pop	de
+                     0610   829 	C$sha1.c$64$3_0$40	= .
+                            830 	.globl	C$sha1.c$64$3_0$40
+                            831 ;/work/source_code/testingfiles/sha1.c:64: c = ROL32(b, 30);
+   0610 DD 7E D2      [19]  832 	ld	a, -46 (ix)
+   0613 DD 77 F9      [19]  833 	ld	-7 (ix), a
+   0616 AF            [ 4]  834 	xor	a, a
+   0617 DD 77 F6      [19]  835 	ld	-10 (ix), a
+   061A DD 77 F7      [19]  836 	ld	-9 (ix), a
+   061D DD 77 F8      [19]  837 	ld	-8 (ix), a
+   0620 06 06         [ 7]  838 	ld	b, #0x06
+   0622                     839 00196$:
+   0622 DD CB F9 26   [23]  840 	sla	-7 (ix)
+   0626 10 FA         [13]  841 	djnz	00196$
+   0628 DD 4E D2      [19]  842 	ld	c, -46 (ix)
+   062B DD 46 D3      [19]  843 	ld	b, -45 (ix)
+   062E DD 6E D4      [19]  844 	ld	l, -44 (ix)
+   0631 DD 66 D5      [19]  845 	ld	h, -43 (ix)
+   0634 3E 02         [ 7]  846 	ld	a, #0x02
+   0636                     847 00198$:
+   0636 CB 3C         [ 8]  848 	srl	h
+   0638 CB 1D         [ 8]  849 	rr	l
+   063A CB 18         [ 8]  850 	rr	b
+   063C CB 19         [ 8]  851 	rr	c
+   063E 3D            [ 4]  852 	dec	a
+   063F 20 F5         [12]  853 	jr	NZ, 00198$
+   0641 79            [ 4]  854 	ld	a, c
+   0642 DD B6 F6      [19]  855 	or	a, -10 (ix)
+   0645 4F            [ 4]  856 	ld	c, a
+   0646 78            [ 4]  857 	ld	a, b
+   0647 DD B6 F7      [19]  858 	or	a, -9 (ix)
+   064A 47            [ 4]  859 	ld	b, a
+   064B 7D            [ 4]  860 	ld	a, l
+   064C DD B6 F8      [19]  861 	or	a, -8 (ix)
+   064F 6F            [ 4]  862 	ld	l, a
+   0650 7C            [ 4]  863 	ld	a, h
+   0651 DD B6 F9      [19]  864 	or	a, -7 (ix)
+   0654 67            [ 4]  865 	ld	h, a
+   0655 DD 71 D8      [19]  866 	ld	-40 (ix), c
+   0658 DD 70 D9      [19]  867 	ld	-39 (ix), b
+   065B DD 75 DA      [19]  868 	ld	-38 (ix), l
+   065E DD 74 DB      [19]  869 	ld	-37 (ix), h
+                     0661   870 	C$sha1.c$65$3_0$40	= .
+                            871 	.globl	C$sha1.c$65$3_0$40
+                            872 ;/work/source_code/testingfiles/sha1.c:65: b = a;
+   0661 D5            [11]  873 	push	de
+   0662 21 4C 01      [10]  874 	ld	hl, #332
+   0665 39            [11]  875 	add	hl, sp
+   0666 EB            [ 4]  876 	ex	de, hl
+   0667 21 46 01      [10]  877 	ld	hl, #326
+   066A 39            [11]  878 	add	hl, sp
+   066B 01 04 00      [10]  879 	ld	bc, #4
+   066E ED B0         [21]  880 	ldir
+   0670 D1            [10]  881 	pop	de
+                     0671   882 	C$sha1.c$66$3_0$40	= .
+                            883 	.globl	C$sha1.c$66$3_0$40
+                            884 ;/work/source_code/testingfiles/sha1.c:66: a = temp;
+   0671 D5            [11]  885 	push	de
+   0672 21 46 01      [10]  886 	ld	hl, #326
+   0675 39            [11]  887 	add	hl, sp
+   0676 EB            [ 4]  888 	ex	de, hl
+   0677 21 74 01      [10]  889 	ld	hl, #372
+   067A 39            [11]  890 	add	hl, sp
+   067B 01 04 00      [10]  891 	ld	bc, #4
+   067E ED B0         [21]  892 	ldir
+   0680 D1            [10]  893 	pop	de
+                     0681   894 	C$sha1.c$44$2_0$39	= .
+                            895 	.globl	C$sha1.c$44$2_0$39
+                            896 ;/work/source_code/testingfiles/sha1.c:44: for (int i = 0; i < 80; i++) {
+   0681 DD 34 FE      [23]  897 	inc	-2 (ix)
+   0684 C2rABr02      [10]  898 	jp	NZ,00120$
+   0687 DD 34 FF      [23]  899 	inc	-1 (ix)
+   068A C3rABr02      [10]  900 	jp	00120$
+   068D                     901 00112$:
+                     068D   902 	C$sha1.c$69$1_0$35	= .
+                            903 	.globl	C$sha1.c$69$1_0$35
+                            904 ;/work/source_code/testingfiles/sha1.c:69: ctx->h[0] += a;
+   068D DD 7E C8      [19]  905 	ld	a, -56 (ix)
+   0690 DD 86 CC      [19]  906 	add	a, -52 (ix)
+   0693 DD 77 FC      [19]  907 	ld	-4 (ix), a
+   0696 DD 7E C9      [19]  908 	ld	a, -55 (ix)
+   0699 DD 8E CD      [19]  909 	adc	a, -51 (ix)
+   069C DD 77 FD      [19]  910 	ld	-3 (ix), a
+   069F DD 7E CA      [19]  911 	ld	a, -54 (ix)
+   06A2 DD 8E CE      [19]  912 	adc	a, -50 (ix)
+   06A5 DD 77 FE      [19]  913 	ld	-2 (ix), a
+   06A8 DD 7E CB      [19]  914 	ld	a, -53 (ix)
+   06AB DD 8E CF      [19]  915 	adc	a, -49 (ix)
+   06AE DD 77 FF      [19]  916 	ld	-1 (ix), a
+   06B1 21 74 01      [10]  917 	ld	hl, #0x0174
+   06B4 39            [11]  918 	add	hl, sp
+   06B5 01 04 00      [10]  919 	ld	bc, #0x0004
+   06B8 ED B0         [21]  920 	ldir
+                     06BA   921 	C$sha1.c$70$1_0$35	= .
+                            922 	.globl	C$sha1.c$70$1_0$35
+                            923 ;/work/source_code/testingfiles/sha1.c:70: ctx->h[1] += b;
+   06BA DD 6E D0      [19]  924 	ld	l, -48 (ix)
+   06BD DD 66 D1      [19]  925 	ld	h, -47 (ix)
+   06C0 4E            [ 7]  926 	ld	c, (hl)
+   06C1 23            [ 6]  927 	inc	hl
+   06C2 46            [ 7]  928 	ld	b, (hl)
+   06C3 23            [ 6]  929 	inc	hl
+   06C4 5E            [ 7]  930 	ld	e, (hl)
+   06C5 23            [ 6]  931 	inc	hl
+   06C6 56            [ 7]  932 	ld	d, (hl)
+   06C7 79            [ 4]  933 	ld	a, c
+   06C8 DD 86 D2      [19]  934 	add	a, -46 (ix)
+   06CB 4F            [ 4]  935 	ld	c, a
+   06CC 78            [ 4]  936 	ld	a, b
+   06CD DD 8E D3      [19]  937 	adc	a, -45 (ix)
+   06D0 47            [ 4]  938 	ld	b, a
+   06D1 7B            [ 4]  939 	ld	a, e
+   06D2 DD 8E D4      [19]  940 	adc	a, -44 (ix)
+   06D5 5F            [ 4]  941 	ld	e, a
+   06D6 7A            [ 4]  942 	ld	a, d
+   06D7 DD 8E D5      [19]  943 	adc	a, -43 (ix)
+   06DA 57            [ 4]  944 	ld	d, a
+   06DB DD 6E D0      [19]  945 	ld	l, -48 (ix)
+   06DE DD 66 D1      [19]  946 	ld	h, -47 (ix)
+   06E1 71            [ 7]  947 	ld	(hl), c
+   06E2 23            [ 6]  948 	inc	hl
+   06E3 70            [ 7]  949 	ld	(hl), b
+   06E4 23            [ 6]  950 	inc	hl
+   06E5 73            [ 7]  951 	ld	(hl), e
+   06E6 23            [ 6]  952 	inc	hl
+   06E7 72            [ 7]  953 	ld	(hl), d
+                     06E8   954 	C$sha1.c$71$1_0$35	= .
+                            955 	.globl	C$sha1.c$71$1_0$35
+                            956 ;/work/source_code/testingfiles/sha1.c:71: ctx->h[2] += c;
+   06E8 DD 6E D6      [19]  957 	ld	l, -42 (ix)
+   06EB DD 66 D7      [19]  958 	ld	h, -41 (ix)
+   06EE 4E            [ 7]  959 	ld	c, (hl)
+   06EF 23            [ 6]  960 	inc	hl
+   06F0 46            [ 7]  961 	ld	b, (hl)
+   06F1 23            [ 6]  962 	inc	hl
+   06F2 5E            [ 7]  963 	ld	e, (hl)
+   06F3 23            [ 6]  964 	inc	hl
+   06F4 56            [ 7]  965 	ld	d, (hl)
+   06F5 79            [ 4]  966 	ld	a, c
+   06F6 DD 86 D8      [19]  967 	add	a, -40 (ix)
+   06F9 4F            [ 4]  968 	ld	c, a
+   06FA 78            [ 4]  969 	ld	a, b
+   06FB DD 8E D9      [19]  970 	adc	a, -39 (ix)
+   06FE 47            [ 4]  971 	ld	b, a
+   06FF 7B            [ 4]  972 	ld	a, e
+   0700 DD 8E DA      [19]  973 	adc	a, -38 (ix)
+   0703 5F            [ 4]  974 	ld	e, a
+   0704 7A            [ 4]  975 	ld	a, d
+   0705 DD 8E DB      [19]  976 	adc	a, -37 (ix)
+   0708 57            [ 4]  977 	ld	d, a
+   0709 DD 6E D6      [19]  978 	ld	l, -42 (ix)
+   070C DD 66 D7      [19]  979 	ld	h, -41 (ix)
+   070F 71            [ 7]  980 	ld	(hl), c
+   0710 23            [ 6]  981 	inc	hl
+   0711 70            [ 7]  982 	ld	(hl), b
+   0712 23            [ 6]  983 	inc	hl
+   0713 73            [ 7]  984 	ld	(hl), e
+   0714 23            [ 6]  985 	inc	hl
+   0715 72            [ 7]  986 	ld	(hl), d
+                     0716   987 	C$sha1.c$72$1_0$35	= .
+                            988 	.globl	C$sha1.c$72$1_0$35
+                            989 ;/work/source_code/testingfiles/sha1.c:72: ctx->h[3] += d;
+   0716 DD 6E DC      [19]  990 	ld	l, -36 (ix)
+   0719 DD 66 DD      [19]  991 	ld	h, -35 (ix)
+   071C 4E            [ 7]  992 	ld	c, (hl)
+   071D 23            [ 6]  993 	inc	hl
+   071E 46            [ 7]  994 	ld	b, (hl)
+   071F 23            [ 6]  995 	inc	hl
+   0720 5E            [ 7]  996 	ld	e, (hl)
+   0721 23            [ 6]  997 	inc	hl
+   0722 56            [ 7]  998 	ld	d, (hl)
+   0723 79            [ 4]  999 	ld	a, c
+   0724 DD 86 DE      [19] 1000 	add	a, -34 (ix)
+   0727 4F            [ 4] 1001 	ld	c, a
+   0728 78            [ 4] 1002 	ld	a, b
+   0729 DD 8E DF      [19] 1003 	adc	a, -33 (ix)
+   072C 47            [ 4] 1004 	ld	b, a
+   072D 7B            [ 4] 1005 	ld	a, e
+   072E DD 8E E0      [19] 1006 	adc	a, -32 (ix)
+   0731 5F            [ 4] 1007 	ld	e, a
+   0732 7A            [ 4] 1008 	ld	a, d
+   0733 DD 8E E1      [19] 1009 	adc	a, -31 (ix)
+   0736 57            [ 4] 1010 	ld	d, a
+   0737 DD 6E DC      [19] 1011 	ld	l, -36 (ix)
+   073A DD 66 DD      [19] 1012 	ld	h, -35 (ix)
+   073D 71            [ 7] 1013 	ld	(hl), c
+   073E 23            [ 6] 1014 	inc	hl
+   073F 70            [ 7] 1015 	ld	(hl), b
+   0740 23            [ 6] 1016 	inc	hl
+   0741 73            [ 7] 1017 	ld	(hl), e
+   0742 23            [ 6] 1018 	inc	hl
+   0743 72            [ 7] 1019 	ld	(hl), d
+                     0744  1020 	C$sha1.c$73$1_0$35	= .
+                           1021 	.globl	C$sha1.c$73$1_0$35
+                           1022 ;/work/source_code/testingfiles/sha1.c:73: ctx->h[4] += e;
+   0744 DD 6E E2      [19] 1023 	ld	l, -30 (ix)
+   0747 DD 66 E3      [19] 1024 	ld	h, -29 (ix)
+   074A 4E            [ 7] 1025 	ld	c, (hl)
+   074B 23            [ 6] 1026 	inc	hl
+   074C 46            [ 7] 1027 	ld	b, (hl)
+   074D 23            [ 6] 1028 	inc	hl
+   074E 5E            [ 7] 1029 	ld	e, (hl)
+   074F 23            [ 6] 1030 	inc	hl
+   0750 56            [ 7] 1031 	ld	d, (hl)
+   0751 79            [ 4] 1032 	ld	a, c
+   0752 DD 86 E4      [19] 1033 	add	a, -28 (ix)
+   0755 4F            [ 4] 1034 	ld	c, a
+   0756 78            [ 4] 1035 	ld	a, b
+   0757 DD 8E E5      [19] 1036 	adc	a, -27 (ix)
+   075A 47            [ 4] 1037 	ld	b, a
+   075B 7B            [ 4] 1038 	ld	a, e
+   075C DD 8E E6      [19] 1039 	adc	a, -26 (ix)
+   075F 5F            [ 4] 1040 	ld	e, a
+   0760 7A            [ 4] 1041 	ld	a, d
+   0761 DD 8E E7      [19] 1042 	adc	a, -25 (ix)
+   0764 57            [ 4] 1043 	ld	d, a
+   0765 DD 6E E2      [19] 1044 	ld	l, -30 (ix)
+   0768 DD 66 E3      [19] 1045 	ld	h, -29 (ix)
+   076B 71            [ 7] 1046 	ld	(hl), c
+   076C 23            [ 6] 1047 	inc	hl
+   076D 70            [ 7] 1048 	ld	(hl), b
+   076E 23            [ 6] 1049 	inc	hl
+   076F 73            [ 7] 1050 	ld	(hl), e
+   0770 23            [ 6] 1051 	inc	hl
+   0771 72            [ 7] 1052 	ld	(hl), d
+                     0772  1053 	C$sha1.c$74$1_0$35	= .
+                           1054 	.globl	C$sha1.c$74$1_0$35
+                           1055 ;/work/source_code/testingfiles/sha1.c:74: }
+   0772 DD F9         [10] 1056 	ld	sp, ix
+   0774 DD E1         [14] 1057 	pop	ix
+                     0776  1058 	C$sha1.c$74$1_0$35	= .
+                           1059 	.globl	C$sha1.c$74$1_0$35
+                     0776  1060 	XFsha1$sha1_compress$0$0	= .
+                           1061 	.globl	XFsha1$sha1_compress$0$0
+   0776 C9            [10] 1062 	ret
+                     0777  1063 	Fsha1$sha1_init_alt$0$0	= .
+                           1064 	.globl	Fsha1$sha1_init_alt$0$0
+                     0777  1065 	C$sha1.c$78$1_0$46	= .
+                           1066 	.globl	C$sha1.c$78$1_0$46
+                           1067 ;/work/source_code/testingfiles/sha1.c:78: static void sha1_init_alt(SHA1_ALT *ctx) {
+                           1068 ;	---------------------------------
+                           1069 ; Function sha1_init_alt
+                           1070 ; ---------------------------------
+   0777                    1071 _sha1_init_alt:
+                     0777  1072 	C$sha1.c$79$1_0$46	= .
+                           1073 	.globl	C$sha1.c$79$1_0$46
+                           1074 ;/work/source_code/testingfiles/sha1.c:79: ctx->h[0] = 0x67452301;
+   0777 D1            [10] 1075 	pop	de
+   0778 C1            [10] 1076 	pop	bc
+   0779 C5            [11] 1077 	push	bc
+   077A D5            [11] 1078 	push	de
+   077B 69            [ 4] 1079 	ld	l, c
+   077C 60            [ 4] 1080 	ld	h, b
+   077D 36 01         [10] 1081 	ld	(hl), #0x01
+   077F 23            [ 6] 1082 	inc	hl
+   0780 36 23         [10] 1083 	ld	(hl), #0x23
+   0782 23            [ 6] 1084 	inc	hl
+   0783 36 45         [10] 1085 	ld	(hl), #0x45
+   0785 23            [ 6] 1086 	inc	hl
+   0786 36 67         [10] 1087 	ld	(hl), #0x67
+                     0788  1088 	C$sha1.c$80$1_0$46	= .
+                           1089 	.globl	C$sha1.c$80$1_0$46
+                           1090 ;/work/source_code/testingfiles/sha1.c:80: ctx->h[1] = 0xEFCDAB89;
+   0788 21 04 00      [10] 1091 	ld	hl, #0x0004
+   078B 09            [11] 1092 	add	hl, bc
+   078C 36 89         [10] 1093 	ld	(hl), #0x89
+   078E 23            [ 6] 1094 	inc	hl
+   078F 36 AB         [10] 1095 	ld	(hl), #0xab
+   0791 23            [ 6] 1096 	inc	hl
+   0792 36 CD         [10] 1097 	ld	(hl), #0xcd
+   0794 23            [ 6] 1098 	inc	hl
+   0795 36 EF         [10] 1099 	ld	(hl), #0xef
+                     0797  1100 	C$sha1.c$81$1_0$46	= .
+                           1101 	.globl	C$sha1.c$81$1_0$46
+                           1102 ;/work/source_code/testingfiles/sha1.c:81: ctx->h[2] = 0x98BADCFE;
+   0797 21 08 00      [10] 1103 	ld	hl, #0x0008
+   079A 09            [11] 1104 	add	hl, bc
+   079B 36 FE         [10] 1105 	ld	(hl), #0xfe
+   079D 23            [ 6] 1106 	inc	hl
+   079E 36 DC         [10] 1107 	ld	(hl), #0xdc
+   07A0 23            [ 6] 1108 	inc	hl
+   07A1 36 BA         [10] 1109 	ld	(hl), #0xba
+   07A3 23            [ 6] 1110 	inc	hl
+   07A4 36 98         [10] 1111 	ld	(hl), #0x98
+                     07A6  1112 	C$sha1.c$82$1_0$46	= .
+                           1113 	.globl	C$sha1.c$82$1_0$46
+                           1114 ;/work/source_code/testingfiles/sha1.c:82: ctx->h[3] = 0x10325476;
+   07A6 21 0C 00      [10] 1115 	ld	hl, #0x000c
+   07A9 09            [11] 1116 	add	hl, bc
+   07AA 36 76         [10] 1117 	ld	(hl), #0x76
+   07AC 23            [ 6] 1118 	inc	hl
+   07AD 36 54         [10] 1119 	ld	(hl), #0x54
+   07AF 23            [ 6] 1120 	inc	hl
+   07B0 36 32         [10] 1121 	ld	(hl), #0x32
+   07B2 23            [ 6] 1122 	inc	hl
+   07B3 36 10         [10] 1123 	ld	(hl), #0x10
+                     07B5  1124 	C$sha1.c$83$1_0$46	= .
+                           1125 	.globl	C$sha1.c$83$1_0$46
+                           1126 ;/work/source_code/testingfiles/sha1.c:83: ctx->h[4] = 0xC3D2E1F0;
+   07B5 21 10 00      [10] 1127 	ld	hl, #0x0010
+   07B8 09            [11] 1128 	add	hl, bc
+   07B9 36 F0         [10] 1129 	ld	(hl), #0xf0
+   07BB 23            [ 6] 1130 	inc	hl
+   07BC 36 E1         [10] 1131 	ld	(hl), #0xe1
+   07BE 23            [ 6] 1132 	inc	hl
+   07BF 36 D2         [10] 1133 	ld	(hl), #0xd2
+   07C1 23            [ 6] 1134 	inc	hl
+   07C2 36 C3         [10] 1135 	ld	(hl), #0xc3
+                     07C4  1136 	C$sha1.c$85$1_0$46	= .
+                           1137 	.globl	C$sha1.c$85$1_0$46
+                           1138 ;/work/source_code/testingfiles/sha1.c:85: ctx->bitcount = 0;
+   07C4 21 14 00      [10] 1139 	ld	hl, #0x0014
+   07C7 09            [11] 1140 	add	hl, bc
+   07C8 AF            [ 4] 1141 	xor	a, a
+   07C9 77            [ 7] 1142 	ld	(hl), a
+   07CA 23            [ 6] 1143 	inc	hl
+   07CB 77            [ 7] 1144 	ld	(hl), a
+   07CC 23            [ 6] 1145 	inc	hl
+   07CD 77            [ 7] 1146 	ld	(hl), a
+   07CE 23            [ 6] 1147 	inc	hl
+   07CF 77            [ 7] 1148 	ld	(hl), a
+   07D0 23            [ 6] 1149 	inc	hl
+   07D1 77            [ 7] 1150 	ld	(hl), a
+   07D2 23            [ 6] 1151 	inc	hl
+   07D3 77            [ 7] 1152 	ld	(hl), a
+   07D4 23            [ 6] 1153 	inc	hl
+   07D5 77            [ 7] 1154 	ld	(hl), a
+   07D6 23            [ 6] 1155 	inc	hl
+   07D7 77            [ 7] 1156 	ld	(hl), a
+                     07D8  1157 	C$sha1.c$86$1_0$46	= .
+                           1158 	.globl	C$sha1.c$86$1_0$46
+                           1159 ;/work/source_code/testingfiles/sha1.c:86: ctx->buffer_len = 0;
+   07D8 21 5C 00      [10] 1160 	ld	hl, #0x005c
+   07DB 09            [11] 1161 	add	hl, bc
+   07DC AF            [ 4] 1162 	xor	a, a
+   07DD 77            [ 7] 1163 	ld	(hl), a
+   07DE 23            [ 6] 1164 	inc	hl
+   07DF 77            [ 7] 1165 	ld	(hl), a
+                     07E0  1166 	C$sha1.c$87$1_0$46	= .
+                           1167 	.globl	C$sha1.c$87$1_0$46
+                           1168 ;/work/source_code/testingfiles/sha1.c:87: }
+                     07E0  1169 	C$sha1.c$87$1_0$46	= .
+                           1170 	.globl	C$sha1.c$87$1_0$46
+                     07E0  1171 	XFsha1$sha1_init_alt$0$0	= .
+                           1172 	.globl	XFsha1$sha1_init_alt$0$0
+   07E0 C9            [10] 1173 	ret
+                     07E1  1174 	Fsha1$sha1_update_alt$0$0	= .
+                           1175 	.globl	Fsha1$sha1_update_alt$0$0
+                     07E1  1176 	C$sha1.c$91$1_0$48	= .
+                           1177 	.globl	C$sha1.c$91$1_0$48
+                           1178 ;/work/source_code/testingfiles/sha1.c:91: static void sha1_update_alt(SHA1_ALT *ctx, const uint8_t *data, size_t len) {
+                           1179 ;	---------------------------------
+                           1180 ; Function sha1_update_alt
+                           1181 ; ---------------------------------
+   07E1                    1182 _sha1_update_alt:
+   07E1 CDr00r00      [17] 1183 	call	___sdcc_enter_ix
+   07E4 21 EF FF      [10] 1184 	ld	hl, #-17
+   07E7 39            [11] 1185 	add	hl, sp
+   07E8 F9            [ 6] 1186 	ld	sp, hl
+                     07E9  1187 	C$sha1.c$92$1_0$48	= .
+                           1188 	.globl	C$sha1.c$92$1_0$48
+                           1189 ;/work/source_code/testingfiles/sha1.c:92: ctx->bitcount += (uint64_t)len * 8;
+   07E9 DD 4E 04      [19] 1190 	ld	c, 4 (ix)
+   07EC DD 46 05      [19] 1191 	ld	b, 5 (ix)
+   07EF 21 14 00      [10] 1192 	ld	hl, #0x0014
+   07F2 09            [11] 1193 	add	hl, bc
+   07F3 EB            [ 4] 1194 	ex	de, hl
+   07F4 D5            [11] 1195 	push	de
+   07F5 C5            [11] 1196 	push	bc
+   07F6 21 04 00      [10] 1197 	ld	hl, #0x0004
+   07F9 39            [11] 1198 	add	hl, sp
+   07FA EB            [ 4] 1199 	ex	de, hl
+   07FB 01 08 00      [10] 1200 	ld	bc, #0x0008
+   07FE ED B0         [21] 1201 	ldir
+   0800 C1            [10] 1202 	pop	bc
+   0801 D1            [10] 1203 	pop	de
+   0802 DD 7E 08      [19] 1204 	ld	a, 8 (ix)
+   0805 DD 77 F8      [19] 1205 	ld	-8 (ix), a
+   0808 DD 7E 09      [19] 1206 	ld	a, 9 (ix)
+   080B DD 77 F9      [19] 1207 	ld	-7 (ix), a
+   080E AF            [ 4] 1208 	xor	a, a
+   080F DD 77 FA      [19] 1209 	ld	-6 (ix), a
+   0812 DD 77 FB      [19] 1210 	ld	-5 (ix), a
+   0815 DD 77 FC      [19] 1211 	ld	-4 (ix), a
+   0818 DD 77 FD      [19] 1212 	ld	-3 (ix), a
+   081B DD 77 FE      [19] 1213 	ld	-2 (ix), a
+   081E DD 77 FF      [19] 1214 	ld	-1 (ix), a
+   0821 3E 03         [ 7] 1215 	ld	a, #0x03
+   0823                    1216 00130$:
+   0823 DD CB F8 26   [23] 1217 	sla	-8 (ix)
+   0827 DD CB F9 16   [23] 1218 	rl	-7 (ix)
+   082B DD CB FA 16   [23] 1219 	rl	-6 (ix)
+   082F DD CB FB 16   [23] 1220 	rl	-5 (ix)
+   0833 DD CB FC 16   [23] 1221 	rl	-4 (ix)
+   0837 DD CB FD 16   [23] 1222 	rl	-3 (ix)
+   083B DD CB FE 16   [23] 1223 	rl	-2 (ix)
+   083F DD CB FF 16   [23] 1224 	rl	-1 (ix)
+   0843 3D            [ 4] 1225 	dec	a
+   0844 20 DD         [12] 1226 	jr	NZ,00130$
+   0846 DD 7E EF      [19] 1227 	ld	a, -17 (ix)
+   0849 DD 86 F8      [19] 1228 	add	a, -8 (ix)
+   084C DD 77 F8      [19] 1229 	ld	-8 (ix), a
+   084F DD 7E F0      [19] 1230 	ld	a, -16 (ix)
+   0852 DD 8E F9      [19] 1231 	adc	a, -7 (ix)
+   0855 DD 77 F9      [19] 1232 	ld	-7 (ix), a
+   0858 DD 7E F1      [19] 1233 	ld	a, -15 (ix)
+   085B DD 8E FA      [19] 1234 	adc	a, -6 (ix)
+   085E DD 77 FA      [19] 1235 	ld	-6 (ix), a
+   0861 DD 7E F2      [19] 1236 	ld	a, -14 (ix)
+   0864 DD 8E FB      [19] 1237 	adc	a, -5 (ix)
+   0867 DD 77 FB      [19] 1238 	ld	-5 (ix), a
+   086A DD 7E F3      [19] 1239 	ld	a, -13 (ix)
+   086D DD 8E FC      [19] 1240 	adc	a, -4 (ix)
+   0870 DD 77 FC      [19] 1241 	ld	-4 (ix), a
+   0873 DD 7E F4      [19] 1242 	ld	a, -12 (ix)
+   0876 DD 8E FD      [19] 1243 	adc	a, -3 (ix)
+   0879 DD 77 FD      [19] 1244 	ld	-3 (ix), a
+   087C DD 7E F5      [19] 1245 	ld	a, -11 (ix)
+   087F DD 8E FE      [19] 1246 	adc	a, -2 (ix)
+   0882 DD 77 FE      [19] 1247 	ld	-2 (ix), a
+   0885 DD 7E F6      [19] 1248 	ld	a, -10 (ix)
+   0888 DD 8E FF      [19] 1249 	adc	a, -1 (ix)
+   088B DD 77 FF      [19] 1250 	ld	-1 (ix), a
+   088E C5            [11] 1251 	push	bc
+   088F 21 0B 00      [10] 1252 	ld	hl, #0x000b
+   0892 39            [11] 1253 	add	hl, sp
+   0893 01 08 00      [10] 1254 	ld	bc, #0x0008
+   0896 ED B0         [21] 1255 	ldir
+   0898 C1            [10] 1256 	pop	bc
+                     0899  1257 	C$sha1.c$94$2_0$49	= .
+                           1258 	.globl	C$sha1.c$94$2_0$49
+                           1259 ;/work/source_code/testingfiles/sha1.c:94: while (len > 0) {
+   0899 21 1C 00      [10] 1260 	ld	hl, #0x001c
+   089C 09            [11] 1261 	add	hl, bc
+   089D DD 75 F8      [19] 1262 	ld	-8 (ix), l
+   08A0 DD 74 F9      [19] 1263 	ld	-7 (ix), h
+   08A3 DD 71 FA      [19] 1264 	ld	-6 (ix), c
+   08A6 DD 70 FB      [19] 1265 	ld	-5 (ix), b
+   08A9                    1266 00103$:
+   08A9 DD 7E 09      [19] 1267 	ld	a, 9 (ix)
+   08AC DD B6 08      [19] 1268 	or	a, 8 (ix)
+   08AF CAr68r09      [10] 1269 	jp	Z, 00106$
+                     08B2  1270 	C$sha1.c$95$2_0$49	= .
+                           1271 	.globl	C$sha1.c$95$2_0$49
+                           1272 ;/work/source_code/testingfiles/sha1.c:95: size_t space = SHA1_BLOCK - ctx->buffer_len;
+   08B2 21 5C 00      [10] 1273 	ld	hl, #0x005c
+   08B5 09            [11] 1274 	add	hl, bc
+   08B6 DD 75 FC      [19] 1275 	ld	-4 (ix), l
+   08B9 DD 74 FD      [19] 1276 	ld	-3 (ix), h
+   08BC 7E            [ 7] 1277 	ld	a, (hl)
+   08BD 23            [ 6] 1278 	inc	hl
+   08BE 66            [ 7] 1279 	ld	h, (hl)
+   08BF 6F            [ 4] 1280 	ld	l, a
+   08C0 3E 40         [ 7] 1281 	ld	a, #0x40
+   08C2 95            [ 4] 1282 	sub	a, l
+   08C3 5F            [ 4] 1283 	ld	e, a
+   08C4 3E 00         [ 7] 1284 	ld	a, #0x00
+   08C6 9C            [ 4] 1285 	sbc	a, h
+   08C7 57            [ 4] 1286 	ld	d, a
+                     08C8  1287 	C$sha1.c$96$2_0$49	= .
+                           1288 	.globl	C$sha1.c$96$2_0$49
+                           1289 ;/work/source_code/testingfiles/sha1.c:96: size_t copy_len = (len < space) ? len : space;
+   08C8 DD 7E 08      [19] 1290 	ld	a, 8 (ix)
+   08CB 93            [ 4] 1291 	sub	a, e
+   08CC DD 7E 09      [19] 1292 	ld	a, 9 (ix)
+   08CF 9A            [ 4] 1293 	sbc	a, d
+   08D0 30 06         [12] 1294 	jr	NC,00108$
+   08D2 DD 5E 08      [19] 1295 	ld	e, 8 (ix)
+   08D5 DD 56 09      [19] 1296 	ld	d, 9 (ix)
+   08D8                    1297 00108$:
+                     08D8  1298 	C$sha1.c$98$2_0$49	= .
+                           1299 	.globl	C$sha1.c$98$2_0$49
+                           1300 ;/work/source_code/testingfiles/sha1.c:98: memcpy(ctx->buffer + ctx->buffer_len, data, copy_len);
+   08D8 7D            [ 4] 1301 	ld	a, l
+   08D9 DD 86 F8      [19] 1302 	add	a, -8 (ix)
+   08DC 6F            [ 4] 1303 	ld	l, a
+   08DD 7C            [ 4] 1304 	ld	a, h
+   08DE DD 8E F9      [19] 1305 	adc	a, -7 (ix)
+   08E1 67            [ 4] 1306 	ld	h, a
+   08E2 DD 75 FE      [19] 1307 	ld	-2 (ix), l
+   08E5 DD 74 FF      [19] 1308 	ld	-1 (ix), h
+   08E8 DD 6E 06      [19] 1309 	ld	l, 6 (ix)
+   08EB DD 66 07      [19] 1310 	ld	h, 7 (ix)
+   08EE C5            [11] 1311 	push	bc
+   08EF D5            [11] 1312 	push	de
+   08F0 D5            [11] 1313 	push	de
+   08F1 E5            [11] 1314 	push	hl
+   08F2 DD 6E FE      [19] 1315 	ld	l, -2 (ix)
+   08F5 DD 66 FF      [19] 1316 	ld	h, -1 (ix)
+   08F8 E5            [11] 1317 	push	hl
+   08F9 CDr00r00      [17] 1318 	call	___memcpy
+   08FC F1            [10] 1319 	pop	af
+   08FD F1            [10] 1320 	pop	af
+   08FE F1            [10] 1321 	pop	af
+   08FF D1            [10] 1322 	pop	de
+   0900 C1            [10] 1323 	pop	bc
+                     0901  1324 	C$sha1.c$99$2_0$49	= .
+                           1325 	.globl	C$sha1.c$99$2_0$49
+                           1326 ;/work/source_code/testingfiles/sha1.c:99: ctx->buffer_len += copy_len;
+   0901 DD 6E FC      [19] 1327 	ld	l, -4 (ix)
+   0904 DD 66 FD      [19] 1328 	ld	h, -3 (ix)
+   0907 7E            [ 7] 1329 	ld	a, (hl)
+   0908 23            [ 6] 1330 	inc	hl
+   0909 66            [ 7] 1331 	ld	h, (hl)
+   090A 6F            [ 4] 1332 	ld	l, a
+   090B 19            [11] 1333 	add	hl, de
+   090C DD 75 FE      [19] 1334 	ld	-2 (ix), l
+   090F DD 74 FF      [19] 1335 	ld	-1 (ix), h
+   0912 DD 6E FC      [19] 1336 	ld	l, -4 (ix)
+   0915 DD 66 FD      [19] 1337 	ld	h, -3 (ix)
+   0918 DD 7E FE      [19] 1338 	ld	a, -2 (ix)
+   091B 77            [ 7] 1339 	ld	(hl), a
+   091C 23            [ 6] 1340 	inc	hl
+   091D DD 7E FF      [19] 1341 	ld	a, -1 (ix)
+   0920 77            [ 7] 1342 	ld	(hl), a
+                     0921  1343 	C$sha1.c$100$2_0$49	= .
+                           1344 	.globl	C$sha1.c$100$2_0$49
+                           1345 ;/work/source_code/testingfiles/sha1.c:100: data += copy_len;
+   0921 DD 7E 06      [19] 1346 	ld	a, 6 (ix)
+   0924 83            [ 4] 1347 	add	a, e
+   0925 DD 77 06      [19] 1348 	ld	6 (ix), a
+   0928 DD 7E 07      [19] 1349 	ld	a, 7 (ix)
+   092B 8A            [ 4] 1350 	adc	a, d
+   092C DD 77 07      [19] 1351 	ld	7 (ix), a
+                     092F  1352 	C$sha1.c$101$2_0$49	= .
+                           1353 	.globl	C$sha1.c$101$2_0$49
+                           1354 ;/work/source_code/testingfiles/sha1.c:101: len -= copy_len;
+   092F DD 7E 08      [19] 1355 	ld	a, 8 (ix)
+   0932 93            [ 4] 1356 	sub	a, e
+   0933 DD 77 08      [19] 1357 	ld	8 (ix), a
+   0936 DD 7E 09      [19] 1358 	ld	a, 9 (ix)
+   0939 9A            [ 4] 1359 	sbc	a, d
+   093A DD 77 09      [19] 1360 	ld	9 (ix), a
+                     093D  1361 	C$sha1.c$103$2_0$49	= .
+                           1362 	.globl	C$sha1.c$103$2_0$49
+                           1363 ;/work/source_code/testingfiles/sha1.c:103: if (ctx->buffer_len == 64) {
+   093D DD 7E FE      [19] 1364 	ld	a, -2 (ix)
+   0940 D6 40         [ 7] 1365 	sub	a, #0x40
+   0942 DD B6 FF      [19] 1366 	or	a, -1 (ix)
+   0945 C2rA9r08      [10] 1367 	jp	NZ,00103$
+                     0948  1368 	C$sha1.c$104$3_0$50	= .
+                           1369 	.globl	C$sha1.c$104$3_0$50
+                           1370 ;/work/source_code/testingfiles/sha1.c:104: sha1_compress(ctx, ctx->buffer);
+   0948 21 1C 00      [10] 1371 	ld	hl, #0x001c
+   094B 09            [11] 1372 	add	hl, bc
+   094C C5            [11] 1373 	push	bc
+   094D E5            [11] 1374 	push	hl
+   094E C5            [11] 1375 	push	bc
+   094F CDr00r00      [17] 1376 	call	_sha1_compress
+   0952 F1            [10] 1377 	pop	af
+   0953 F1            [10] 1378 	pop	af
+   0954 C1            [10] 1379 	pop	bc
+                     0955  1380 	C$sha1.c$105$3_0$50	= .
+                           1381 	.globl	C$sha1.c$105$3_0$50
+                           1382 ;/work/source_code/testingfiles/sha1.c:105: ctx->buffer_len = 0;
+   0955 DD 7E FA      [19] 1383 	ld	a, -6 (ix)
+   0958 C6 5C         [ 7] 1384 	add	a, #0x5c
+   095A 5F            [ 4] 1385 	ld	e, a
+   095B DD 7E FB      [19] 1386 	ld	a, -5 (ix)
+   095E CE 00         [ 7] 1387 	adc	a, #0x00
+   0960 57            [ 4] 1388 	ld	d, a
+   0961 AF            [ 4] 1389 	xor	a, a
+   0962 12            [ 7] 1390 	ld	(de), a
+   0963 13            [ 6] 1391 	inc	de
+   0964 12            [ 7] 1392 	ld	(de), a
+   0965 C3rA9r08      [10] 1393 	jp	00103$
+   0968                    1394 00106$:
+                     0968  1395 	C$sha1.c$108$1_0$48	= .
+                           1396 	.globl	C$sha1.c$108$1_0$48
+                           1397 ;/work/source_code/testingfiles/sha1.c:108: }
+   0968 DD F9         [10] 1398 	ld	sp, ix
+   096A DD E1         [14] 1399 	pop	ix
+                     096C  1400 	C$sha1.c$108$1_0$48	= .
+                           1401 	.globl	C$sha1.c$108$1_0$48
+                     096C  1402 	XFsha1$sha1_update_alt$0$0	= .
+                           1403 	.globl	XFsha1$sha1_update_alt$0$0
+   096C C9            [10] 1404 	ret
+                     096D  1405 	Fsha1$sha1_final_alt$0$0	= .
+                           1406 	.globl	Fsha1$sha1_final_alt$0$0
+                     096D  1407 	C$sha1.c$112$1_0$52	= .
+                           1408 	.globl	C$sha1.c$112$1_0$52
+                           1409 ;/work/source_code/testingfiles/sha1.c:112: static void sha1_final_alt(SHA1_ALT *ctx, uint8_t out[20]) {
+                           1410 ;	---------------------------------
+                           1411 ; Function sha1_final_alt
+                           1412 ; ---------------------------------
+   096D                    1413 _sha1_final_alt:
+   096D CDr00r00      [17] 1414 	call	___sdcc_enter_ix
+   0970 21 E8 FF      [10] 1415 	ld	hl, #-24
+   0973 39            [11] 1416 	add	hl, sp
+   0974 F9            [ 6] 1417 	ld	sp, hl
+                     0975  1418 	C$sha1.c$114$2_1$52	= .
+                           1419 	.globl	C$sha1.c$114$2_1$52
+                           1420 ;/work/source_code/testingfiles/sha1.c:114: ctx->buffer[ctx->buffer_len++] = 0x80;
+   0975 DD 4E 04      [19] 1421 	ld	c, 4 (ix)
+   0978 DD 46 05      [19] 1422 	ld	b, 5 (ix)
+   097B DD 71 F6      [19] 1423 	ld	-10 (ix), c
+   097E DD 70 F7      [19] 1424 	ld	-9 (ix), b
+   0981 21 1C 00      [10] 1425 	ld	hl, #0x001c
+   0984 09            [11] 1426 	add	hl, bc
+   0985 DD 75 F8      [19] 1427 	ld	-8 (ix), l
+   0988 DD 74 F9      [19] 1428 	ld	-7 (ix), h
+   098B 21 5C 00      [10] 1429 	ld	hl, #0x005c
+   098E 09            [11] 1430 	add	hl, bc
+   098F DD 75 FA      [19] 1431 	ld	-6 (ix), l
+   0992 DD 74 FB      [19] 1432 	ld	-5 (ix), h
+   0995 DD 7E FA      [19] 1433 	ld	a, -6 (ix)
+   0998 DD 77 FC      [19] 1434 	ld	-4 (ix), a
+   099B DD 7E FB      [19] 1435 	ld	a, -5 (ix)
+   099E DD 77 FD      [19] 1436 	ld	-3 (ix), a
+   09A1 DD 6E FA      [19] 1437 	ld	l, -6 (ix)
+   09A4 DD 66 FB      [19] 1438 	ld	h, -5 (ix)
+   09A7 5E            [ 7] 1439 	ld	e, (hl)
+   09A8 23            [ 6] 1440 	inc	hl
+   09A9 56            [ 7] 1441 	ld	d, (hl)
+   09AA 21 01 00      [10] 1442 	ld	hl, #0x0001
+   09AD 19            [11] 1443 	add	hl, de
+   09AE DD 75 FE      [19] 1444 	ld	-2 (ix), l
+   09B1 DD 74 FF      [19] 1445 	ld	-1 (ix), h
+   09B4 DD 6E FA      [19] 1446 	ld	l, -6 (ix)
+   09B7 DD 66 FB      [19] 1447 	ld	h, -5 (ix)
+   09BA DD 7E FE      [19] 1448 	ld	a, -2 (ix)
+   09BD 77            [ 7] 1449 	ld	(hl), a
+   09BE 23            [ 6] 1450 	inc	hl
+   09BF DD 7E FF      [19] 1451 	ld	a, -1 (ix)
+   09C2 77            [ 7] 1452 	ld	(hl), a
+   09C3 DD 6E F8      [19] 1453 	ld	l, -8 (ix)
+   09C6 DD 66 F9      [19] 1454 	ld	h, -7 (ix)
+   09C9 19            [11] 1455 	add	hl, de
+   09CA 36 80         [10] 1456 	ld	(hl), #0x80
+                     09CC  1457 	C$sha1.c$117$1_0$52	= .
+                           1458 	.globl	C$sha1.c$117$1_0$52
+                           1459 ;/work/source_code/testingfiles/sha1.c:117: if (ctx->buffer_len > 56) {
+   09CC 3E 38         [ 7] 1460 	ld	a, #0x38
+   09CE DD BE FE      [19] 1461 	cp	a, -2 (ix)
+   09D1 3E 00         [ 7] 1462 	ld	a, #0x00
+   09D3 DD 9E FF      [19] 1463 	sbc	a, -1 (ix)
+   09D6 30 5A         [12] 1464 	jr	NC,00122$
+                     09D8  1465 	C$sha1.c$118$2_0$53	= .
+                           1466 	.globl	C$sha1.c$118$2_0$53
+                           1467 ;/work/source_code/testingfiles/sha1.c:118: while (ctx->buffer_len < 64)
+   09D8                    1468 00101$:
+                     09D8  1469 	C$sha1.c$114$2_1$52	= .
+                           1470 	.globl	C$sha1.c$114$2_1$52
+                           1471 ;/work/source_code/testingfiles/sha1.c:114: ctx->buffer[ctx->buffer_len++] = 0x80;
+   09D8 DD 6E FC      [19] 1472 	ld	l, -4 (ix)
+   09DB DD 66 FD      [19] 1473 	ld	h, -3 (ix)
+   09DE 5E            [ 7] 1474 	ld	e, (hl)
+   09DF 23            [ 6] 1475 	inc	hl
+   09E0 56            [ 7] 1476 	ld	d, (hl)
+                     09E1  1477 	C$sha1.c$118$2_0$53	= .
+                           1478 	.globl	C$sha1.c$118$2_0$53
+                           1479 ;/work/source_code/testingfiles/sha1.c:118: while (ctx->buffer_len < 64)
+   09E1 7B            [ 4] 1480 	ld	a, e
+   09E2 D6 40         [ 7] 1481 	sub	a, #0x40
+   09E4 7A            [ 4] 1482 	ld	a, d
+   09E5 DE 00         [ 7] 1483 	sbc	a, #0x00
+   09E7 30 24         [12] 1484 	jr	NC,00103$
+                     09E9  1485 	C$sha1.c$119$2_0$53	= .
+                           1486 	.globl	C$sha1.c$119$2_0$53
+                           1487 ;/work/source_code/testingfiles/sha1.c:119: ctx->buffer[ctx->buffer_len++] = 0x00;
+   09E9 21 01 00      [10] 1488 	ld	hl, #0x0001
+   09EC 19            [11] 1489 	add	hl, de
+   09ED DD 75 FE      [19] 1490 	ld	-2 (ix), l
+   09F0 DD 74 FF      [19] 1491 	ld	-1 (ix), h
+   09F3 DD 6E FC      [19] 1492 	ld	l, -4 (ix)
+   09F6 DD 66 FD      [19] 1493 	ld	h, -3 (ix)
+   09F9 DD 7E FE      [19] 1494 	ld	a, -2 (ix)
+   09FC 77            [ 7] 1495 	ld	(hl), a
+   09FD 23            [ 6] 1496 	inc	hl
+   09FE DD 7E FF      [19] 1497 	ld	a, -1 (ix)
+   0A01 77            [ 7] 1498 	ld	(hl), a
+   0A02 DD 6E F8      [19] 1499 	ld	l, -8 (ix)
+   0A05 DD 66 F9      [19] 1500 	ld	h, -7 (ix)
+   0A08 19            [11] 1501 	add	hl, de
+   0A09 36 00         [10] 1502 	ld	(hl), #0x00
+   0A0B 18 CB         [12] 1503 	jr	00101$
+   0A0D                    1504 00103$:
+                     0A0D  1505 	C$sha1.c$120$2_0$53	= .
+                           1506 	.globl	C$sha1.c$120$2_0$53
+                           1507 ;/work/source_code/testingfiles/sha1.c:120: sha1_compress(ctx, ctx->buffer);
+   0A0D DD 7E F6      [19] 1508 	ld	a, -10 (ix)
+   0A10 C6 1C         [ 7] 1509 	add	a, #0x1c
+   0A12 5F            [ 4] 1510 	ld	e, a
+   0A13 DD 7E F7      [19] 1511 	ld	a, -9 (ix)
+   0A16 CE 00         [ 7] 1512 	adc	a, #0x00
+   0A18 57            [ 4] 1513 	ld	d, a
+   0A19 C5            [11] 1514 	push	bc
+   0A1A D5            [11] 1515 	push	de
+   0A1B DD 6E F6      [19] 1516 	ld	l, -10 (ix)
+   0A1E DD 66 F7      [19] 1517 	ld	h, -9 (ix)
+   0A21 E5            [11] 1518 	push	hl
+   0A22 CDr00r00      [17] 1519 	call	_sha1_compress
+   0A25 F1            [10] 1520 	pop	af
+   0A26 F1            [10] 1521 	pop	af
+   0A27 C1            [10] 1522 	pop	bc
+                     0A28  1523 	C$sha1.c$121$2_0$53	= .
+                           1524 	.globl	C$sha1.c$121$2_0$53
+                           1525 ;/work/source_code/testingfiles/sha1.c:121: ctx->buffer_len = 0;
+   0A28 DD 6E FA      [19] 1526 	ld	l, -6 (ix)
+   0A2B DD 66 FB      [19] 1527 	ld	h, -5 (ix)
+   0A2E AF            [ 4] 1528 	xor	a, a
+   0A2F 77            [ 7] 1529 	ld	(hl), a
+   0A30 23            [ 6] 1530 	inc	hl
+   0A31 77            [ 7] 1531 	ld	(hl), a
+                     0A32  1532 	C$sha1.c$125$2_1$52	= .
+                           1533 	.globl	C$sha1.c$125$2_1$52
+                           1534 ;/work/source_code/testingfiles/sha1.c:125: while (ctx->buffer_len < 56)
+   0A32                    1535 00122$:
+   0A32                    1536 00106$:
+   0A32 21 5C 00      [10] 1537 	ld	hl, #0x005c
+   0A35 09            [11] 1538 	add	hl, bc
+   0A36 DD 75 F8      [19] 1539 	ld	-8 (ix), l
+   0A39 DD 74 F9      [19] 1540 	ld	-7 (ix), h
+   0A3C 7E            [ 7] 1541 	ld	a, (hl)
+   0A3D DD 77 FC      [19] 1542 	ld	-4 (ix), a
+   0A40 23            [ 6] 1543 	inc	hl
+   0A41 7E            [ 7] 1544 	ld	a, (hl)
+   0A42 DD 77 FD      [19] 1545 	ld	-3 (ix), a
+                     0A45  1546 	C$sha1.c$126$2_1$52	= .
+                           1547 	.globl	C$sha1.c$126$2_1$52
+                           1548 ;/work/source_code/testingfiles/sha1.c:126: ctx->buffer[ctx->buffer_len++] = 0x00;
+   0A45 21 1C 00      [10] 1549 	ld	hl, #0x001c
+   0A48 09            [11] 1550 	add	hl, bc
+   0A49 EB            [ 4] 1551 	ex	de, hl
+                     0A4A  1552 	C$sha1.c$125$1_0$52	= .
+                           1553 	.globl	C$sha1.c$125$1_0$52
+                           1554 ;/work/source_code/testingfiles/sha1.c:125: while (ctx->buffer_len < 56)
+   0A4A DD 7E FC      [19] 1555 	ld	a, -4 (ix)
+   0A4D D6 38         [ 7] 1556 	sub	a, #0x38
+   0A4F DD 7E FD      [19] 1557 	ld	a, -3 (ix)
+   0A52 DE 00         [ 7] 1558 	sbc	a, #0x00
+   0A54 30 2A         [12] 1559 	jr	NC,00108$
+                     0A56  1560 	C$sha1.c$126$1_0$52	= .
+                           1561 	.globl	C$sha1.c$126$1_0$52
+                           1562 ;/work/source_code/testingfiles/sha1.c:126: ctx->buffer[ctx->buffer_len++] = 0x00;
+   0A56 DD 7E FC      [19] 1563 	ld	a, -4 (ix)
+   0A59 C6 01         [ 7] 1564 	add	a, #0x01
+   0A5B DD 77 FE      [19] 1565 	ld	-2 (ix), a
+   0A5E DD 7E FD      [19] 1566 	ld	a, -3 (ix)
+   0A61 CE 00         [ 7] 1567 	adc	a, #0x00
+   0A63 DD 77 FF      [19] 1568 	ld	-1 (ix), a
+   0A66 DD 6E F8      [19] 1569 	ld	l, -8 (ix)
+   0A69 DD 66 F9      [19] 1570 	ld	h, -7 (ix)
+   0A6C DD 7E FE      [19] 1571 	ld	a, -2 (ix)
+   0A6F 77            [ 7] 1572 	ld	(hl), a
+   0A70 23            [ 6] 1573 	inc	hl
+   0A71 DD 7E FF      [19] 1574 	ld	a, -1 (ix)
+   0A74 77            [ 7] 1575 	ld	(hl), a
+   0A75 DD 6E FC      [19] 1576 	ld	l, -4 (ix)
+   0A78 DD 66 FD      [19] 1577 	ld	h, -3 (ix)
+   0A7B 19            [11] 1578 	add	hl, de
+   0A7C 36 00         [10] 1579 	ld	(hl), #0x00
+   0A7E 18 B2         [12] 1580 	jr	00106$
+   0A80                    1581 00108$:
+                     0A80  1582 	C$sha1.c$129$1_1$54	= .
+                           1583 	.globl	C$sha1.c$129$1_1$54
+                           1584 ;/work/source_code/testingfiles/sha1.c:129: uint64_t bc = ctx->bitcount;
+   0A80 69            [ 4] 1585 	ld	l, c
+   0A81 60            [ 4] 1586 	ld	h, b
+   0A82 C5            [11] 1587 	push	bc
+   0A83 01 14 00      [10] 1588 	ld	bc, #0x0014
+   0A86 09            [11] 1589 	add	hl, bc
+   0A87 C1            [10] 1590 	pop	bc
+   0A88 7E            [ 7] 1591 	ld	a, (hl)
+   0A89 DD 77 F0      [19] 1592 	ld	-16 (ix), a
+   0A8C 23            [ 6] 1593 	inc	hl
+   0A8D 7E            [ 7] 1594 	ld	a, (hl)
+   0A8E DD 77 F1      [19] 1595 	ld	-15 (ix), a
+   0A91 23            [ 6] 1596 	inc	hl
+   0A92 7E            [ 7] 1597 	ld	a, (hl)
+   0A93 DD 77 F2      [19] 1598 	ld	-14 (ix), a
+   0A96 23            [ 6] 1599 	inc	hl
+   0A97 7E            [ 7] 1600 	ld	a, (hl)
+   0A98 DD 77 F3      [19] 1601 	ld	-13 (ix), a
+   0A9B 23            [ 6] 1602 	inc	hl
+   0A9C 7E            [ 7] 1603 	ld	a, (hl)
+   0A9D DD 77 F4      [19] 1604 	ld	-12 (ix), a
+   0AA0 23            [ 6] 1605 	inc	hl
+   0AA1 7E            [ 7] 1606 	ld	a, (hl)
+   0AA2 DD 77 F5      [19] 1607 	ld	-11 (ix), a
+   0AA5 23            [ 6] 1608 	inc	hl
+   0AA6 7E            [ 7] 1609 	ld	a, (hl)
+   0AA7 DD 77 F6      [19] 1610 	ld	-10 (ix), a
+   0AAA 23            [ 6] 1611 	inc	hl
+   0AAB 7E            [ 7] 1612 	ld	a, (hl)
+   0AAC DD 77 F7      [19] 1613 	ld	-9 (ix), a
+                     0AAF  1614 	C$sha1.c$130$3_1$56	= .
+                           1615 	.globl	C$sha1.c$130$3_1$56
+                           1616 ;/work/source_code/testingfiles/sha1.c:130: for (int i = 7; i >= 0; i--) {
+   0AAF DD 73 FA      [19] 1617 	ld	-6 (ix), e
+   0AB2 DD 72 FB      [19] 1618 	ld	-5 (ix), d
+   0AB5 DD 36 FE 07   [19] 1619 	ld	-2 (ix), #0x07
+   0AB9 AF            [ 4] 1620 	xor	a, a
+   0ABA DD 77 FF      [19] 1621 	ld	-1 (ix), a
+   0ABD                    1622 00112$:
+   0ABD DD CB FF 7E   [20] 1623 	bit	7, -1 (ix)
+   0AC1 C2r5Er0B      [10] 1624 	jp	NZ, 00109$
+                     0AC4  1625 	C$sha1.c$131$3_1$56	= .
+                           1626 	.globl	C$sha1.c$131$3_1$56
+                           1627 ;/work/source_code/testingfiles/sha1.c:131: ctx->buffer[ctx->buffer_len++] = (uint8_t)(bc >> (i * 8));
+   0AC4 DD 6E F8      [19] 1628 	ld	l, -8 (ix)
+   0AC7 DD 66 F9      [19] 1629 	ld	h, -7 (ix)
+   0ACA 5E            [ 7] 1630 	ld	e, (hl)
+   0ACB 23            [ 6] 1631 	inc	hl
+   0ACC 56            [ 7] 1632 	ld	d, (hl)
+   0ACD 21 01 00      [10] 1633 	ld	hl, #0x0001
+   0AD0 19            [11] 1634 	add	hl, de
+   0AD1 DD 75 FC      [19] 1635 	ld	-4 (ix), l
+   0AD4 DD 74 FD      [19] 1636 	ld	-3 (ix), h
+   0AD7 DD 6E F8      [19] 1637 	ld	l, -8 (ix)
+   0ADA DD 66 F9      [19] 1638 	ld	h, -7 (ix)
+   0ADD DD 7E FC      [19] 1639 	ld	a, -4 (ix)
+   0AE0 77            [ 7] 1640 	ld	(hl), a
+   0AE1 23            [ 6] 1641 	inc	hl
+   0AE2 DD 7E FD      [19] 1642 	ld	a, -3 (ix)
+   0AE5 77            [ 7] 1643 	ld	(hl), a
+   0AE6 DD 6E FA      [19] 1644 	ld	l, -6 (ix)
+   0AE9 DD 66 FB      [19] 1645 	ld	h, -5 (ix)
+   0AEC 19            [11] 1646 	add	hl, de
+   0AED DD 7E FE      [19] 1647 	ld	a, -2 (ix)
+   0AF0 87            [ 4] 1648 	add	a, a
+   0AF1 87            [ 4] 1649 	add	a, a
+   0AF2 87            [ 4] 1650 	add	a, a
+   0AF3 5F            [ 4] 1651 	ld	e, a
+   0AF4 DD 7E F0      [19] 1652 	ld	a, -16 (ix)
+   0AF7 DD 77 E8      [19] 1653 	ld	-24 (ix), a
+   0AFA DD 7E F1      [19] 1654 	ld	a, -15 (ix)
+   0AFD DD 77 E9      [19] 1655 	ld	-23 (ix), a
+   0B00 DD 7E F2      [19] 1656 	ld	a, -14 (ix)
+   0B03 DD 77 EA      [19] 1657 	ld	-22 (ix), a
+   0B06 DD 7E F3      [19] 1658 	ld	a, -13 (ix)
+   0B09 DD 77 EB      [19] 1659 	ld	-21 (ix), a
+   0B0C DD 7E F4      [19] 1660 	ld	a, -12 (ix)
+   0B0F DD 77 EC      [19] 1661 	ld	-20 (ix), a
+   0B12 DD 7E F5      [19] 1662 	ld	a, -11 (ix)
+   0B15 DD 77 ED      [19] 1663 	ld	-19 (ix), a
+   0B18 DD 7E F6      [19] 1664 	ld	a, -10 (ix)
+   0B1B DD 77 EE      [19] 1665 	ld	-18 (ix), a
+   0B1E DD 7E F7      [19] 1666 	ld	a, -9 (ix)
+   0B21 DD 77 EF      [19] 1667 	ld	-17 (ix), a
+   0B24 1C            [ 4] 1668 	inc	e
+   0B25 18 20         [12] 1669 	jr	00162$
+   0B27                    1670 00161$:
+   0B27 DD CB EF 3E   [23] 1671 	srl	-17 (ix)
+   0B2B DD CB EE 1E   [23] 1672 	rr	-18 (ix)
+   0B2F DD CB ED 1E   [23] 1673 	rr	-19 (ix)
+   0B33 DD CB EC 1E   [23] 1674 	rr	-20 (ix)
+   0B37 DD CB EB 1E   [23] 1675 	rr	-21 (ix)
+   0B3B DD CB EA 1E   [23] 1676 	rr	-22 (ix)
+   0B3F DD CB E9 1E   [23] 1677 	rr	-23 (ix)
+   0B43 DD CB E8 1E   [23] 1678 	rr	-24 (ix)
+   0B47                    1679 00162$:
+   0B47 1D            [ 4] 1680 	dec	e
+   0B48 20 DD         [12] 1681 	jr	NZ, 00161$
+   0B4A DD 7E E8      [19] 1682 	ld	a, -24 (ix)
+   0B4D 77            [ 7] 1683 	ld	(hl), a
+                     0B4E  1684 	C$sha1.c$130$2_1$55	= .
+                           1685 	.globl	C$sha1.c$130$2_1$55
+                           1686 ;/work/source_code/testingfiles/sha1.c:130: for (int i = 7; i >= 0; i--) {
+   0B4E DD 6E FE      [19] 1687 	ld	l, -2 (ix)
+   0B51 DD 66 FF      [19] 1688 	ld	h, -1 (ix)
+   0B54 2B            [ 6] 1689 	dec	hl
+   0B55 DD 75 FE      [19] 1690 	ld	-2 (ix), l
+   0B58 DD 74 FF      [19] 1691 	ld	-1 (ix), h
+   0B5B C3rBDr0A      [10] 1692 	jp	00112$
+   0B5E                    1693 00109$:
+                     0B5E  1694 	C$sha1.c$134$1_1$54	= .
+                           1695 	.globl	C$sha1.c$134$1_1$54
+                           1696 ;/work/source_code/testingfiles/sha1.c:134: sha1_compress(ctx, ctx->buffer);
+   0B5E 21 1C 00      [10] 1697 	ld	hl, #0x001c
+   0B61 09            [11] 1698 	add	hl, bc
+   0B62 E5            [11] 1699 	push	hl
+   0B63 C5            [11] 1700 	push	bc
+   0B64 CDr00r00      [17] 1701 	call	_sha1_compress
+   0B67 F1            [10] 1702 	pop	af
+   0B68 F1            [10] 1703 	pop	af
+                     0B69  1704 	C$sha1.c$137$3_1$58	= .
+                           1705 	.globl	C$sha1.c$137$3_1$58
+                           1706 ;/work/source_code/testingfiles/sha1.c:137: for (int i = 0; i < 5; i++) {
+   0B69 DD 7E 04      [19] 1707 	ld	a, 4 (ix)
+   0B6C DD 77 F8      [19] 1708 	ld	-8 (ix), a
+   0B6F DD 7E 05      [19] 1709 	ld	a, 5 (ix)
+   0B72 DD 77 F9      [19] 1710 	ld	-7 (ix), a
+   0B75 AF            [ 4] 1711 	xor	a, a
+   0B76 DD 77 FE      [19] 1712 	ld	-2 (ix), a
+   0B79 DD 77 FF      [19] 1713 	ld	-1 (ix), a
+   0B7C                    1714 00115$:
+   0B7C DD 7E FE      [19] 1715 	ld	a, -2 (ix)
+   0B7F D6 05         [ 7] 1716 	sub	a, #0x05
+   0B81 DD 7E FF      [19] 1717 	ld	a, -1 (ix)
+   0B84 17            [ 4] 1718 	rla
+   0B85 3F            [ 4] 1719 	ccf
+   0B86 1F            [ 4] 1720 	rra
+   0B87 DE 80         [ 7] 1721 	sbc	a, #0x80
+   0B89 D2r23r0C      [10] 1722 	jp	NC, 00117$
+                     0B8C  1723 	C$sha1.c$138$3_1$58	= .
+                           1724 	.globl	C$sha1.c$138$3_1$58
+                           1725 ;/work/source_code/testingfiles/sha1.c:138: out[i*4]   = (ctx->h[i] >> 24) & 0xFF;
+   0B8C DD 4E FE      [19] 1726 	ld	c, -2 (ix)
+   0B8F DD 46 FF      [19] 1727 	ld	b, -1 (ix)
+   0B92 CB 21         [ 8] 1728 	sla	c
+   0B94 CB 10         [ 8] 1729 	rl	b
+   0B96 CB 21         [ 8] 1730 	sla	c
+   0B98 CB 10         [ 8] 1731 	rl	b
+   0B9A DD 7E 06      [19] 1732 	ld	a, 6 (ix)
+   0B9D 81            [ 4] 1733 	add	a, c
+   0B9E DD 77 FC      [19] 1734 	ld	-4 (ix), a
+   0BA1 DD 7E 07      [19] 1735 	ld	a, 7 (ix)
+   0BA4 88            [ 4] 1736 	adc	a, b
+   0BA5 DD 77 FD      [19] 1737 	ld	-3 (ix), a
+   0BA8 DD 7E F8      [19] 1738 	ld	a, -8 (ix)
+   0BAB 81            [ 4] 1739 	add	a, c
+   0BAC DD 77 FA      [19] 1740 	ld	-6 (ix), a
+   0BAF DD 7E F9      [19] 1741 	ld	a, -7 (ix)
+   0BB2 88            [ 4] 1742 	adc	a, b
+   0BB3 DD 77 FB      [19] 1743 	ld	-5 (ix), a
+   0BB6 DD 6E FA      [19] 1744 	ld	l, -6 (ix)
+   0BB9 DD 66 FB      [19] 1745 	ld	h, -5 (ix)
+   0BBC 23            [ 6] 1746 	inc	hl
+   0BBD 23            [ 6] 1747 	inc	hl
+   0BBE 23            [ 6] 1748 	inc	hl
+   0BBF 5E            [ 7] 1749 	ld	e, (hl)
+   0BC0 DD 6E FC      [19] 1750 	ld	l, -4 (ix)
+   0BC3 DD 66 FD      [19] 1751 	ld	h, -3 (ix)
+   0BC6 73            [ 7] 1752 	ld	(hl), e
+                     0BC7  1753 	C$sha1.c$139$3_1$58	= .
+                           1754 	.globl	C$sha1.c$139$3_1$58
+                           1755 ;/work/source_code/testingfiles/sha1.c:139: out[i*4+1] = (ctx->h[i] >> 16) & 0xFF;
+   0BC7 59            [ 4] 1756 	ld	e, c
+   0BC8 50            [ 4] 1757 	ld	d, b
+   0BC9 13            [ 6] 1758 	inc	de
+   0BCA DD 7E 06      [19] 1759 	ld	a, 6 (ix)
+   0BCD 83            [ 4] 1760 	add	a, e
+   0BCE DD 77 FC      [19] 1761 	ld	-4 (ix), a
+   0BD1 DD 7E 07      [19] 1762 	ld	a, 7 (ix)
+   0BD4 8A            [ 4] 1763 	adc	a, d
+   0BD5 DD 77 FD      [19] 1764 	ld	-3 (ix), a
+   0BD8 DD 6E FA      [19] 1765 	ld	l, -6 (ix)
+   0BDB DD 66 FB      [19] 1766 	ld	h, -5 (ix)
+   0BDE 23            [ 6] 1767 	inc	hl
+   0BDF 23            [ 6] 1768 	inc	hl
+   0BE0 23            [ 6] 1769 	inc	hl
+   0BE1 2B            [ 6] 1770 	dec	hl
+   0BE2 7E            [ 7] 1771 	ld	a, (hl)
+   0BE3 DD 6E FC      [19] 1772 	ld	l, -4 (ix)
+   0BE6 DD 66 FD      [19] 1773 	ld	h, -3 (ix)
+   0BE9 77            [ 7] 1774 	ld	(hl), a
+                     0BEA  1775 	C$sha1.c$140$3_1$58	= .
+                           1776 	.globl	C$sha1.c$140$3_1$58
+                           1777 ;/work/source_code/testingfiles/sha1.c:140: out[i*4+2] = (ctx->h[i] >> 8) & 0xFF;
+   0BEA 59            [ 4] 1778 	ld	e, c
+   0BEB 50            [ 4] 1779 	ld	d, b
+   0BEC 13            [ 6] 1780 	inc	de
+   0BED 13            [ 6] 1781 	inc	de
+   0BEE DD 7E 06      [19] 1782 	ld	a, 6 (ix)
+   0BF1 83            [ 4] 1783 	add	a, e
+   0BF2 5F            [ 4] 1784 	ld	e, a
+   0BF3 DD 7E 07      [19] 1785 	ld	a, 7 (ix)
+   0BF6 8A            [ 4] 1786 	adc	a, d
+   0BF7 57            [ 4] 1787 	ld	d, a
+   0BF8 DD 6E FA      [19] 1788 	ld	l, -6 (ix)
+   0BFB DD 66 FB      [19] 1789 	ld	h, -5 (ix)
+   0BFE 23            [ 6] 1790 	inc	hl
+   0BFF 7E            [ 7] 1791 	ld	a, (hl)
+   0C00 12            [ 7] 1792 	ld	(de), a
+                     0C01  1793 	C$sha1.c$141$3_1$58	= .
+                           1794 	.globl	C$sha1.c$141$3_1$58
+                           1795 ;/work/source_code/testingfiles/sha1.c:141: out[i*4+3] = ctx->h[i] & 0xFF;
+   0C01 03            [ 6] 1796 	inc	bc
+   0C02 03            [ 6] 1797 	inc	bc
+   0C03 03            [ 6] 1798 	inc	bc
+   0C04 58            [ 4] 1799 	ld	e, b
+   0C05 DD 7E 06      [19] 1800 	ld	a, 6 (ix)
+   0C08 81            [ 4] 1801 	add	a, c
+   0C09 4F            [ 4] 1802 	ld	c, a
+   0C0A DD 7E 07      [19] 1803 	ld	a, 7 (ix)
+   0C0D 8B            [ 4] 1804 	adc	a, e
+   0C0E 47            [ 4] 1805 	ld	b, a
+   0C0F DD 6E FA      [19] 1806 	ld	l, -6 (ix)
+   0C12 DD 66 FB      [19] 1807 	ld	h, -5 (ix)
+   0C15 7E            [ 7] 1808 	ld	a, (hl)
+   0C16 02            [ 7] 1809 	ld	(bc), a
+                     0C17  1810 	C$sha1.c$137$2_1$57	= .
+                           1811 	.globl	C$sha1.c$137$2_1$57
+                           1812 ;/work/source_code/testingfiles/sha1.c:137: for (int i = 0; i < 5; i++) {
+   0C17 DD 34 FE      [23] 1813 	inc	-2 (ix)
+   0C1A C2r7Cr0B      [10] 1814 	jp	NZ,00115$
+   0C1D DD 34 FF      [23] 1815 	inc	-1 (ix)
+   0C20 C3r7Cr0B      [10] 1816 	jp	00115$
+   0C23                    1817 00117$:
+                     0C23  1818 	C$sha1.c$143$2_1$52	= .
+                           1819 	.globl	C$sha1.c$143$2_1$52
+                           1820 ;/work/source_code/testingfiles/sha1.c:143: }
+   0C23 DD F9         [10] 1821 	ld	sp, ix
+   0C25 DD E1         [14] 1822 	pop	ix
+                     0C27  1823 	C$sha1.c$143$2_1$52	= .
+                           1824 	.globl	C$sha1.c$143$2_1$52
+                     0C27  1825 	XFsha1$sha1_final_alt$0$0	= .
+                           1826 	.globl	XFsha1$sha1_final_alt$0$0
+   0C27 C9            [10] 1827 	ret
+                     0C28  1828 	G$main$0$0	= .
+                           1829 	.globl	G$main$0$0
+                     0C28  1830 	C$sha1.c$147$2_1$59	= .
+                           1831 	.globl	C$sha1.c$147$2_1$59
+                           1832 ;/work/source_code/testingfiles/sha1.c:147: int main() {
+                           1833 ;	---------------------------------
+                           1834 ; Function main
+                           1835 ; ---------------------------------
+   0C28                    1836 _main::
+   0C28 CDr00r00      [17] 1837 	call	___sdcc_enter_ix
+   0C2B 21 8E FF      [10] 1838 	ld	hl, #-114
+   0C2E 39            [11] 1839 	add	hl, sp
+   0C2F F9            [ 6] 1840 	ld	sp, hl
+                     0C30  1841 	C$sha1.c$148$2_0$59	= .
+                           1842 	.globl	C$sha1.c$148$2_0$59
+                           1843 ;/work/source_code/testingfiles/sha1.c:148: const char *msg = "The quick brown fox jumps over the lazy dog";
+                     0C30  1844 	C$sha1.c$152$1_0$59	= .
+                           1845 	.globl	C$sha1.c$152$1_0$59
+                           1846 ;/work/source_code/testingfiles/sha1.c:152: sha1_init_alt(&ctx);
+   0C30 21 14 00      [10] 1847 	ld	hl, #20
+   0C33 39            [11] 1848 	add	hl, sp
+   0C34 EB            [ 4] 1849 	ex	de, hl
+   0C35 4B            [ 4] 1850 	ld	c, e
+   0C36 42            [ 4] 1851 	ld	b, d
+   0C37 D5            [11] 1852 	push	de
+   0C38 C5            [11] 1853 	push	bc
+   0C39 CDr77r07      [17] 1854 	call	_sha1_init_alt
+   0C3C F1            [10] 1855 	pop	af
+   0C3D D1            [10] 1856 	pop	de
+                     0C3E  1857 	C$sha1.c$153$1_0$59	= .
+                           1858 	.globl	C$sha1.c$153$1_0$59
+                           1859 ;/work/source_code/testingfiles/sha1.c:153: sha1_update_alt(&ctx, (const uint8_t *)msg, strlen(msg));
+   0C3E 21rABr0C      [10] 1860 	ld	hl, #___str_0
+   0C41 E5            [11] 1861 	push	hl
+   0C42 CDr00r00      [17] 1862 	call	_strlen
+   0C45 F1            [10] 1863 	pop	af
+   0C46 4B            [ 4] 1864 	ld	c, e
+   0C47 42            [ 4] 1865 	ld	b, d
+   0C48 D5            [11] 1866 	push	de
+   0C49 E5            [11] 1867 	push	hl
+   0C4A 21rABr0C      [10] 1868 	ld	hl, #___str_0
+   0C4D E5            [11] 1869 	push	hl
+   0C4E C5            [11] 1870 	push	bc
+   0C4F CDrE1r07      [17] 1871 	call	_sha1_update_alt
+   0C52 F1            [10] 1872 	pop	af
+   0C53 F1            [10] 1873 	pop	af
+   0C54 F1            [10] 1874 	pop	af
+   0C55 D1            [10] 1875 	pop	de
+                     0C56  1876 	C$sha1.c$154$1_0$59	= .
+                           1877 	.globl	C$sha1.c$154$1_0$59
+                           1878 ;/work/source_code/testingfiles/sha1.c:154: sha1_final_alt(&ctx, digest);
+   0C56 21 00 00      [10] 1879 	ld	hl, #0
+   0C59 39            [11] 1880 	add	hl, sp
+   0C5A E5            [11] 1881 	push	hl
+   0C5B E5            [11] 1882 	push	hl
+   0C5C D5            [11] 1883 	push	de
+   0C5D CDr6Dr09      [17] 1884 	call	_sha1_final_alt
+   0C60 F1            [10] 1885 	pop	af
+   0C61 21rD7r0C      [10] 1886 	ld	hl, #___str_2
+   0C64 E3            [19] 1887 	ex	(sp),hl
+   0C65 CDr00r00      [17] 1888 	call	_puts
+   0C68 21rABr0C      [10] 1889 	ld	hl, #___str_0
+   0C6B E3            [19] 1890 	ex	(sp),hl
+   0C6C 21rF6r0C      [10] 1891 	ld	hl, #___str_3
+   0C6F E5            [11] 1892 	push	hl
+   0C70 CDr00r00      [17] 1893 	call	_printf
+   0C73 F1            [10] 1894 	pop	af
+   0C74 F1            [10] 1895 	pop	af
+   0C75 C1            [10] 1896 	pop	bc
+                     0C76  1897 	C$sha1.c$159$2_0$60	= .
+                           1898 	.globl	C$sha1.c$159$2_0$60
+                           1899 ;/work/source_code/testingfiles/sha1.c:159: for (int i = 0; i < 20; i++)
+   0C76 11 00 00      [10] 1900 	ld	de, #0x0000
+   0C79                    1901 00103$:
+   0C79 7B            [ 4] 1902 	ld	a, e
+   0C7A D6 14         [ 7] 1903 	sub	a, #0x14
+   0C7C 7A            [ 4] 1904 	ld	a, d
+   0C7D 17            [ 4] 1905 	rla
+   0C7E 3F            [ 4] 1906 	ccf
+   0C7F 1F            [ 4] 1907 	rra
+   0C80 DE 80         [ 7] 1908 	sbc	a, #0x80
+   0C82 30 17         [12] 1909 	jr	NC,00101$
+                     0C84  1910 	C$sha1.c$160$2_0$60	= .
+                           1911 	.globl	C$sha1.c$160$2_0$60
+                           1912 ;/work/source_code/testingfiles/sha1.c:160: printf("%02x", digest[i]);
+   0C84 69            [ 4] 1913 	ld	l, c
+   0C85 60            [ 4] 1914 	ld	h, b
+   0C86 19            [11] 1915 	add	hl, de
+   0C87 6E            [ 7] 1916 	ld	l, (hl)
+   0C88 26 00         [ 7] 1917 	ld	h, #0x00
+   0C8A C5            [11] 1918 	push	bc
+   0C8B D5            [11] 1919 	push	de
+   0C8C E5            [11] 1920 	push	hl
+   0C8D 21r0Ar0D      [10] 1921 	ld	hl, #___str_4
+   0C90 E5            [11] 1922 	push	hl
+   0C91 CDr00r00      [17] 1923 	call	_printf
+   0C94 F1            [10] 1924 	pop	af
+   0C95 F1            [10] 1925 	pop	af
+   0C96 D1            [10] 1926 	pop	de
+   0C97 C1            [10] 1927 	pop	bc
+                     0C98  1928 	C$sha1.c$159$2_0$60	= .
+                           1929 	.globl	C$sha1.c$159$2_0$60
+                           1930 ;/work/source_code/testingfiles/sha1.c:159: for (int i = 0; i < 20; i++)
+   0C98 13            [ 6] 1931 	inc	de
+   0C99 18 DE         [12] 1932 	jr	00103$
+   0C9B                    1933 00101$:
+                     0C9B  1934 	C$sha1.c$162$1_0$59	= .
+                           1935 	.globl	C$sha1.c$162$1_0$59
+                           1936 ;/work/source_code/testingfiles/sha1.c:162: printf("\n");
+   0C9B 21r0Fr0D      [10] 1937 	ld	hl, #___str_6
+   0C9E E5            [11] 1938 	push	hl
+   0C9F CDr00r00      [17] 1939 	call	_puts
+   0CA2 F1            [10] 1940 	pop	af
+                     0CA3  1941 	C$sha1.c$163$1_0$59	= .
+                           1942 	.globl	C$sha1.c$163$1_0$59
+                           1943 ;/work/source_code/testingfiles/sha1.c:163: return 0;
+   0CA3 21 00 00      [10] 1944 	ld	hl, #0x0000
+                     0CA6  1945 	C$sha1.c$164$1_0$59	= .
+                           1946 	.globl	C$sha1.c$164$1_0$59
+                           1947 ;/work/source_code/testingfiles/sha1.c:164: }
+   0CA6 DD F9         [10] 1948 	ld	sp, ix
+   0CA8 DD E1         [14] 1949 	pop	ix
+                     0CAA  1950 	C$sha1.c$164$1_0$59	= .
+                           1951 	.globl	C$sha1.c$164$1_0$59
+                     0CAA  1952 	XG$main$0$0	= .
+                           1953 	.globl	XG$main$0$0
+   0CAA C9            [10] 1954 	ret
+                     0CAB  1955 Fsha1$__str_0$0_0$0 == .
+   0CAB                    1956 ___str_0:
+   0CAB 54 68 65 20 71 75  1957 	.ascii "The quick brown fox jumps over the lazy dog"
+        69 63 6B 20 62 72
+        6F 77 6E 20 66 6F
+        78 20 6A 75 6D 70
+        73 20 6F 76 65 72
+        20 74 68 65 20 6C
+        61 7A 79 20 64 6F
+        67
+   0CD6 00                 1958 	.db 0x00
+                     0CD7  1959 Fsha1$__str_2$0_0$0 == .
+   0CD7                    1960 ___str_2:
+   0CD7 41 6C 74 65 72 6E  1961 	.ascii "Alternate SHA-1 Implementation"
+        61 74 65 20 53 48
+        41 2D 31 20 49 6D
+        70 6C 65 6D 65 6E
+        74 61 74 69 6F 6E
+   0CF5 00                 1962 	.db 0x00
+                     0CF6  1963 Fsha1$__str_3$0_0$0 == .
+   0CF6                    1964 ___str_3:
+   0CF6 4D 65 73 73 61 67  1965 	.ascii "Message: %s"
+        65 3A 20 25 73
+   0D01 0A                 1966 	.db 0x0a
+   0D02 53 48 41 2D 31 3A  1967 	.ascii "SHA-1: "
+        20
+   0D09 00                 1968 	.db 0x00
+                     0D0A  1969 Fsha1$__str_4$0_0$0 == .
+   0D0A                    1970 ___str_4:
+   0D0A 25 30 32 78        1971 	.ascii "%02x"
+   0D0E 00                 1972 	.db 0x00
+                     0D0F  1973 Fsha1$__str_6$0_0$0 == .
+   0D0F                    1974 ___str_6:
+   0D0F 00                 1975 	.db 0x00
+                           1976 	.area _CODE
+                           1977 	.area _INITIALIZER
+                           1978 	.area _CABS (ABS)

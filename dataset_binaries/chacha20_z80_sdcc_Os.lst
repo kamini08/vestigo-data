@@ -1,0 +1,3700 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 4.0.0 #11528 (Linux)
+                              4 ;--------------------------------------------------------
+                              5 	.module chacha20
+                              6 	.optsdcc -mz80
+                              7 	
+                              8 ;--------------------------------------------------------
+                              9 ; Public variables in this module
+                             10 ;--------------------------------------------------------
+                             11 	.globl _main
+                             12 	.globl _chacha20_encrypt
+                             13 	.globl _chacha20_block
+                             14 	.globl _printf
+                             15 ;--------------------------------------------------------
+                             16 ; special function registers
+                             17 ;--------------------------------------------------------
+                             18 ;--------------------------------------------------------
+                             19 ; ram data
+                             20 ;--------------------------------------------------------
+                             21 	.area _DATA
+                             22 ;--------------------------------------------------------
+                             23 ; ram data
+                             24 ;--------------------------------------------------------
+                             25 	.area _INITIALIZED
+                             26 ;--------------------------------------------------------
+                             27 ; absolute external ram data
+                             28 ;--------------------------------------------------------
+                             29 	.area _DABS (ABS)
+                             30 ;--------------------------------------------------------
+                             31 ; global & static initialisations
+                             32 ;--------------------------------------------------------
+                             33 	.area _HOME
+                             34 	.area _GSINIT
+                             35 	.area _GSFINAL
+                             36 	.area _GSINIT
+                             37 ;--------------------------------------------------------
+                             38 ; Home
+                             39 ;--------------------------------------------------------
+                             40 	.area _HOME
+                             41 	.area _HOME
+                             42 ;--------------------------------------------------------
+                             43 ; code
+                             44 ;--------------------------------------------------------
+                             45 	.area _CODE
+                     0000    46 	G$chacha20_block$0$0	= .
+                             47 	.globl	G$chacha20_block$0$0
+                     0000    48 	C$chacha20.c$12$0_0$35	= .
+                             49 	.globl	C$chacha20.c$12$0_0$35
+                             50 ;/work/source_code/chacha20.c:12: void chacha20_block(uint32_t out[16], uint32_t const in[16])
+                             51 ;	---------------------------------
+                             52 ; Function chacha20_block
+                             53 ; ---------------------------------
+   0000                      54 _chacha20_block::
+   0000 CDr00r00      [17]   55 	call	___sdcc_enter_ix
+   0003 21 5A FF      [10]   56 	ld	hl, #-166
+   0006 39            [11]   57 	add	hl, sp
+   0007 F9            [ 6]   58 	ld	sp, hl
+                     0008    59 	C$chacha20.c$17$2_0$36	= .
+                             60 	.globl	C$chacha20.c$17$2_0$36
+                             61 ;/work/source_code/chacha20.c:17: for (i = 0; i < 16; ++i)
+   0008 21 00 00      [10]   62 	ld	hl, #0
+   000B 39            [11]   63 	add	hl, sp
+   000C DD 75 9A      [19]   64 	ld	-102 (ix), l
+   000F DD 74 9B      [19]   65 	ld	-101 (ix), h
+   0012 01 00 00      [10]   66 	ld	bc, #0x0000
+   0015                      67 00104$:
+                     0015    68 	C$chacha20.c$18$2_0$36	= .
+                             69 	.globl	C$chacha20.c$18$2_0$36
+                             70 ;/work/source_code/chacha20.c:18: x[i] = in[i];
+   0015 59            [ 4]   71 	ld	e, c
+   0016 50            [ 4]   72 	ld	d, b
+   0017 CB 23         [ 8]   73 	sla	e
+   0019 CB 12         [ 8]   74 	rl	d
+   001B CB 23         [ 8]   75 	sla	e
+   001D CB 12         [ 8]   76 	rl	d
+   001F DD 7E 9A      [19]   77 	ld	a, -102 (ix)
+   0022 83            [ 4]   78 	add	a, e
+   0023 DD 77 FA      [19]   79 	ld	-6 (ix), a
+   0026 DD 7E 9B      [19]   80 	ld	a, -101 (ix)
+   0029 8A            [ 4]   81 	adc	a, d
+   002A DD 77 FB      [19]   82 	ld	-5 (ix), a
+   002D DD 6E 06      [19]   83 	ld	l, 6 (ix)
+   0030 DD 66 07      [19]   84 	ld	h, 7 (ix)
+   0033 19            [11]   85 	add	hl, de
+   0034 C5            [11]   86 	push	bc
+   0035 EB            [ 4]   87 	ex	de,hl
+   0036 21 A4 00      [10]   88 	ld	hl, #0x00a4
+   0039 39            [11]   89 	add	hl, sp
+   003A EB            [ 4]   90 	ex	de, hl
+   003B 01 04 00      [10]   91 	ld	bc, #0x0004
+   003E ED B0         [21]   92 	ldir
+   0040 DD 5E FA      [19]   93 	ld	e, -6 (ix)
+   0043 DD 56 FB      [19]   94 	ld	d, -5 (ix)
+   0046 21 A4 00      [10]   95 	ld	hl, #0x00a4
+   0049 39            [11]   96 	add	hl, sp
+   004A 01 04 00      [10]   97 	ld	bc, #0x0004
+   004D ED B0         [21]   98 	ldir
+   004F C1            [10]   99 	pop	bc
+                     0050   100 	C$chacha20.c$17$2_0$36	= .
+                            101 	.globl	C$chacha20.c$17$2_0$36
+                            102 ;/work/source_code/chacha20.c:17: for (i = 0; i < 16; ++i)
+   0050 03            [ 6]  103 	inc	bc
+   0051 79            [ 4]  104 	ld	a, c
+   0052 D6 10         [ 7]  105 	sub	a, #0x10
+   0054 78            [ 4]  106 	ld	a, b
+   0055 17            [ 4]  107 	rla
+   0056 3F            [ 4]  108 	ccf
+   0057 1F            [ 4]  109 	rra
+   0058 DE 80         [ 7]  110 	sbc	a, #0x80
+   005A 38 B9         [12]  111 	jr	C,00104$
+                     005C   112 	C$chacha20.c$21$2_0$35	= .
+                            113 	.globl	C$chacha20.c$21$2_0$35
+                            114 ;/work/source_code/chacha20.c:21: for (i = 0; i < 10; i++) {
+   005C DD 36 FE 0A   [19]  115 	ld	-2 (ix), #0x0a
+   0060 AF            [ 4]  116 	xor	a, a
+   0061 DD 77 FF      [19]  117 	ld	-1 (ix), a
+   0064                     118 00108$:
+                     0064   119 	C$chacha20.c$23$3_0$38	= .
+                            120 	.globl	C$chacha20.c$23$3_0$38
+                            121 ;/work/source_code/chacha20.c:23: QR(x[0], x[4], x[ 8], x[12]); // column 0
+   0064 DD 5E 9A      [19]  122 	ld	e, -102 (ix)
+   0067 DD 56 9B      [19]  123 	ld	d, -101 (ix)
+   006A 21 A0 00      [10]  124 	ld	hl, #0x00a0
+   006D 39            [11]  125 	add	hl, sp
+   006E EB            [ 4]  126 	ex	de, hl
+   006F 01 04 00      [10]  127 	ld	bc, #0x0004
+   0072 ED B0         [21]  128 	ldir
+   0074 DD 7E 9A      [19]  129 	ld	a, -102 (ix)
+   0077 C6 10         [ 7]  130 	add	a, #0x10
+   0079 DD 77 9C      [19]  131 	ld	-100 (ix), a
+   007C DD 7E 9B      [19]  132 	ld	a, -101 (ix)
+   007F CE 00         [ 7]  133 	adc	a, #0x00
+   0081 DD 77 9D      [19]  134 	ld	-99 (ix), a
+   0084 DD 6E 9C      [19]  135 	ld	l, -100 (ix)
+   0087 DD 66 9D      [19]  136 	ld	h, -99 (ix)
+   008A 4E            [ 7]  137 	ld	c, (hl)
+   008B 23            [ 6]  138 	inc	hl
+   008C 46            [ 7]  139 	ld	b, (hl)
+   008D 23            [ 6]  140 	inc	hl
+   008E 5E            [ 7]  141 	ld	e, (hl)
+   008F 23            [ 6]  142 	inc	hl
+   0090 56            [ 7]  143 	ld	d, (hl)
+   0091 DD 7E FA      [19]  144 	ld	a, -6 (ix)
+   0094 81            [ 4]  145 	add	a, c
+   0095 DD 77 EA      [19]  146 	ld	-22 (ix), a
+   0098 DD 7E FB      [19]  147 	ld	a, -5 (ix)
+   009B 88            [ 4]  148 	adc	a, b
+   009C DD 77 EB      [19]  149 	ld	-21 (ix), a
+   009F DD 7E FC      [19]  150 	ld	a, -4 (ix)
+   00A2 8B            [ 4]  151 	adc	a, e
+   00A3 DD 77 EC      [19]  152 	ld	-20 (ix), a
+   00A6 DD 7E FD      [19]  153 	ld	a, -3 (ix)
+   00A9 8A            [ 4]  154 	adc	a, d
+   00AA DD 77 ED      [19]  155 	ld	-19 (ix), a
+   00AD DD 5E 9A      [19]  156 	ld	e, -102 (ix)
+   00B0 DD 56 9B      [19]  157 	ld	d, -101 (ix)
+   00B3 21 90 00      [10]  158 	ld	hl, #0x0090
+   00B6 39            [11]  159 	add	hl, sp
+   00B7 01 04 00      [10]  160 	ld	bc, #0x0004
+   00BA ED B0         [21]  161 	ldir
+   00BC DD 7E 9A      [19]  162 	ld	a, -102 (ix)
+   00BF C6 30         [ 7]  163 	add	a, #0x30
+   00C1 DD 77 9E      [19]  164 	ld	-98 (ix), a
+   00C4 DD 7E 9B      [19]  165 	ld	a, -101 (ix)
+   00C7 CE 00         [ 7]  166 	adc	a, #0x00
+   00C9 DD 77 9F      [19]  167 	ld	-97 (ix), a
+   00CC DD 6E 9E      [19]  168 	ld	l, -98 (ix)
+   00CF DD 66 9F      [19]  169 	ld	h, -97 (ix)
+   00D2 5E            [ 7]  170 	ld	e, (hl)
+   00D3 23            [ 6]  171 	inc	hl
+   00D4 56            [ 7]  172 	ld	d, (hl)
+   00D5 23            [ 6]  173 	inc	hl
+   00D6 4E            [ 7]  174 	ld	c, (hl)
+   00D7 23            [ 6]  175 	inc	hl
+   00D8 46            [ 7]  176 	ld	b, (hl)
+   00D9 7B            [ 4]  177 	ld	a, e
+   00DA DD AE EA      [19]  178 	xor	a, -22 (ix)
+   00DD 5F            [ 4]  179 	ld	e, a
+   00DE 7A            [ 4]  180 	ld	a, d
+   00DF DD AE EB      [19]  181 	xor	a, -21 (ix)
+   00E2 57            [ 4]  182 	ld	d, a
+   00E3 79            [ 4]  183 	ld	a, c
+   00E4 DD AE EC      [19]  184 	xor	a, -20 (ix)
+   00E7 4F            [ 4]  185 	ld	c, a
+   00E8 78            [ 4]  186 	ld	a, b
+   00E9 DD AE ED      [19]  187 	xor	a, -19 (ix)
+   00EC 47            [ 4]  188 	ld	b, a
+   00ED DD 6E 9E      [19]  189 	ld	l, -98 (ix)
+   00F0 DD 66 9F      [19]  190 	ld	h, -97 (ix)
+   00F3 73            [ 7]  191 	ld	(hl), e
+   00F4 23            [ 6]  192 	inc	hl
+   00F5 72            [ 7]  193 	ld	(hl), d
+   00F6 23            [ 6]  194 	inc	hl
+   00F7 71            [ 7]  195 	ld	(hl), c
+   00F8 23            [ 6]  196 	inc	hl
+   00F9 70            [ 7]  197 	ld	(hl), b
+   00FA DD 73 FC      [19]  198 	ld	-4 (ix), e
+   00FD DD 72 FD      [19]  199 	ld	-3 (ix), d
+   0100 DD 36 FA 00   [19]  200 	ld	-6 (ix), #0x00
+   0104 DD 36 FB 00   [19]  201 	ld	-5 (ix), #0x00
+   0108 11 00 00      [10]  202 	ld	de, #0x0000
+   010B DD 7E FA      [19]  203 	ld	a, -6 (ix)
+   010E B1            [ 4]  204 	or	a, c
+   010F DD 77 F2      [19]  205 	ld	-14 (ix), a
+   0112 DD 7E FB      [19]  206 	ld	a, -5 (ix)
+   0115 B0            [ 4]  207 	or	a, b
+   0116 DD 77 F3      [19]  208 	ld	-13 (ix), a
+   0119 DD 7E FC      [19]  209 	ld	a, -4 (ix)
+   011C B3            [ 4]  210 	or	a, e
+   011D DD 77 F4      [19]  211 	ld	-12 (ix), a
+   0120 DD 7E FD      [19]  212 	ld	a, -3 (ix)
+   0123 B2            [ 4]  213 	or	a, d
+   0124 DD 77 F5      [19]  214 	ld	-11 (ix), a
+   0127 DD 5E 9E      [19]  215 	ld	e, -98 (ix)
+   012A DD 56 9F      [19]  216 	ld	d, -97 (ix)
+   012D 21 98 00      [10]  217 	ld	hl, #0x0098
+   0130 39            [11]  218 	add	hl, sp
+   0131 01 04 00      [10]  219 	ld	bc, #0x0004
+   0134 ED B0         [21]  220 	ldir
+   0136 DD 7E 9A      [19]  221 	ld	a, -102 (ix)
+   0139 C6 20         [ 7]  222 	add	a, #0x20
+   013B DD 77 A0      [19]  223 	ld	-96 (ix), a
+   013E DD 7E 9B      [19]  224 	ld	a, -101 (ix)
+   0141 CE 00         [ 7]  225 	adc	a, #0x00
+   0143 DD 77 A1      [19]  226 	ld	-95 (ix), a
+   0146 DD 6E A0      [19]  227 	ld	l, -96 (ix)
+   0149 DD 66 A1      [19]  228 	ld	h, -95 (ix)
+   014C 4E            [ 7]  229 	ld	c, (hl)
+   014D 23            [ 6]  230 	inc	hl
+   014E 46            [ 7]  231 	ld	b, (hl)
+   014F 23            [ 6]  232 	inc	hl
+   0150 5E            [ 7]  233 	ld	e, (hl)
+   0151 23            [ 6]  234 	inc	hl
+   0152 56            [ 7]  235 	ld	d, (hl)
+   0153 79            [ 4]  236 	ld	a, c
+   0154 DD 86 F2      [19]  237 	add	a, -14 (ix)
+   0157 DD 77 F6      [19]  238 	ld	-10 (ix), a
+   015A 78            [ 4]  239 	ld	a, b
+   015B DD 8E F3      [19]  240 	adc	a, -13 (ix)
+   015E DD 77 F7      [19]  241 	ld	-9 (ix), a
+   0161 7B            [ 4]  242 	ld	a, e
+   0162 DD 8E F4      [19]  243 	adc	a, -12 (ix)
+   0165 DD 77 F8      [19]  244 	ld	-8 (ix), a
+   0168 7A            [ 4]  245 	ld	a, d
+   0169 DD 8E F5      [19]  246 	adc	a, -11 (ix)
+   016C DD 77 F9      [19]  247 	ld	-7 (ix), a
+   016F DD 5E A0      [19]  248 	ld	e, -96 (ix)
+   0172 DD 56 A1      [19]  249 	ld	d, -95 (ix)
+   0175 21 9C 00      [10]  250 	ld	hl, #0x009c
+   0178 39            [11]  251 	add	hl, sp
+   0179 01 04 00      [10]  252 	ld	bc, #0x0004
+   017C ED B0         [21]  253 	ldir
+   017E DD 6E 9C      [19]  254 	ld	l, -100 (ix)
+   0181 DD 66 9D      [19]  255 	ld	h, -99 (ix)
+   0184 4E            [ 7]  256 	ld	c, (hl)
+   0185 23            [ 6]  257 	inc	hl
+   0186 46            [ 7]  258 	ld	b, (hl)
+   0187 23            [ 6]  259 	inc	hl
+   0188 5E            [ 7]  260 	ld	e, (hl)
+   0189 23            [ 6]  261 	inc	hl
+   018A 56            [ 7]  262 	ld	d, (hl)
+   018B 79            [ 4]  263 	ld	a, c
+   018C DD AE F6      [19]  264 	xor	a, -10 (ix)
+   018F 4F            [ 4]  265 	ld	c, a
+   0190 78            [ 4]  266 	ld	a, b
+   0191 DD AE F7      [19]  267 	xor	a, -9 (ix)
+   0194 47            [ 4]  268 	ld	b, a
+   0195 7B            [ 4]  269 	ld	a, e
+   0196 DD AE F8      [19]  270 	xor	a, -8 (ix)
+   0199 5F            [ 4]  271 	ld	e, a
+   019A 7A            [ 4]  272 	ld	a, d
+   019B DD AE F9      [19]  273 	xor	a, -7 (ix)
+   019E 57            [ 4]  274 	ld	d, a
+   019F DD 6E 9C      [19]  275 	ld	l, -100 (ix)
+   01A2 DD 66 9D      [19]  276 	ld	h, -99 (ix)
+   01A5 71            [ 7]  277 	ld	(hl), c
+   01A6 23            [ 6]  278 	inc	hl
+   01A7 70            [ 7]  279 	ld	(hl), b
+   01A8 23            [ 6]  280 	inc	hl
+   01A9 73            [ 7]  281 	ld	(hl), e
+   01AA 23            [ 6]  282 	inc	hl
+   01AB 72            [ 7]  283 	ld	(hl), d
+   01AC DD 71 EF      [19]  284 	ld	-17 (ix), c
+   01AF DD 70 F0      [19]  285 	ld	-16 (ix), b
+   01B2 DD 73 F1      [19]  286 	ld	-15 (ix), e
+   01B5 DD 36 EE 00   [19]  287 	ld	-18 (ix), #0x00
+   01B9 3E 04         [ 7]  288 	ld	a, #0x04
+   01BB                     289 00147$:
+   01BB DD CB EF 26   [23]  290 	sla	-17 (ix)
+   01BF DD CB F0 16   [23]  291 	rl	-16 (ix)
+   01C3 DD CB F1 16   [23]  292 	rl	-15 (ix)
+   01C7 3D            [ 4]  293 	dec	a
+   01C8 20 F1         [12]  294 	jr	NZ,00147$
+   01CA 21 00 00      [10]  295 	ld	hl, #0x0000
+   01CD 06 04         [ 7]  296 	ld	b, #0x04
+   01CF                     297 00149$:
+   01CF CB 3A         [ 8]  298 	srl	d
+   01D1 CB 1B         [ 8]  299 	rr	e
+   01D3 10 FA         [13]  300 	djnz	00149$
+   01D5 DD 7E EE      [19]  301 	ld	a, -18 (ix)
+   01D8 B3            [ 4]  302 	or	a, e
+   01D9 DD 77 FA      [19]  303 	ld	-6 (ix), a
+   01DC DD 7E EF      [19]  304 	ld	a, -17 (ix)
+   01DF B2            [ 4]  305 	or	a, d
+   01E0 DD 77 FB      [19]  306 	ld	-5 (ix), a
+   01E3 DD 7E F0      [19]  307 	ld	a, -16 (ix)
+   01E6 B5            [ 4]  308 	or	a, l
+   01E7 DD 77 FC      [19]  309 	ld	-4 (ix), a
+   01EA DD 7E F1      [19]  310 	ld	a, -15 (ix)
+   01ED B4            [ 4]  311 	or	a, h
+   01EE DD 77 FD      [19]  312 	ld	-3 (ix), a
+   01F1 DD 5E 9C      [19]  313 	ld	e, -100 (ix)
+   01F4 DD 56 9D      [19]  314 	ld	d, -99 (ix)
+   01F7 21 A0 00      [10]  315 	ld	hl, #0x00a0
+   01FA 39            [11]  316 	add	hl, sp
+   01FB 01 04 00      [10]  317 	ld	bc, #0x0004
+   01FE ED B0         [21]  318 	ldir
+   0200 DD 7E EA      [19]  319 	ld	a, -22 (ix)
+   0203 DD 86 FA      [19]  320 	add	a, -6 (ix)
+   0206 DD 77 EE      [19]  321 	ld	-18 (ix), a
+   0209 DD 7E EB      [19]  322 	ld	a, -21 (ix)
+   020C DD 8E FB      [19]  323 	adc	a, -5 (ix)
+   020F DD 77 EF      [19]  324 	ld	-17 (ix), a
+   0212 DD 7E EC      [19]  325 	ld	a, -20 (ix)
+   0215 DD 8E FC      [19]  326 	adc	a, -4 (ix)
+   0218 DD 77 F0      [19]  327 	ld	-16 (ix), a
+   021B DD 7E ED      [19]  328 	ld	a, -19 (ix)
+   021E DD 8E FD      [19]  329 	adc	a, -3 (ix)
+   0221 DD 77 F1      [19]  330 	ld	-15 (ix), a
+   0224 DD 5E 9A      [19]  331 	ld	e, -102 (ix)
+   0227 DD 56 9B      [19]  332 	ld	d, -101 (ix)
+   022A 21 94 00      [10]  333 	ld	hl, #0x0094
+   022D 39            [11]  334 	add	hl, sp
+   022E 01 04 00      [10]  335 	ld	bc, #0x0004
+   0231 ED B0         [21]  336 	ldir
+   0233 DD 7E F2      [19]  337 	ld	a, -14 (ix)
+   0236 DD AE EE      [19]  338 	xor	a, -18 (ix)
+   0239 5F            [ 4]  339 	ld	e, a
+   023A DD 7E F3      [19]  340 	ld	a, -13 (ix)
+   023D DD AE EF      [19]  341 	xor	a, -17 (ix)
+   0240 57            [ 4]  342 	ld	d, a
+   0241 DD 7E F4      [19]  343 	ld	a, -12 (ix)
+   0244 DD AE F0      [19]  344 	xor	a, -16 (ix)
+   0247 4F            [ 4]  345 	ld	c, a
+   0248 DD 7E F5      [19]  346 	ld	a, -11 (ix)
+   024B DD AE F1      [19]  347 	xor	a, -15 (ix)
+   024E 47            [ 4]  348 	ld	b, a
+   024F DD 6E 9E      [19]  349 	ld	l, -98 (ix)
+   0252 DD 66 9F      [19]  350 	ld	h, -97 (ix)
+   0255 73            [ 7]  351 	ld	(hl), e
+   0256 23            [ 6]  352 	inc	hl
+   0257 72            [ 7]  353 	ld	(hl), d
+   0258 23            [ 6]  354 	inc	hl
+   0259 71            [ 7]  355 	ld	(hl), c
+   025A 23            [ 6]  356 	inc	hl
+   025B 70            [ 7]  357 	ld	(hl), b
+   025C DD 73 F3      [19]  358 	ld	-13 (ix), e
+   025F DD 72 F4      [19]  359 	ld	-12 (ix), d
+   0262 DD 71 F5      [19]  360 	ld	-11 (ix), c
+   0265 DD 36 F2 00   [19]  361 	ld	-14 (ix), #0x00
+   0269 48            [ 4]  362 	ld	c, b
+   026A 06 00         [ 7]  363 	ld	b, #0x00
+   026C 11 00 00      [10]  364 	ld	de, #0x0000
+   026F DD 7E F2      [19]  365 	ld	a, -14 (ix)
+   0272 B1            [ 4]  366 	or	a, c
+   0273 DD 77 A2      [19]  367 	ld	-94 (ix), a
+   0276 DD 7E F3      [19]  368 	ld	a, -13 (ix)
+   0279 B0            [ 4]  369 	or	a, b
+   027A DD 77 A3      [19]  370 	ld	-93 (ix), a
+   027D DD 7E F4      [19]  371 	ld	a, -12 (ix)
+   0280 B3            [ 4]  372 	or	a, e
+   0281 DD 77 A4      [19]  373 	ld	-92 (ix), a
+   0284 DD 7E F5      [19]  374 	ld	a, -11 (ix)
+   0287 B2            [ 4]  375 	or	a, d
+   0288 DD 77 A5      [19]  376 	ld	-91 (ix), a
+   028B DD 5E 9E      [19]  377 	ld	e, -98 (ix)
+   028E DD 56 9F      [19]  378 	ld	d, -97 (ix)
+   0291 21 48 00      [10]  379 	ld	hl, #0x0048
+   0294 39            [11]  380 	add	hl, sp
+   0295 01 04 00      [10]  381 	ld	bc, #0x0004
+   0298 ED B0         [21]  382 	ldir
+   029A DD 7E F6      [19]  383 	ld	a, -10 (ix)
+   029D DD 86 A2      [19]  384 	add	a, -94 (ix)
+   02A0 DD 77 A6      [19]  385 	ld	-90 (ix), a
+   02A3 DD 7E F7      [19]  386 	ld	a, -9 (ix)
+   02A6 DD 8E A3      [19]  387 	adc	a, -93 (ix)
+   02A9 DD 77 A7      [19]  388 	ld	-89 (ix), a
+   02AC DD 7E F8      [19]  389 	ld	a, -8 (ix)
+   02AF DD 8E A4      [19]  390 	adc	a, -92 (ix)
+   02B2 DD 77 A8      [19]  391 	ld	-88 (ix), a
+   02B5 DD 7E F9      [19]  392 	ld	a, -7 (ix)
+   02B8 DD 8E A5      [19]  393 	adc	a, -91 (ix)
+   02BB DD 77 A9      [19]  394 	ld	-87 (ix), a
+   02BE DD 5E A0      [19]  395 	ld	e, -96 (ix)
+   02C1 DD 56 A1      [19]  396 	ld	d, -95 (ix)
+   02C4 21 4C 00      [10]  397 	ld	hl, #0x004c
+   02C7 39            [11]  398 	add	hl, sp
+   02C8 01 04 00      [10]  399 	ld	bc, #0x0004
+   02CB ED B0         [21]  400 	ldir
+   02CD DD 7E FA      [19]  401 	ld	a, -6 (ix)
+   02D0 DD AE A6      [19]  402 	xor	a, -90 (ix)
+   02D3 5F            [ 4]  403 	ld	e, a
+   02D4 DD 7E FB      [19]  404 	ld	a, -5 (ix)
+   02D7 DD AE A7      [19]  405 	xor	a, -89 (ix)
+   02DA 57            [ 4]  406 	ld	d, a
+   02DB DD 7E FC      [19]  407 	ld	a, -4 (ix)
+   02DE DD AE A8      [19]  408 	xor	a, -88 (ix)
+   02E1 4F            [ 4]  409 	ld	c, a
+   02E2 DD 7E FD      [19]  410 	ld	a, -3 (ix)
+   02E5 DD AE A9      [19]  411 	xor	a, -87 (ix)
+   02E8 47            [ 4]  412 	ld	b, a
+   02E9 DD 6E 9C      [19]  413 	ld	l, -100 (ix)
+   02EC DD 66 9D      [19]  414 	ld	h, -99 (ix)
+   02EF 73            [ 7]  415 	ld	(hl), e
+   02F0 23            [ 6]  416 	inc	hl
+   02F1 72            [ 7]  417 	ld	(hl), d
+   02F2 23            [ 6]  418 	inc	hl
+   02F3 71            [ 7]  419 	ld	(hl), c
+   02F4 23            [ 6]  420 	inc	hl
+   02F5 70            [ 7]  421 	ld	(hl), b
+   02F6 DD 73 FA      [19]  422 	ld	-6 (ix), e
+   02F9 DD 72 FB      [19]  423 	ld	-5 (ix), d
+   02FC DD 71 FC      [19]  424 	ld	-4 (ix), c
+   02FF DD 70 FD      [19]  425 	ld	-3 (ix), b
+   0302 3E 07         [ 7]  426 	ld	a, #0x07
+   0304                     427 00155$:
+   0304 DD CB FA 26   [23]  428 	sla	-6 (ix)
+   0308 DD CB FB 16   [23]  429 	rl	-5 (ix)
+   030C DD CB FC 16   [23]  430 	rl	-4 (ix)
+   0310 DD CB FD 16   [23]  431 	rl	-3 (ix)
+   0314 3D            [ 4]  432 	dec	a
+   0315 20 ED         [12]  433 	jr	NZ,00155$
+   0317 48            [ 4]  434 	ld	c, b
+   0318 06 00         [ 7]  435 	ld	b, #0x00
+   031A 11 00 00      [10]  436 	ld	de, #0x0000
+   031D CB 39         [ 8]  437 	srl	c
+   031F DD 7E FA      [19]  438 	ld	a, -6 (ix)
+   0322 B1            [ 4]  439 	or	a, c
+   0323 DD 77 AA      [19]  440 	ld	-86 (ix), a
+   0326 DD 7E FB      [19]  441 	ld	a, -5 (ix)
+   0329 B0            [ 4]  442 	or	a, b
+   032A DD 77 AB      [19]  443 	ld	-85 (ix), a
+   032D DD 7E FC      [19]  444 	ld	a, -4 (ix)
+   0330 B3            [ 4]  445 	or	a, e
+   0331 DD 77 AC      [19]  446 	ld	-84 (ix), a
+   0334 DD 7E FD      [19]  447 	ld	a, -3 (ix)
+   0337 B2            [ 4]  448 	or	a, d
+   0338 DD 77 AD      [19]  449 	ld	-83 (ix), a
+   033B DD 5E 9C      [19]  450 	ld	e, -100 (ix)
+   033E DD 56 9D      [19]  451 	ld	d, -99 (ix)
+   0341 21 50 00      [10]  452 	ld	hl, #0x0050
+   0344 39            [11]  453 	add	hl, sp
+   0345 01 04 00      [10]  454 	ld	bc, #0x0004
+   0348 ED B0         [21]  455 	ldir
+                     034A   456 	C$chacha20.c$24$3_0$38	= .
+                            457 	.globl	C$chacha20.c$24$3_0$38
+                            458 ;/work/source_code/chacha20.c:24: QR(x[1], x[5], x[ 9], x[13]); // column 1
+   034A DD 7E 9A      [19]  459 	ld	a, -102 (ix)
+   034D C6 04         [ 7]  460 	add	a, #0x04
+   034F DD 77 AE      [19]  461 	ld	-82 (ix), a
+   0352 DD 7E 9B      [19]  462 	ld	a, -101 (ix)
+   0355 CE 00         [ 7]  463 	adc	a, #0x00
+   0357 DD 77 AF      [19]  464 	ld	-81 (ix), a
+   035A DD 5E AE      [19]  465 	ld	e, -82 (ix)
+   035D DD 56 AF      [19]  466 	ld	d, -81 (ix)
+   0360 21 A0 00      [10]  467 	ld	hl, #0x00a0
+   0363 39            [11]  468 	add	hl, sp
+   0364 EB            [ 4]  469 	ex	de, hl
+   0365 01 04 00      [10]  470 	ld	bc, #0x0004
+   0368 ED B0         [21]  471 	ldir
+   036A DD 7E 9A      [19]  472 	ld	a, -102 (ix)
+   036D C6 14         [ 7]  473 	add	a, #0x14
+   036F DD 77 B0      [19]  474 	ld	-80 (ix), a
+   0372 DD 7E 9B      [19]  475 	ld	a, -101 (ix)
+   0375 CE 00         [ 7]  476 	adc	a, #0x00
+   0377 DD 77 B1      [19]  477 	ld	-79 (ix), a
+   037A DD 6E B0      [19]  478 	ld	l, -80 (ix)
+   037D DD 66 B1      [19]  479 	ld	h, -79 (ix)
+   0380 4E            [ 7]  480 	ld	c, (hl)
+   0381 23            [ 6]  481 	inc	hl
+   0382 46            [ 7]  482 	ld	b, (hl)
+   0383 23            [ 6]  483 	inc	hl
+   0384 5E            [ 7]  484 	ld	e, (hl)
+   0385 23            [ 6]  485 	inc	hl
+   0386 56            [ 7]  486 	ld	d, (hl)
+   0387 DD 7E FA      [19]  487 	ld	a, -6 (ix)
+   038A 81            [ 4]  488 	add	a, c
+   038B DD 77 EA      [19]  489 	ld	-22 (ix), a
+   038E DD 7E FB      [19]  490 	ld	a, -5 (ix)
+   0391 88            [ 4]  491 	adc	a, b
+   0392 DD 77 EB      [19]  492 	ld	-21 (ix), a
+   0395 DD 7E FC      [19]  493 	ld	a, -4 (ix)
+   0398 8B            [ 4]  494 	adc	a, e
+   0399 DD 77 EC      [19]  495 	ld	-20 (ix), a
+   039C DD 7E FD      [19]  496 	ld	a, -3 (ix)
+   039F 8A            [ 4]  497 	adc	a, d
+   03A0 DD 77 ED      [19]  498 	ld	-19 (ix), a
+   03A3 DD 5E AE      [19]  499 	ld	e, -82 (ix)
+   03A6 DD 56 AF      [19]  500 	ld	d, -81 (ix)
+   03A9 21 90 00      [10]  501 	ld	hl, #0x0090
+   03AC 39            [11]  502 	add	hl, sp
+   03AD 01 04 00      [10]  503 	ld	bc, #0x0004
+   03B0 ED B0         [21]  504 	ldir
+   03B2 DD 7E 9A      [19]  505 	ld	a, -102 (ix)
+   03B5 C6 34         [ 7]  506 	add	a, #0x34
+   03B7 DD 77 B2      [19]  507 	ld	-78 (ix), a
+   03BA DD 7E 9B      [19]  508 	ld	a, -101 (ix)
+   03BD CE 00         [ 7]  509 	adc	a, #0x00
+   03BF DD 77 B3      [19]  510 	ld	-77 (ix), a
+   03C2 DD 6E B2      [19]  511 	ld	l, -78 (ix)
+   03C5 DD 66 B3      [19]  512 	ld	h, -77 (ix)
+   03C8 5E            [ 7]  513 	ld	e, (hl)
+   03C9 23            [ 6]  514 	inc	hl
+   03CA 56            [ 7]  515 	ld	d, (hl)
+   03CB 23            [ 6]  516 	inc	hl
+   03CC 4E            [ 7]  517 	ld	c, (hl)
+   03CD 23            [ 6]  518 	inc	hl
+   03CE 46            [ 7]  519 	ld	b, (hl)
+   03CF 7B            [ 4]  520 	ld	a, e
+   03D0 DD AE EA      [19]  521 	xor	a, -22 (ix)
+   03D3 5F            [ 4]  522 	ld	e, a
+   03D4 7A            [ 4]  523 	ld	a, d
+   03D5 DD AE EB      [19]  524 	xor	a, -21 (ix)
+   03D8 57            [ 4]  525 	ld	d, a
+   03D9 79            [ 4]  526 	ld	a, c
+   03DA DD AE EC      [19]  527 	xor	a, -20 (ix)
+   03DD 4F            [ 4]  528 	ld	c, a
+   03DE 78            [ 4]  529 	ld	a, b
+   03DF DD AE ED      [19]  530 	xor	a, -19 (ix)
+   03E2 47            [ 4]  531 	ld	b, a
+   03E3 DD 6E B2      [19]  532 	ld	l, -78 (ix)
+   03E6 DD 66 B3      [19]  533 	ld	h, -77 (ix)
+   03E9 73            [ 7]  534 	ld	(hl), e
+   03EA 23            [ 6]  535 	inc	hl
+   03EB 72            [ 7]  536 	ld	(hl), d
+   03EC 23            [ 6]  537 	inc	hl
+   03ED 71            [ 7]  538 	ld	(hl), c
+   03EE 23            [ 6]  539 	inc	hl
+   03EF 70            [ 7]  540 	ld	(hl), b
+   03F0 DD 73 FC      [19]  541 	ld	-4 (ix), e
+   03F3 DD 72 FD      [19]  542 	ld	-3 (ix), d
+   03F6 DD 36 FA 00   [19]  543 	ld	-6 (ix), #0x00
+   03FA DD 36 FB 00   [19]  544 	ld	-5 (ix), #0x00
+   03FE 11 00 00      [10]  545 	ld	de, #0x0000
+   0401 DD 7E FA      [19]  546 	ld	a, -6 (ix)
+   0404 B1            [ 4]  547 	or	a, c
+   0405 DD 77 F2      [19]  548 	ld	-14 (ix), a
+   0408 DD 7E FB      [19]  549 	ld	a, -5 (ix)
+   040B B0            [ 4]  550 	or	a, b
+   040C DD 77 F3      [19]  551 	ld	-13 (ix), a
+   040F DD 7E FC      [19]  552 	ld	a, -4 (ix)
+   0412 B3            [ 4]  553 	or	a, e
+   0413 DD 77 F4      [19]  554 	ld	-12 (ix), a
+   0416 DD 7E FD      [19]  555 	ld	a, -3 (ix)
+   0419 B2            [ 4]  556 	or	a, d
+   041A DD 77 F5      [19]  557 	ld	-11 (ix), a
+   041D DD 5E B2      [19]  558 	ld	e, -78 (ix)
+   0420 DD 56 B3      [19]  559 	ld	d, -77 (ix)
+   0423 21 98 00      [10]  560 	ld	hl, #0x0098
+   0426 39            [11]  561 	add	hl, sp
+   0427 01 04 00      [10]  562 	ld	bc, #0x0004
+   042A ED B0         [21]  563 	ldir
+   042C DD 7E 9A      [19]  564 	ld	a, -102 (ix)
+   042F C6 24         [ 7]  565 	add	a, #0x24
+   0431 DD 77 B4      [19]  566 	ld	-76 (ix), a
+   0434 DD 7E 9B      [19]  567 	ld	a, -101 (ix)
+   0437 CE 00         [ 7]  568 	adc	a, #0x00
+   0439 DD 77 B5      [19]  569 	ld	-75 (ix), a
+   043C DD 6E B4      [19]  570 	ld	l, -76 (ix)
+   043F DD 66 B5      [19]  571 	ld	h, -75 (ix)
+   0442 4E            [ 7]  572 	ld	c, (hl)
+   0443 23            [ 6]  573 	inc	hl
+   0444 46            [ 7]  574 	ld	b, (hl)
+   0445 23            [ 6]  575 	inc	hl
+   0446 5E            [ 7]  576 	ld	e, (hl)
+   0447 23            [ 6]  577 	inc	hl
+   0448 56            [ 7]  578 	ld	d, (hl)
+   0449 79            [ 4]  579 	ld	a, c
+   044A DD 86 F2      [19]  580 	add	a, -14 (ix)
+   044D DD 77 F6      [19]  581 	ld	-10 (ix), a
+   0450 78            [ 4]  582 	ld	a, b
+   0451 DD 8E F3      [19]  583 	adc	a, -13 (ix)
+   0454 DD 77 F7      [19]  584 	ld	-9 (ix), a
+   0457 7B            [ 4]  585 	ld	a, e
+   0458 DD 8E F4      [19]  586 	adc	a, -12 (ix)
+   045B DD 77 F8      [19]  587 	ld	-8 (ix), a
+   045E 7A            [ 4]  588 	ld	a, d
+   045F DD 8E F5      [19]  589 	adc	a, -11 (ix)
+   0462 DD 77 F9      [19]  590 	ld	-7 (ix), a
+   0465 DD 5E B4      [19]  591 	ld	e, -76 (ix)
+   0468 DD 56 B5      [19]  592 	ld	d, -75 (ix)
+   046B 21 9C 00      [10]  593 	ld	hl, #0x009c
+   046E 39            [11]  594 	add	hl, sp
+   046F 01 04 00      [10]  595 	ld	bc, #0x0004
+   0472 ED B0         [21]  596 	ldir
+   0474 DD 6E B0      [19]  597 	ld	l, -80 (ix)
+   0477 DD 66 B1      [19]  598 	ld	h, -79 (ix)
+   047A 4E            [ 7]  599 	ld	c, (hl)
+   047B 23            [ 6]  600 	inc	hl
+   047C 46            [ 7]  601 	ld	b, (hl)
+   047D 23            [ 6]  602 	inc	hl
+   047E 5E            [ 7]  603 	ld	e, (hl)
+   047F 23            [ 6]  604 	inc	hl
+   0480 56            [ 7]  605 	ld	d, (hl)
+   0481 79            [ 4]  606 	ld	a, c
+   0482 DD AE F6      [19]  607 	xor	a, -10 (ix)
+   0485 4F            [ 4]  608 	ld	c, a
+   0486 78            [ 4]  609 	ld	a, b
+   0487 DD AE F7      [19]  610 	xor	a, -9 (ix)
+   048A 47            [ 4]  611 	ld	b, a
+   048B 7B            [ 4]  612 	ld	a, e
+   048C DD AE F8      [19]  613 	xor	a, -8 (ix)
+   048F 5F            [ 4]  614 	ld	e, a
+   0490 7A            [ 4]  615 	ld	a, d
+   0491 DD AE F9      [19]  616 	xor	a, -7 (ix)
+   0494 57            [ 4]  617 	ld	d, a
+   0495 DD 6E B0      [19]  618 	ld	l, -80 (ix)
+   0498 DD 66 B1      [19]  619 	ld	h, -79 (ix)
+   049B 71            [ 7]  620 	ld	(hl), c
+   049C 23            [ 6]  621 	inc	hl
+   049D 70            [ 7]  622 	ld	(hl), b
+   049E 23            [ 6]  623 	inc	hl
+   049F 73            [ 7]  624 	ld	(hl), e
+   04A0 23            [ 6]  625 	inc	hl
+   04A1 72            [ 7]  626 	ld	(hl), d
+   04A2 DD 71 E7      [19]  627 	ld	-25 (ix), c
+   04A5 DD 70 E8      [19]  628 	ld	-24 (ix), b
+   04A8 DD 73 E9      [19]  629 	ld	-23 (ix), e
+   04AB DD 36 E6 00   [19]  630 	ld	-26 (ix), #0x00
+   04AF 3E 04         [ 7]  631 	ld	a, #0x04
+   04B1                     632 00163$:
+   04B1 DD CB E7 26   [23]  633 	sla	-25 (ix)
+   04B5 DD CB E8 16   [23]  634 	rl	-24 (ix)
+   04B9 DD CB E9 16   [23]  635 	rl	-23 (ix)
+   04BD 3D            [ 4]  636 	dec	a
+   04BE 20 F1         [12]  637 	jr	NZ,00163$
+   04C0 21 00 00      [10]  638 	ld	hl, #0x0000
+   04C3 06 04         [ 7]  639 	ld	b, #0x04
+   04C5                     640 00165$:
+   04C5 CB 3A         [ 8]  641 	srl	d
+   04C7 CB 1B         [ 8]  642 	rr	e
+   04C9 10 FA         [13]  643 	djnz	00165$
+   04CB DD 7E E6      [19]  644 	ld	a, -26 (ix)
+   04CE B3            [ 4]  645 	or	a, e
+   04CF DD 77 FA      [19]  646 	ld	-6 (ix), a
+   04D2 DD 7E E7      [19]  647 	ld	a, -25 (ix)
+   04D5 B2            [ 4]  648 	or	a, d
+   04D6 DD 77 FB      [19]  649 	ld	-5 (ix), a
+   04D9 DD 7E E8      [19]  650 	ld	a, -24 (ix)
+   04DC B5            [ 4]  651 	or	a, l
+   04DD DD 77 FC      [19]  652 	ld	-4 (ix), a
+   04E0 DD 7E E9      [19]  653 	ld	a, -23 (ix)
+   04E3 B4            [ 4]  654 	or	a, h
+   04E4 DD 77 FD      [19]  655 	ld	-3 (ix), a
+   04E7 DD 5E B0      [19]  656 	ld	e, -80 (ix)
+   04EA DD 56 B1      [19]  657 	ld	d, -79 (ix)
+   04ED 21 A0 00      [10]  658 	ld	hl, #0x00a0
+   04F0 39            [11]  659 	add	hl, sp
+   04F1 01 04 00      [10]  660 	ld	bc, #0x0004
+   04F4 ED B0         [21]  661 	ldir
+   04F6 DD 7E EA      [19]  662 	ld	a, -22 (ix)
+   04F9 DD 86 FA      [19]  663 	add	a, -6 (ix)
+   04FC DD 77 B6      [19]  664 	ld	-74 (ix), a
+   04FF DD 7E EB      [19]  665 	ld	a, -21 (ix)
+   0502 DD 8E FB      [19]  666 	adc	a, -5 (ix)
+   0505 DD 77 B7      [19]  667 	ld	-73 (ix), a
+   0508 DD 7E EC      [19]  668 	ld	a, -20 (ix)
+   050B DD 8E FC      [19]  669 	adc	a, -4 (ix)
+   050E DD 77 B8      [19]  670 	ld	-72 (ix), a
+   0511 DD 7E ED      [19]  671 	ld	a, -19 (ix)
+   0514 DD 8E FD      [19]  672 	adc	a, -3 (ix)
+   0517 DD 77 B9      [19]  673 	ld	-71 (ix), a
+   051A DD 5E AE      [19]  674 	ld	e, -82 (ix)
+   051D DD 56 AF      [19]  675 	ld	d, -81 (ix)
+   0520 21 5C 00      [10]  676 	ld	hl, #0x005c
+   0523 39            [11]  677 	add	hl, sp
+   0524 01 04 00      [10]  678 	ld	bc, #0x0004
+   0527 ED B0         [21]  679 	ldir
+   0529 DD 7E F2      [19]  680 	ld	a, -14 (ix)
+   052C DD AE B6      [19]  681 	xor	a, -74 (ix)
+   052F 5F            [ 4]  682 	ld	e, a
+   0530 DD 7E F3      [19]  683 	ld	a, -13 (ix)
+   0533 DD AE B7      [19]  684 	xor	a, -73 (ix)
+   0536 57            [ 4]  685 	ld	d, a
+   0537 DD 7E F4      [19]  686 	ld	a, -12 (ix)
+   053A DD AE B8      [19]  687 	xor	a, -72 (ix)
+   053D 4F            [ 4]  688 	ld	c, a
+   053E DD 7E F5      [19]  689 	ld	a, -11 (ix)
+   0541 DD AE B9      [19]  690 	xor	a, -71 (ix)
+   0544 47            [ 4]  691 	ld	b, a
+   0545 DD 6E B2      [19]  692 	ld	l, -78 (ix)
+   0548 DD 66 B3      [19]  693 	ld	h, -77 (ix)
+   054B 73            [ 7]  694 	ld	(hl), e
+   054C 23            [ 6]  695 	inc	hl
+   054D 72            [ 7]  696 	ld	(hl), d
+   054E 23            [ 6]  697 	inc	hl
+   054F 71            [ 7]  698 	ld	(hl), c
+   0550 23            [ 6]  699 	inc	hl
+   0551 70            [ 7]  700 	ld	(hl), b
+   0552 DD 73 F3      [19]  701 	ld	-13 (ix), e
+   0555 DD 72 F4      [19]  702 	ld	-12 (ix), d
+   0558 DD 71 F5      [19]  703 	ld	-11 (ix), c
+   055B DD 36 F2 00   [19]  704 	ld	-14 (ix), #0x00
+   055F 48            [ 4]  705 	ld	c, b
+   0560 06 00         [ 7]  706 	ld	b, #0x00
+   0562 11 00 00      [10]  707 	ld	de, #0x0000
+   0565 DD 7E F2      [19]  708 	ld	a, -14 (ix)
+   0568 B1            [ 4]  709 	or	a, c
+   0569 DD 77 BA      [19]  710 	ld	-70 (ix), a
+   056C DD 7E F3      [19]  711 	ld	a, -13 (ix)
+   056F B0            [ 4]  712 	or	a, b
+   0570 DD 77 BB      [19]  713 	ld	-69 (ix), a
+   0573 DD 7E F4      [19]  714 	ld	a, -12 (ix)
+   0576 B3            [ 4]  715 	or	a, e
+   0577 DD 77 BC      [19]  716 	ld	-68 (ix), a
+   057A DD 7E F5      [19]  717 	ld	a, -11 (ix)
+   057D B2            [ 4]  718 	or	a, d
+   057E DD 77 BD      [19]  719 	ld	-67 (ix), a
+   0581 DD 5E B2      [19]  720 	ld	e, -78 (ix)
+   0584 DD 56 B3      [19]  721 	ld	d, -77 (ix)
+   0587 21 60 00      [10]  722 	ld	hl, #0x0060
+   058A 39            [11]  723 	add	hl, sp
+   058B 01 04 00      [10]  724 	ld	bc, #0x0004
+   058E ED B0         [21]  725 	ldir
+   0590 DD 7E F6      [19]  726 	ld	a, -10 (ix)
+   0593 DD 86 BA      [19]  727 	add	a, -70 (ix)
+   0596 DD 77 BE      [19]  728 	ld	-66 (ix), a
+   0599 DD 7E F7      [19]  729 	ld	a, -9 (ix)
+   059C DD 8E BB      [19]  730 	adc	a, -69 (ix)
+   059F DD 77 BF      [19]  731 	ld	-65 (ix), a
+   05A2 DD 7E F8      [19]  732 	ld	a, -8 (ix)
+   05A5 DD 8E BC      [19]  733 	adc	a, -68 (ix)
+   05A8 DD 77 C0      [19]  734 	ld	-64 (ix), a
+   05AB DD 7E F9      [19]  735 	ld	a, -7 (ix)
+   05AE DD 8E BD      [19]  736 	adc	a, -67 (ix)
+   05B1 DD 77 C1      [19]  737 	ld	-63 (ix), a
+   05B4 DD 5E B4      [19]  738 	ld	e, -76 (ix)
+   05B7 DD 56 B5      [19]  739 	ld	d, -75 (ix)
+   05BA 21 64 00      [10]  740 	ld	hl, #0x0064
+   05BD 39            [11]  741 	add	hl, sp
+   05BE 01 04 00      [10]  742 	ld	bc, #0x0004
+   05C1 ED B0         [21]  743 	ldir
+   05C3 DD 7E FA      [19]  744 	ld	a, -6 (ix)
+   05C6 DD AE BE      [19]  745 	xor	a, -66 (ix)
+   05C9 5F            [ 4]  746 	ld	e, a
+   05CA DD 7E FB      [19]  747 	ld	a, -5 (ix)
+   05CD DD AE BF      [19]  748 	xor	a, -65 (ix)
+   05D0 57            [ 4]  749 	ld	d, a
+   05D1 DD 7E FC      [19]  750 	ld	a, -4 (ix)
+   05D4 DD AE C0      [19]  751 	xor	a, -64 (ix)
+   05D7 4F            [ 4]  752 	ld	c, a
+   05D8 DD 7E FD      [19]  753 	ld	a, -3 (ix)
+   05DB DD AE C1      [19]  754 	xor	a, -63 (ix)
+   05DE 47            [ 4]  755 	ld	b, a
+   05DF DD 6E B0      [19]  756 	ld	l, -80 (ix)
+   05E2 DD 66 B1      [19]  757 	ld	h, -79 (ix)
+   05E5 73            [ 7]  758 	ld	(hl), e
+   05E6 23            [ 6]  759 	inc	hl
+   05E7 72            [ 7]  760 	ld	(hl), d
+   05E8 23            [ 6]  761 	inc	hl
+   05E9 71            [ 7]  762 	ld	(hl), c
+   05EA 23            [ 6]  763 	inc	hl
+   05EB 70            [ 7]  764 	ld	(hl), b
+   05EC DD 73 FA      [19]  765 	ld	-6 (ix), e
+   05EF DD 72 FB      [19]  766 	ld	-5 (ix), d
+   05F2 DD 71 FC      [19]  767 	ld	-4 (ix), c
+   05F5 DD 70 FD      [19]  768 	ld	-3 (ix), b
+   05F8 3E 07         [ 7]  769 	ld	a, #0x07
+   05FA                     770 00171$:
+   05FA DD CB FA 26   [23]  771 	sla	-6 (ix)
+   05FE DD CB FB 16   [23]  772 	rl	-5 (ix)
+   0602 DD CB FC 16   [23]  773 	rl	-4 (ix)
+   0606 DD CB FD 16   [23]  774 	rl	-3 (ix)
+   060A 3D            [ 4]  775 	dec	a
+   060B 20 ED         [12]  776 	jr	NZ,00171$
+   060D 48            [ 4]  777 	ld	c, b
+   060E 06 00         [ 7]  778 	ld	b, #0x00
+   0610 11 00 00      [10]  779 	ld	de, #0x0000
+   0613 CB 39         [ 8]  780 	srl	c
+   0615 DD 7E FA      [19]  781 	ld	a, -6 (ix)
+   0618 B1            [ 4]  782 	or	a, c
+   0619 DD 77 F6      [19]  783 	ld	-10 (ix), a
+   061C DD 7E FB      [19]  784 	ld	a, -5 (ix)
+   061F B0            [ 4]  785 	or	a, b
+   0620 DD 77 F7      [19]  786 	ld	-9 (ix), a
+   0623 DD 7E FC      [19]  787 	ld	a, -4 (ix)
+   0626 B3            [ 4]  788 	or	a, e
+   0627 DD 77 F8      [19]  789 	ld	-8 (ix), a
+   062A DD 7E FD      [19]  790 	ld	a, -3 (ix)
+   062D B2            [ 4]  791 	or	a, d
+   062E DD 77 F9      [19]  792 	ld	-7 (ix), a
+   0631 DD 5E B0      [19]  793 	ld	e, -80 (ix)
+   0634 DD 56 B1      [19]  794 	ld	d, -79 (ix)
+   0637 21 9C 00      [10]  795 	ld	hl, #0x009c
+   063A 39            [11]  796 	add	hl, sp
+   063B 01 04 00      [10]  797 	ld	bc, #0x0004
+   063E ED B0         [21]  798 	ldir
+                     0640   799 	C$chacha20.c$25$3_0$38	= .
+                            800 	.globl	C$chacha20.c$25$3_0$38
+                            801 ;/work/source_code/chacha20.c:25: QR(x[2], x[6], x[10], x[14]); // column 2
+   0640 DD 7E 9A      [19]  802 	ld	a, -102 (ix)
+   0643 C6 08         [ 7]  803 	add	a, #0x08
+   0645 DD 77 C2      [19]  804 	ld	-62 (ix), a
+   0648 DD 7E 9B      [19]  805 	ld	a, -101 (ix)
+   064B CE 00         [ 7]  806 	adc	a, #0x00
+   064D DD 77 C3      [19]  807 	ld	-61 (ix), a
+   0650 DD 5E C2      [19]  808 	ld	e, -62 (ix)
+   0653 DD 56 C3      [19]  809 	ld	d, -61 (ix)
+   0656 21 A0 00      [10]  810 	ld	hl, #0x00a0
+   0659 39            [11]  811 	add	hl, sp
+   065A EB            [ 4]  812 	ex	de, hl
+   065B 01 04 00      [10]  813 	ld	bc, #0x0004
+   065E ED B0         [21]  814 	ldir
+   0660 DD 7E 9A      [19]  815 	ld	a, -102 (ix)
+   0663 C6 18         [ 7]  816 	add	a, #0x18
+   0665 DD 77 C4      [19]  817 	ld	-60 (ix), a
+   0668 DD 7E 9B      [19]  818 	ld	a, -101 (ix)
+   066B CE 00         [ 7]  819 	adc	a, #0x00
+   066D DD 77 C5      [19]  820 	ld	-59 (ix), a
+   0670 DD 6E C4      [19]  821 	ld	l, -60 (ix)
+   0673 DD 66 C5      [19]  822 	ld	h, -59 (ix)
+   0676 4E            [ 7]  823 	ld	c, (hl)
+   0677 23            [ 6]  824 	inc	hl
+   0678 46            [ 7]  825 	ld	b, (hl)
+   0679 23            [ 6]  826 	inc	hl
+   067A 5E            [ 7]  827 	ld	e, (hl)
+   067B 23            [ 6]  828 	inc	hl
+   067C 56            [ 7]  829 	ld	d, (hl)
+   067D DD 7E FA      [19]  830 	ld	a, -6 (ix)
+   0680 81            [ 4]  831 	add	a, c
+   0681 DD 77 E6      [19]  832 	ld	-26 (ix), a
+   0684 DD 7E FB      [19]  833 	ld	a, -5 (ix)
+   0687 88            [ 4]  834 	adc	a, b
+   0688 DD 77 E7      [19]  835 	ld	-25 (ix), a
+   068B DD 7E FC      [19]  836 	ld	a, -4 (ix)
+   068E 8B            [ 4]  837 	adc	a, e
+   068F DD 77 E8      [19]  838 	ld	-24 (ix), a
+   0692 DD 7E FD      [19]  839 	ld	a, -3 (ix)
+   0695 8A            [ 4]  840 	adc	a, d
+   0696 DD 77 E9      [19]  841 	ld	-23 (ix), a
+   0699 DD 5E C2      [19]  842 	ld	e, -62 (ix)
+   069C DD 56 C3      [19]  843 	ld	d, -61 (ix)
+   069F 21 8C 00      [10]  844 	ld	hl, #0x008c
+   06A2 39            [11]  845 	add	hl, sp
+   06A3 01 04 00      [10]  846 	ld	bc, #0x0004
+   06A6 ED B0         [21]  847 	ldir
+   06A8 DD 7E 9A      [19]  848 	ld	a, -102 (ix)
+   06AB C6 38         [ 7]  849 	add	a, #0x38
+   06AD DD 77 C6      [19]  850 	ld	-58 (ix), a
+   06B0 DD 7E 9B      [19]  851 	ld	a, -101 (ix)
+   06B3 CE 00         [ 7]  852 	adc	a, #0x00
+   06B5 DD 77 C7      [19]  853 	ld	-57 (ix), a
+   06B8 DD 6E C6      [19]  854 	ld	l, -58 (ix)
+   06BB DD 66 C7      [19]  855 	ld	h, -57 (ix)
+   06BE 5E            [ 7]  856 	ld	e, (hl)
+   06BF 23            [ 6]  857 	inc	hl
+   06C0 56            [ 7]  858 	ld	d, (hl)
+   06C1 23            [ 6]  859 	inc	hl
+   06C2 4E            [ 7]  860 	ld	c, (hl)
+   06C3 23            [ 6]  861 	inc	hl
+   06C4 46            [ 7]  862 	ld	b, (hl)
+   06C5 7B            [ 4]  863 	ld	a, e
+   06C6 DD AE E6      [19]  864 	xor	a, -26 (ix)
+   06C9 5F            [ 4]  865 	ld	e, a
+   06CA 7A            [ 4]  866 	ld	a, d
+   06CB DD AE E7      [19]  867 	xor	a, -25 (ix)
+   06CE 57            [ 4]  868 	ld	d, a
+   06CF 79            [ 4]  869 	ld	a, c
+   06D0 DD AE E8      [19]  870 	xor	a, -24 (ix)
+   06D3 4F            [ 4]  871 	ld	c, a
+   06D4 78            [ 4]  872 	ld	a, b
+   06D5 DD AE E9      [19]  873 	xor	a, -23 (ix)
+   06D8 47            [ 4]  874 	ld	b, a
+   06D9 DD 6E C6      [19]  875 	ld	l, -58 (ix)
+   06DC DD 66 C7      [19]  876 	ld	h, -57 (ix)
+   06DF 73            [ 7]  877 	ld	(hl), e
+   06E0 23            [ 6]  878 	inc	hl
+   06E1 72            [ 7]  879 	ld	(hl), d
+   06E2 23            [ 6]  880 	inc	hl
+   06E3 71            [ 7]  881 	ld	(hl), c
+   06E4 23            [ 6]  882 	inc	hl
+   06E5 70            [ 7]  883 	ld	(hl), b
+   06E6 DD 73 F4      [19]  884 	ld	-12 (ix), e
+   06E9 DD 72 F5      [19]  885 	ld	-11 (ix), d
+   06EC DD 36 F2 00   [19]  886 	ld	-14 (ix), #0x00
+   06F0 DD 36 F3 00   [19]  887 	ld	-13 (ix), #0x00
+   06F4 11 00 00      [10]  888 	ld	de, #0x0000
+   06F7 DD 7E F2      [19]  889 	ld	a, -14 (ix)
+   06FA B1            [ 4]  890 	or	a, c
+   06FB DD 77 FA      [19]  891 	ld	-6 (ix), a
+   06FE DD 7E F3      [19]  892 	ld	a, -13 (ix)
+   0701 B0            [ 4]  893 	or	a, b
+   0702 DD 77 FB      [19]  894 	ld	-5 (ix), a
+   0705 DD 7E F4      [19]  895 	ld	a, -12 (ix)
+   0708 B3            [ 4]  896 	or	a, e
+   0709 DD 77 FC      [19]  897 	ld	-4 (ix), a
+   070C DD 7E F5      [19]  898 	ld	a, -11 (ix)
+   070F B2            [ 4]  899 	or	a, d
+   0710 DD 77 FD      [19]  900 	ld	-3 (ix), a
+   0713 DD 5E C6      [19]  901 	ld	e, -58 (ix)
+   0716 DD 56 C7      [19]  902 	ld	d, -57 (ix)
+   0719 21 A0 00      [10]  903 	ld	hl, #0x00a0
+   071C 39            [11]  904 	add	hl, sp
+   071D 01 04 00      [10]  905 	ld	bc, #0x0004
+   0720 ED B0         [21]  906 	ldir
+   0722 DD 7E 9A      [19]  907 	ld	a, -102 (ix)
+   0725 C6 28         [ 7]  908 	add	a, #0x28
+   0727 DD 77 C8      [19]  909 	ld	-56 (ix), a
+   072A DD 7E 9B      [19]  910 	ld	a, -101 (ix)
+   072D CE 00         [ 7]  911 	adc	a, #0x00
+   072F DD 77 C9      [19]  912 	ld	-55 (ix), a
+   0732 DD 6E C8      [19]  913 	ld	l, -56 (ix)
+   0735 DD 66 C9      [19]  914 	ld	h, -55 (ix)
+   0738 4E            [ 7]  915 	ld	c, (hl)
+   0739 23            [ 6]  916 	inc	hl
+   073A 46            [ 7]  917 	ld	b, (hl)
+   073B 23            [ 6]  918 	inc	hl
+   073C 5E            [ 7]  919 	ld	e, (hl)
+   073D 23            [ 6]  920 	inc	hl
+   073E 56            [ 7]  921 	ld	d, (hl)
+   073F 79            [ 4]  922 	ld	a, c
+   0740 DD 86 FA      [19]  923 	add	a, -6 (ix)
+   0743 DD 77 EA      [19]  924 	ld	-22 (ix), a
+   0746 78            [ 4]  925 	ld	a, b
+   0747 DD 8E FB      [19]  926 	adc	a, -5 (ix)
+   074A DD 77 EB      [19]  927 	ld	-21 (ix), a
+   074D 7B            [ 4]  928 	ld	a, e
+   074E DD 8E FC      [19]  929 	adc	a, -4 (ix)
+   0751 DD 77 EC      [19]  930 	ld	-20 (ix), a
+   0754 7A            [ 4]  931 	ld	a, d
+   0755 DD 8E FD      [19]  932 	adc	a, -3 (ix)
+   0758 DD 77 ED      [19]  933 	ld	-19 (ix), a
+   075B DD 5E C8      [19]  934 	ld	e, -56 (ix)
+   075E DD 56 C9      [19]  935 	ld	d, -55 (ix)
+   0761 21 90 00      [10]  936 	ld	hl, #0x0090
+   0764 39            [11]  937 	add	hl, sp
+   0765 01 04 00      [10]  938 	ld	bc, #0x0004
+   0768 ED B0         [21]  939 	ldir
+   076A DD 6E C4      [19]  940 	ld	l, -60 (ix)
+   076D DD 66 C5      [19]  941 	ld	h, -59 (ix)
+   0770 4E            [ 7]  942 	ld	c, (hl)
+   0771 23            [ 6]  943 	inc	hl
+   0772 46            [ 7]  944 	ld	b, (hl)
+   0773 23            [ 6]  945 	inc	hl
+   0774 5E            [ 7]  946 	ld	e, (hl)
+   0775 23            [ 6]  947 	inc	hl
+   0776 56            [ 7]  948 	ld	d, (hl)
+   0777 79            [ 4]  949 	ld	a, c
+   0778 DD AE EA      [19]  950 	xor	a, -22 (ix)
+   077B 4F            [ 4]  951 	ld	c, a
+   077C 78            [ 4]  952 	ld	a, b
+   077D DD AE EB      [19]  953 	xor	a, -21 (ix)
+   0780 47            [ 4]  954 	ld	b, a
+   0781 7B            [ 4]  955 	ld	a, e
+   0782 DD AE EC      [19]  956 	xor	a, -20 (ix)
+   0785 5F            [ 4]  957 	ld	e, a
+   0786 7A            [ 4]  958 	ld	a, d
+   0787 DD AE ED      [19]  959 	xor	a, -19 (ix)
+   078A 57            [ 4]  960 	ld	d, a
+   078B DD 6E C4      [19]  961 	ld	l, -60 (ix)
+   078E DD 66 C5      [19]  962 	ld	h, -59 (ix)
+   0791 71            [ 7]  963 	ld	(hl), c
+   0792 23            [ 6]  964 	inc	hl
+   0793 70            [ 7]  965 	ld	(hl), b
+   0794 23            [ 6]  966 	inc	hl
+   0795 73            [ 7]  967 	ld	(hl), e
+   0796 23            [ 6]  968 	inc	hl
+   0797 72            [ 7]  969 	ld	(hl), d
+   0798 DD 71 E3      [19]  970 	ld	-29 (ix), c
+   079B DD 70 E4      [19]  971 	ld	-28 (ix), b
+   079E DD 73 E5      [19]  972 	ld	-27 (ix), e
+   07A1 DD 36 E2 00   [19]  973 	ld	-30 (ix), #0x00
+   07A5 3E 04         [ 7]  974 	ld	a, #0x04
+   07A7                     975 00179$:
+   07A7 DD CB E3 26   [23]  976 	sla	-29 (ix)
+   07AB DD CB E4 16   [23]  977 	rl	-28 (ix)
+   07AF DD CB E5 16   [23]  978 	rl	-27 (ix)
+   07B3 3D            [ 4]  979 	dec	a
+   07B4 20 F1         [12]  980 	jr	NZ,00179$
+   07B6 21 00 00      [10]  981 	ld	hl, #0x0000
+   07B9 06 04         [ 7]  982 	ld	b, #0x04
+   07BB                     983 00181$:
+   07BB CB 3A         [ 8]  984 	srl	d
+   07BD CB 1B         [ 8]  985 	rr	e
+   07BF 10 FA         [13]  986 	djnz	00181$
+   07C1 DD 7E E2      [19]  987 	ld	a, -30 (ix)
+   07C4 B3            [ 4]  988 	or	a, e
+   07C5 DD 77 F2      [19]  989 	ld	-14 (ix), a
+   07C8 DD 7E E3      [19]  990 	ld	a, -29 (ix)
+   07CB B2            [ 4]  991 	or	a, d
+   07CC DD 77 F3      [19]  992 	ld	-13 (ix), a
+   07CF DD 7E E4      [19]  993 	ld	a, -28 (ix)
+   07D2 B5            [ 4]  994 	or	a, l
+   07D3 DD 77 F4      [19]  995 	ld	-12 (ix), a
+   07D6 DD 7E E5      [19]  996 	ld	a, -27 (ix)
+   07D9 B4            [ 4]  997 	or	a, h
+   07DA DD 77 F5      [19]  998 	ld	-11 (ix), a
+   07DD DD 5E C4      [19]  999 	ld	e, -60 (ix)
+   07E0 DD 56 C5      [19] 1000 	ld	d, -59 (ix)
+   07E3 21 98 00      [10] 1001 	ld	hl, #0x0098
+   07E6 39            [11] 1002 	add	hl, sp
+   07E7 01 04 00      [10] 1003 	ld	bc, #0x0004
+   07EA ED B0         [21] 1004 	ldir
+   07EC DD 7E E6      [19] 1005 	ld	a, -26 (ix)
+   07EF DD 86 F2      [19] 1006 	add	a, -14 (ix)
+   07F2 DD 77 CA      [19] 1007 	ld	-54 (ix), a
+   07F5 DD 7E E7      [19] 1008 	ld	a, -25 (ix)
+   07F8 DD 8E F3      [19] 1009 	adc	a, -13 (ix)
+   07FB DD 77 CB      [19] 1010 	ld	-53 (ix), a
+   07FE DD 7E E8      [19] 1011 	ld	a, -24 (ix)
+   0801 DD 8E F4      [19] 1012 	adc	a, -12 (ix)
+   0804 DD 77 CC      [19] 1013 	ld	-52 (ix), a
+   0807 DD 7E E9      [19] 1014 	ld	a, -23 (ix)
+   080A DD 8E F5      [19] 1015 	adc	a, -11 (ix)
+   080D DD 77 CD      [19] 1016 	ld	-51 (ix), a
+   0810 DD 5E C2      [19] 1017 	ld	e, -62 (ix)
+   0813 DD 56 C3      [19] 1018 	ld	d, -61 (ix)
+   0816 21 70 00      [10] 1019 	ld	hl, #0x0070
+   0819 39            [11] 1020 	add	hl, sp
+   081A 01 04 00      [10] 1021 	ld	bc, #0x0004
+   081D ED B0         [21] 1022 	ldir
+   081F DD 7E FA      [19] 1023 	ld	a, -6 (ix)
+   0822 DD AE CA      [19] 1024 	xor	a, -54 (ix)
+   0825 5F            [ 4] 1025 	ld	e, a
+   0826 DD 7E FB      [19] 1026 	ld	a, -5 (ix)
+   0829 DD AE CB      [19] 1027 	xor	a, -53 (ix)
+   082C 57            [ 4] 1028 	ld	d, a
+   082D DD 7E FC      [19] 1029 	ld	a, -4 (ix)
+   0830 DD AE CC      [19] 1030 	xor	a, -52 (ix)
+   0833 4F            [ 4] 1031 	ld	c, a
+   0834 DD 7E FD      [19] 1032 	ld	a, -3 (ix)
+   0837 DD AE CD      [19] 1033 	xor	a, -51 (ix)
+   083A 47            [ 4] 1034 	ld	b, a
+   083B DD 6E C6      [19] 1035 	ld	l, -58 (ix)
+   083E DD 66 C7      [19] 1036 	ld	h, -57 (ix)
+   0841 73            [ 7] 1037 	ld	(hl), e
+   0842 23            [ 6] 1038 	inc	hl
+   0843 72            [ 7] 1039 	ld	(hl), d
+   0844 23            [ 6] 1040 	inc	hl
+   0845 71            [ 7] 1041 	ld	(hl), c
+   0846 23            [ 6] 1042 	inc	hl
+   0847 70            [ 7] 1043 	ld	(hl), b
+   0848 DD 73 FB      [19] 1044 	ld	-5 (ix), e
+   084B DD 72 FC      [19] 1045 	ld	-4 (ix), d
+   084E DD 71 FD      [19] 1046 	ld	-3 (ix), c
+   0851 DD 36 FA 00   [19] 1047 	ld	-6 (ix), #0x00
+   0855 48            [ 4] 1048 	ld	c, b
+   0856 06 00         [ 7] 1049 	ld	b, #0x00
+   0858 11 00 00      [10] 1050 	ld	de, #0x0000
+   085B DD 7E FA      [19] 1051 	ld	a, -6 (ix)
+   085E B1            [ 4] 1052 	or	a, c
+   085F DD 77 CE      [19] 1053 	ld	-50 (ix), a
+   0862 DD 7E FB      [19] 1054 	ld	a, -5 (ix)
+   0865 B0            [ 4] 1055 	or	a, b
+   0866 DD 77 CF      [19] 1056 	ld	-49 (ix), a
+   0869 DD 7E FC      [19] 1057 	ld	a, -4 (ix)
+   086C B3            [ 4] 1058 	or	a, e
+   086D DD 77 D0      [19] 1059 	ld	-48 (ix), a
+   0870 DD 7E FD      [19] 1060 	ld	a, -3 (ix)
+   0873 B2            [ 4] 1061 	or	a, d
+   0874 DD 77 D1      [19] 1062 	ld	-47 (ix), a
+   0877 DD 5E C6      [19] 1063 	ld	e, -58 (ix)
+   087A DD 56 C7      [19] 1064 	ld	d, -57 (ix)
+   087D 21 74 00      [10] 1065 	ld	hl, #0x0074
+   0880 39            [11] 1066 	add	hl, sp
+   0881 01 04 00      [10] 1067 	ld	bc, #0x0004
+   0884 ED B0         [21] 1068 	ldir
+   0886 DD 7E EA      [19] 1069 	ld	a, -22 (ix)
+   0889 DD 86 CE      [19] 1070 	add	a, -50 (ix)
+   088C DD 77 FA      [19] 1071 	ld	-6 (ix), a
+   088F DD 7E EB      [19] 1072 	ld	a, -21 (ix)
+   0892 DD 8E CF      [19] 1073 	adc	a, -49 (ix)
+   0895 DD 77 FB      [19] 1074 	ld	-5 (ix), a
+   0898 DD 7E EC      [19] 1075 	ld	a, -20 (ix)
+   089B DD 8E D0      [19] 1076 	adc	a, -48 (ix)
+   089E DD 77 FC      [19] 1077 	ld	-4 (ix), a
+   08A1 DD 7E ED      [19] 1078 	ld	a, -19 (ix)
+   08A4 DD 8E D1      [19] 1079 	adc	a, -47 (ix)
+   08A7 DD 77 FD      [19] 1080 	ld	-3 (ix), a
+   08AA DD 5E C8      [19] 1081 	ld	e, -56 (ix)
+   08AD DD 56 C9      [19] 1082 	ld	d, -55 (ix)
+   08B0 21 A0 00      [10] 1083 	ld	hl, #0x00a0
+   08B3 39            [11] 1084 	add	hl, sp
+   08B4 01 04 00      [10] 1085 	ld	bc, #0x0004
+   08B7 ED B0         [21] 1086 	ldir
+   08B9 DD 7E F2      [19] 1087 	ld	a, -14 (ix)
+   08BC DD AE FA      [19] 1088 	xor	a, -6 (ix)
+   08BF 5F            [ 4] 1089 	ld	e, a
+   08C0 DD 7E F3      [19] 1090 	ld	a, -13 (ix)
+   08C3 DD AE FB      [19] 1091 	xor	a, -5 (ix)
+   08C6 57            [ 4] 1092 	ld	d, a
+   08C7 DD 7E F4      [19] 1093 	ld	a, -12 (ix)
+   08CA DD AE FC      [19] 1094 	xor	a, -4 (ix)
+   08CD 4F            [ 4] 1095 	ld	c, a
+   08CE DD 7E F5      [19] 1096 	ld	a, -11 (ix)
+   08D1 DD AE FD      [19] 1097 	xor	a, -3 (ix)
+   08D4 47            [ 4] 1098 	ld	b, a
+   08D5 DD 6E C4      [19] 1099 	ld	l, -60 (ix)
+   08D8 DD 66 C5      [19] 1100 	ld	h, -59 (ix)
+   08DB 73            [ 7] 1101 	ld	(hl), e
+   08DC 23            [ 6] 1102 	inc	hl
+   08DD 72            [ 7] 1103 	ld	(hl), d
+   08DE 23            [ 6] 1104 	inc	hl
+   08DF 71            [ 7] 1105 	ld	(hl), c
+   08E0 23            [ 6] 1106 	inc	hl
+   08E1 70            [ 7] 1107 	ld	(hl), b
+   08E2 DD 73 F2      [19] 1108 	ld	-14 (ix), e
+   08E5 DD 72 F3      [19] 1109 	ld	-13 (ix), d
+   08E8 DD 71 F4      [19] 1110 	ld	-12 (ix), c
+   08EB DD 70 F5      [19] 1111 	ld	-11 (ix), b
+   08EE 3E 07         [ 7] 1112 	ld	a, #0x07
+   08F0                    1113 00187$:
+   08F0 DD CB F2 26   [23] 1114 	sla	-14 (ix)
+   08F4 DD CB F3 16   [23] 1115 	rl	-13 (ix)
+   08F8 DD CB F4 16   [23] 1116 	rl	-12 (ix)
+   08FC DD CB F5 16   [23] 1117 	rl	-11 (ix)
+   0900 3D            [ 4] 1118 	dec	a
+   0901 20 ED         [12] 1119 	jr	NZ,00187$
+   0903 48            [ 4] 1120 	ld	c, b
+   0904 06 00         [ 7] 1121 	ld	b, #0x00
+   0906 11 00 00      [10] 1122 	ld	de, #0x0000
+   0909 CB 39         [ 8] 1123 	srl	c
+   090B DD 7E F2      [19] 1124 	ld	a, -14 (ix)
+   090E B1            [ 4] 1125 	or	a, c
+   090F DD 77 D2      [19] 1126 	ld	-46 (ix), a
+   0912 DD 7E F3      [19] 1127 	ld	a, -13 (ix)
+   0915 B0            [ 4] 1128 	or	a, b
+   0916 DD 77 D3      [19] 1129 	ld	-45 (ix), a
+   0919 DD 7E F4      [19] 1130 	ld	a, -12 (ix)
+   091C B3            [ 4] 1131 	or	a, e
+   091D DD 77 D4      [19] 1132 	ld	-44 (ix), a
+   0920 DD 7E F5      [19] 1133 	ld	a, -11 (ix)
+   0923 B2            [ 4] 1134 	or	a, d
+   0924 DD 77 D5      [19] 1135 	ld	-43 (ix), a
+   0927 DD 5E C4      [19] 1136 	ld	e, -60 (ix)
+   092A DD 56 C5      [19] 1137 	ld	d, -59 (ix)
+   092D 21 78 00      [10] 1138 	ld	hl, #0x0078
+   0930 39            [11] 1139 	add	hl, sp
+   0931 01 04 00      [10] 1140 	ld	bc, #0x0004
+   0934 ED B0         [21] 1141 	ldir
+                     0936  1142 	C$chacha20.c$26$3_0$38	= .
+                           1143 	.globl	C$chacha20.c$26$3_0$38
+                           1144 ;/work/source_code/chacha20.c:26: QR(x[3], x[7], x[11], x[15]); // column 3
+   0936 DD 7E 9A      [19] 1145 	ld	a, -102 (ix)
+   0939 C6 0C         [ 7] 1146 	add	a, #0x0c
+   093B DD 77 D6      [19] 1147 	ld	-42 (ix), a
+   093E DD 7E 9B      [19] 1148 	ld	a, -101 (ix)
+   0941 CE 00         [ 7] 1149 	adc	a, #0x00
+   0943 DD 77 D7      [19] 1150 	ld	-41 (ix), a
+   0946 DD 5E D6      [19] 1151 	ld	e, -42 (ix)
+   0949 DD 56 D7      [19] 1152 	ld	d, -41 (ix)
+   094C 21 98 00      [10] 1153 	ld	hl, #0x0098
+   094F 39            [11] 1154 	add	hl, sp
+   0950 EB            [ 4] 1155 	ex	de, hl
+   0951 01 04 00      [10] 1156 	ld	bc, #0x0004
+   0954 ED B0         [21] 1157 	ldir
+   0956 DD 7E 9A      [19] 1158 	ld	a, -102 (ix)
+   0959 C6 1C         [ 7] 1159 	add	a, #0x1c
+   095B DD 77 D8      [19] 1160 	ld	-40 (ix), a
+   095E DD 7E 9B      [19] 1161 	ld	a, -101 (ix)
+   0961 CE 00         [ 7] 1162 	adc	a, #0x00
+   0963 DD 77 D9      [19] 1163 	ld	-39 (ix), a
+   0966 DD 6E D8      [19] 1164 	ld	l, -40 (ix)
+   0969 DD 66 D9      [19] 1165 	ld	h, -39 (ix)
+   096C 4E            [ 7] 1166 	ld	c, (hl)
+   096D 23            [ 6] 1167 	inc	hl
+   096E 46            [ 7] 1168 	ld	b, (hl)
+   096F 23            [ 6] 1169 	inc	hl
+   0970 5E            [ 7] 1170 	ld	e, (hl)
+   0971 23            [ 6] 1171 	inc	hl
+   0972 56            [ 7] 1172 	ld	d, (hl)
+   0973 DD 7E F2      [19] 1173 	ld	a, -14 (ix)
+   0976 81            [ 4] 1174 	add	a, c
+   0977 DD 77 E2      [19] 1175 	ld	-30 (ix), a
+   097A DD 7E F3      [19] 1176 	ld	a, -13 (ix)
+   097D 88            [ 4] 1177 	adc	a, b
+   097E DD 77 E3      [19] 1178 	ld	-29 (ix), a
+   0981 DD 7E F4      [19] 1179 	ld	a, -12 (ix)
+   0984 8B            [ 4] 1180 	adc	a, e
+   0985 DD 77 E4      [19] 1181 	ld	-28 (ix), a
+   0988 DD 7E F5      [19] 1182 	ld	a, -11 (ix)
+   098B 8A            [ 4] 1183 	adc	a, d
+   098C DD 77 E5      [19] 1184 	ld	-27 (ix), a
+   098F DD 5E D6      [19] 1185 	ld	e, -42 (ix)
+   0992 DD 56 D7      [19] 1186 	ld	d, -41 (ix)
+   0995 21 88 00      [10] 1187 	ld	hl, #0x0088
+   0998 39            [11] 1188 	add	hl, sp
+   0999 01 04 00      [10] 1189 	ld	bc, #0x0004
+   099C ED B0         [21] 1190 	ldir
+   099E DD 7E 9A      [19] 1191 	ld	a, -102 (ix)
+   09A1 C6 3C         [ 7] 1192 	add	a, #0x3c
+   09A3 DD 77 DA      [19] 1193 	ld	-38 (ix), a
+   09A6 DD 7E 9B      [19] 1194 	ld	a, -101 (ix)
+   09A9 CE 00         [ 7] 1195 	adc	a, #0x00
+   09AB DD 77 DB      [19] 1196 	ld	-37 (ix), a
+   09AE DD 6E DA      [19] 1197 	ld	l, -38 (ix)
+   09B1 DD 66 DB      [19] 1198 	ld	h, -37 (ix)
+   09B4 5E            [ 7] 1199 	ld	e, (hl)
+   09B5 23            [ 6] 1200 	inc	hl
+   09B6 56            [ 7] 1201 	ld	d, (hl)
+   09B7 23            [ 6] 1202 	inc	hl
+   09B8 4E            [ 7] 1203 	ld	c, (hl)
+   09B9 23            [ 6] 1204 	inc	hl
+   09BA 46            [ 7] 1205 	ld	b, (hl)
+   09BB 7B            [ 4] 1206 	ld	a, e
+   09BC DD AE E2      [19] 1207 	xor	a, -30 (ix)
+   09BF 5F            [ 4] 1208 	ld	e, a
+   09C0 7A            [ 4] 1209 	ld	a, d
+   09C1 DD AE E3      [19] 1210 	xor	a, -29 (ix)
+   09C4 57            [ 4] 1211 	ld	d, a
+   09C5 79            [ 4] 1212 	ld	a, c
+   09C6 DD AE E4      [19] 1213 	xor	a, -28 (ix)
+   09C9 4F            [ 4] 1214 	ld	c, a
+   09CA 78            [ 4] 1215 	ld	a, b
+   09CB DD AE E5      [19] 1216 	xor	a, -27 (ix)
+   09CE 47            [ 4] 1217 	ld	b, a
+   09CF DD 6E DA      [19] 1218 	ld	l, -38 (ix)
+   09D2 DD 66 DB      [19] 1219 	ld	h, -37 (ix)
+   09D5 73            [ 7] 1220 	ld	(hl), e
+   09D6 23            [ 6] 1221 	inc	hl
+   09D7 72            [ 7] 1222 	ld	(hl), d
+   09D8 23            [ 6] 1223 	inc	hl
+   09D9 71            [ 7] 1224 	ld	(hl), c
+   09DA 23            [ 6] 1225 	inc	hl
+   09DB 70            [ 7] 1226 	ld	(hl), b
+   09DC DD 73 EC      [19] 1227 	ld	-20 (ix), e
+   09DF DD 72 ED      [19] 1228 	ld	-19 (ix), d
+   09E2 DD 36 EA 00   [19] 1229 	ld	-22 (ix), #0x00
+   09E6 DD 36 EB 00   [19] 1230 	ld	-21 (ix), #0x00
+   09EA 11 00 00      [10] 1231 	ld	de, #0x0000
+   09ED DD 7E EA      [19] 1232 	ld	a, -22 (ix)
+   09F0 B1            [ 4] 1233 	or	a, c
+   09F1 DD 77 F2      [19] 1234 	ld	-14 (ix), a
+   09F4 DD 7E EB      [19] 1235 	ld	a, -21 (ix)
+   09F7 B0            [ 4] 1236 	or	a, b
+   09F8 DD 77 F3      [19] 1237 	ld	-13 (ix), a
+   09FB DD 7E EC      [19] 1238 	ld	a, -20 (ix)
+   09FE B3            [ 4] 1239 	or	a, e
+   09FF DD 77 F4      [19] 1240 	ld	-12 (ix), a
+   0A02 DD 7E ED      [19] 1241 	ld	a, -19 (ix)
+   0A05 B2            [ 4] 1242 	or	a, d
+   0A06 DD 77 F5      [19] 1243 	ld	-11 (ix), a
+   0A09 DD 5E DA      [19] 1244 	ld	e, -38 (ix)
+   0A0C DD 56 DB      [19] 1245 	ld	d, -37 (ix)
+   0A0F 21 98 00      [10] 1246 	ld	hl, #0x0098
+   0A12 39            [11] 1247 	add	hl, sp
+   0A13 01 04 00      [10] 1248 	ld	bc, #0x0004
+   0A16 ED B0         [21] 1249 	ldir
+   0A18 DD 7E 9A      [19] 1250 	ld	a, -102 (ix)
+   0A1B C6 2C         [ 7] 1251 	add	a, #0x2c
+   0A1D DD 77 DC      [19] 1252 	ld	-36 (ix), a
+   0A20 DD 7E 9B      [19] 1253 	ld	a, -101 (ix)
+   0A23 CE 00         [ 7] 1254 	adc	a, #0x00
+   0A25 DD 77 DD      [19] 1255 	ld	-35 (ix), a
+   0A28 DD 6E DC      [19] 1256 	ld	l, -36 (ix)
+   0A2B DD 66 DD      [19] 1257 	ld	h, -35 (ix)
+   0A2E 4E            [ 7] 1258 	ld	c, (hl)
+   0A2F 23            [ 6] 1259 	inc	hl
+   0A30 46            [ 7] 1260 	ld	b, (hl)
+   0A31 23            [ 6] 1261 	inc	hl
+   0A32 5E            [ 7] 1262 	ld	e, (hl)
+   0A33 23            [ 6] 1263 	inc	hl
+   0A34 56            [ 7] 1264 	ld	d, (hl)
+   0A35 79            [ 4] 1265 	ld	a, c
+   0A36 DD 86 F2      [19] 1266 	add	a, -14 (ix)
+   0A39 DD 77 E6      [19] 1267 	ld	-26 (ix), a
+   0A3C 78            [ 4] 1268 	ld	a, b
+   0A3D DD 8E F3      [19] 1269 	adc	a, -13 (ix)
+   0A40 DD 77 E7      [19] 1270 	ld	-25 (ix), a
+   0A43 7B            [ 4] 1271 	ld	a, e
+   0A44 DD 8E F4      [19] 1272 	adc	a, -12 (ix)
+   0A47 DD 77 E8      [19] 1273 	ld	-24 (ix), a
+   0A4A 7A            [ 4] 1274 	ld	a, d
+   0A4B DD 8E F5      [19] 1275 	adc	a, -11 (ix)
+   0A4E DD 77 E9      [19] 1276 	ld	-23 (ix), a
+   0A51 DD 5E DC      [19] 1277 	ld	e, -36 (ix)
+   0A54 DD 56 DD      [19] 1278 	ld	d, -35 (ix)
+   0A57 21 8C 00      [10] 1279 	ld	hl, #0x008c
+   0A5A 39            [11] 1280 	add	hl, sp
+   0A5B 01 04 00      [10] 1281 	ld	bc, #0x0004
+   0A5E ED B0         [21] 1282 	ldir
+   0A60 DD 6E D8      [19] 1283 	ld	l, -40 (ix)
+   0A63 DD 66 D9      [19] 1284 	ld	h, -39 (ix)
+   0A66 4E            [ 7] 1285 	ld	c, (hl)
+   0A67 23            [ 6] 1286 	inc	hl
+   0A68 46            [ 7] 1287 	ld	b, (hl)
+   0A69 23            [ 6] 1288 	inc	hl
+   0A6A 5E            [ 7] 1289 	ld	e, (hl)
+   0A6B 23            [ 6] 1290 	inc	hl
+   0A6C 56            [ 7] 1291 	ld	d, (hl)
+   0A6D 79            [ 4] 1292 	ld	a, c
+   0A6E DD AE E6      [19] 1293 	xor	a, -26 (ix)
+   0A71 4F            [ 4] 1294 	ld	c, a
+   0A72 78            [ 4] 1295 	ld	a, b
+   0A73 DD AE E7      [19] 1296 	xor	a, -25 (ix)
+   0A76 47            [ 4] 1297 	ld	b, a
+   0A77 7B            [ 4] 1298 	ld	a, e
+   0A78 DD AE E8      [19] 1299 	xor	a, -24 (ix)
+   0A7B 5F            [ 4] 1300 	ld	e, a
+   0A7C 7A            [ 4] 1301 	ld	a, d
+   0A7D DD AE E9      [19] 1302 	xor	a, -23 (ix)
+   0A80 57            [ 4] 1303 	ld	d, a
+   0A81 DD 6E D8      [19] 1304 	ld	l, -40 (ix)
+   0A84 DD 66 D9      [19] 1305 	ld	h, -39 (ix)
+   0A87 71            [ 7] 1306 	ld	(hl), c
+   0A88 23            [ 6] 1307 	inc	hl
+   0A89 70            [ 7] 1308 	ld	(hl), b
+   0A8A 23            [ 6] 1309 	inc	hl
+   0A8B 73            [ 7] 1310 	ld	(hl), e
+   0A8C 23            [ 6] 1311 	inc	hl
+   0A8D 72            [ 7] 1312 	ld	(hl), d
+   0A8E DD 71 DF      [19] 1313 	ld	-33 (ix), c
+   0A91 DD 70 E0      [19] 1314 	ld	-32 (ix), b
+   0A94 DD 73 E1      [19] 1315 	ld	-31 (ix), e
+   0A97 DD 36 DE 00   [19] 1316 	ld	-34 (ix), #0x00
+   0A9B 3E 04         [ 7] 1317 	ld	a, #0x04
+   0A9D                    1318 00195$:
+   0A9D DD CB DF 26   [23] 1319 	sla	-33 (ix)
+   0AA1 DD CB E0 16   [23] 1320 	rl	-32 (ix)
+   0AA5 DD CB E1 16   [23] 1321 	rl	-31 (ix)
+   0AA9 3D            [ 4] 1322 	dec	a
+   0AAA 20 F1         [12] 1323 	jr	NZ,00195$
+   0AAC 21 00 00      [10] 1324 	ld	hl, #0x0000
+   0AAF 06 04         [ 7] 1325 	ld	b, #0x04
+   0AB1                    1326 00197$:
+   0AB1 CB 3A         [ 8] 1327 	srl	d
+   0AB3 CB 1B         [ 8] 1328 	rr	e
+   0AB5 10 FA         [13] 1329 	djnz	00197$
+   0AB7 DD 7E DE      [19] 1330 	ld	a, -34 (ix)
+   0ABA B3            [ 4] 1331 	or	a, e
+   0ABB DD 77 EA      [19] 1332 	ld	-22 (ix), a
+   0ABE DD 7E DF      [19] 1333 	ld	a, -33 (ix)
+   0AC1 B2            [ 4] 1334 	or	a, d
+   0AC2 DD 77 EB      [19] 1335 	ld	-21 (ix), a
+   0AC5 DD 7E E0      [19] 1336 	ld	a, -32 (ix)
+   0AC8 B5            [ 4] 1337 	or	a, l
+   0AC9 DD 77 EC      [19] 1338 	ld	-20 (ix), a
+   0ACC DD 7E E1      [19] 1339 	ld	a, -31 (ix)
+   0ACF B4            [ 4] 1340 	or	a, h
+   0AD0 DD 77 ED      [19] 1341 	ld	-19 (ix), a
+   0AD3 DD 5E D8      [19] 1342 	ld	e, -40 (ix)
+   0AD6 DD 56 D9      [19] 1343 	ld	d, -39 (ix)
+   0AD9 21 90 00      [10] 1344 	ld	hl, #0x0090
+   0ADC 39            [11] 1345 	add	hl, sp
+   0ADD 01 04 00      [10] 1346 	ld	bc, #0x0004
+   0AE0 ED B0         [21] 1347 	ldir
+   0AE2 DD 7E E2      [19] 1348 	ld	a, -30 (ix)
+   0AE5 DD 86 EA      [19] 1349 	add	a, -22 (ix)
+   0AE8 DD 77 DE      [19] 1350 	ld	-34 (ix), a
+   0AEB DD 7E E3      [19] 1351 	ld	a, -29 (ix)
+   0AEE DD 8E EB      [19] 1352 	adc	a, -21 (ix)
+   0AF1 DD 77 DF      [19] 1353 	ld	-33 (ix), a
+   0AF4 DD 7E E4      [19] 1354 	ld	a, -28 (ix)
+   0AF7 DD 8E EC      [19] 1355 	adc	a, -20 (ix)
+   0AFA DD 77 E0      [19] 1356 	ld	-32 (ix), a
+   0AFD DD 7E E5      [19] 1357 	ld	a, -27 (ix)
+   0B00 DD 8E ED      [19] 1358 	adc	a, -19 (ix)
+   0B03 DD 77 E1      [19] 1359 	ld	-31 (ix), a
+   0B06 DD 5E D6      [19] 1360 	ld	e, -42 (ix)
+   0B09 DD 56 D7      [19] 1361 	ld	d, -41 (ix)
+   0B0C 21 84 00      [10] 1362 	ld	hl, #0x0084
+   0B0F 39            [11] 1363 	add	hl, sp
+   0B10 01 04 00      [10] 1364 	ld	bc, #0x0004
+   0B13 ED B0         [21] 1365 	ldir
+   0B15 DD 7E F2      [19] 1366 	ld	a, -14 (ix)
+   0B18 DD AE DE      [19] 1367 	xor	a, -34 (ix)
+   0B1B 5F            [ 4] 1368 	ld	e, a
+   0B1C DD 7E F3      [19] 1369 	ld	a, -13 (ix)
+   0B1F DD AE DF      [19] 1370 	xor	a, -33 (ix)
+   0B22 57            [ 4] 1371 	ld	d, a
+   0B23 DD 7E F4      [19] 1372 	ld	a, -12 (ix)
+   0B26 DD AE E0      [19] 1373 	xor	a, -32 (ix)
+   0B29 4F            [ 4] 1374 	ld	c, a
+   0B2A DD 7E F5      [19] 1375 	ld	a, -11 (ix)
+   0B2D DD AE E1      [19] 1376 	xor	a, -31 (ix)
+   0B30 47            [ 4] 1377 	ld	b, a
+   0B31 DD 6E DA      [19] 1378 	ld	l, -38 (ix)
+   0B34 DD 66 DB      [19] 1379 	ld	h, -37 (ix)
+   0B37 73            [ 7] 1380 	ld	(hl), e
+   0B38 23            [ 6] 1381 	inc	hl
+   0B39 72            [ 7] 1382 	ld	(hl), d
+   0B3A 23            [ 6] 1383 	inc	hl
+   0B3B 71            [ 7] 1384 	ld	(hl), c
+   0B3C 23            [ 6] 1385 	inc	hl
+   0B3D 70            [ 7] 1386 	ld	(hl), b
+   0B3E DD 73 E3      [19] 1387 	ld	-29 (ix), e
+   0B41 DD 72 E4      [19] 1388 	ld	-28 (ix), d
+   0B44 DD 71 E5      [19] 1389 	ld	-27 (ix), c
+   0B47 DD 36 E2 00   [19] 1390 	ld	-30 (ix), #0x00
+   0B4B 48            [ 4] 1391 	ld	c, b
+   0B4C 06 00         [ 7] 1392 	ld	b, #0x00
+   0B4E 11 00 00      [10] 1393 	ld	de, #0x0000
+   0B51 DD 7E E2      [19] 1394 	ld	a, -30 (ix)
+   0B54 B1            [ 4] 1395 	or	a, c
+   0B55 DD 77 F2      [19] 1396 	ld	-14 (ix), a
+   0B58 DD 7E E3      [19] 1397 	ld	a, -29 (ix)
+   0B5B B0            [ 4] 1398 	or	a, b
+   0B5C DD 77 F3      [19] 1399 	ld	-13 (ix), a
+   0B5F DD 7E E4      [19] 1400 	ld	a, -28 (ix)
+   0B62 B3            [ 4] 1401 	or	a, e
+   0B63 DD 77 F4      [19] 1402 	ld	-12 (ix), a
+   0B66 DD 7E E5      [19] 1403 	ld	a, -27 (ix)
+   0B69 B2            [ 4] 1404 	or	a, d
+   0B6A DD 77 F5      [19] 1405 	ld	-11 (ix), a
+   0B6D DD 5E DA      [19] 1406 	ld	e, -38 (ix)
+   0B70 DD 56 DB      [19] 1407 	ld	d, -37 (ix)
+   0B73 21 98 00      [10] 1408 	ld	hl, #0x0098
+   0B76 39            [11] 1409 	add	hl, sp
+   0B77 01 04 00      [10] 1410 	ld	bc, #0x0004
+   0B7A ED B0         [21] 1411 	ldir
+   0B7C DD 7E E6      [19] 1412 	ld	a, -26 (ix)
+   0B7F DD 86 F2      [19] 1413 	add	a, -14 (ix)
+   0B82 DD 77 E2      [19] 1414 	ld	-30 (ix), a
+   0B85 DD 7E E7      [19] 1415 	ld	a, -25 (ix)
+   0B88 DD 8E F3      [19] 1416 	adc	a, -13 (ix)
+   0B8B DD 77 E3      [19] 1417 	ld	-29 (ix), a
+   0B8E DD 7E E8      [19] 1418 	ld	a, -24 (ix)
+   0B91 DD 8E F4      [19] 1419 	adc	a, -12 (ix)
+   0B94 DD 77 E4      [19] 1420 	ld	-28 (ix), a
+   0B97 DD 7E E9      [19] 1421 	ld	a, -23 (ix)
+   0B9A DD 8E F5      [19] 1422 	adc	a, -11 (ix)
+   0B9D DD 77 E5      [19] 1423 	ld	-27 (ix), a
+   0BA0 DD 5E DC      [19] 1424 	ld	e, -36 (ix)
+   0BA3 DD 56 DD      [19] 1425 	ld	d, -35 (ix)
+   0BA6 21 88 00      [10] 1426 	ld	hl, #0x0088
+   0BA9 39            [11] 1427 	add	hl, sp
+   0BAA 01 04 00      [10] 1428 	ld	bc, #0x0004
+   0BAD ED B0         [21] 1429 	ldir
+   0BAF DD 7E EA      [19] 1430 	ld	a, -22 (ix)
+   0BB2 DD AE E2      [19] 1431 	xor	a, -30 (ix)
+   0BB5 5F            [ 4] 1432 	ld	e, a
+   0BB6 DD 7E EB      [19] 1433 	ld	a, -21 (ix)
+   0BB9 DD AE E3      [19] 1434 	xor	a, -29 (ix)
+   0BBC 57            [ 4] 1435 	ld	d, a
+   0BBD DD 7E EC      [19] 1436 	ld	a, -20 (ix)
+   0BC0 DD AE E4      [19] 1437 	xor	a, -28 (ix)
+   0BC3 4F            [ 4] 1438 	ld	c, a
+   0BC4 DD 7E ED      [19] 1439 	ld	a, -19 (ix)
+   0BC7 DD AE E5      [19] 1440 	xor	a, -27 (ix)
+   0BCA 47            [ 4] 1441 	ld	b, a
+   0BCB DD 6E D8      [19] 1442 	ld	l, -40 (ix)
+   0BCE DD 66 D9      [19] 1443 	ld	h, -39 (ix)
+   0BD1 73            [ 7] 1444 	ld	(hl), e
+   0BD2 23            [ 6] 1445 	inc	hl
+   0BD3 72            [ 7] 1446 	ld	(hl), d
+   0BD4 23            [ 6] 1447 	inc	hl
+   0BD5 71            [ 7] 1448 	ld	(hl), c
+   0BD6 23            [ 6] 1449 	inc	hl
+   0BD7 70            [ 7] 1450 	ld	(hl), b
+   0BD8 DD 73 EA      [19] 1451 	ld	-22 (ix), e
+   0BDB DD 72 EB      [19] 1452 	ld	-21 (ix), d
+   0BDE DD 71 EC      [19] 1453 	ld	-20 (ix), c
+   0BE1 DD 70 ED      [19] 1454 	ld	-19 (ix), b
+   0BE4 3E 07         [ 7] 1455 	ld	a, #0x07
+   0BE6                    1456 00203$:
+   0BE6 DD CB EA 26   [23] 1457 	sla	-22 (ix)
+   0BEA DD CB EB 16   [23] 1458 	rl	-21 (ix)
+   0BEE DD CB EC 16   [23] 1459 	rl	-20 (ix)
+   0BF2 DD CB ED 16   [23] 1460 	rl	-19 (ix)
+   0BF6 3D            [ 4] 1461 	dec	a
+   0BF7 20 ED         [12] 1462 	jr	NZ,00203$
+   0BF9 48            [ 4] 1463 	ld	c, b
+   0BFA 06 00         [ 7] 1464 	ld	b, #0x00
+   0BFC 11 00 00      [10] 1465 	ld	de, #0x0000
+   0BFF CB 39         [ 8] 1466 	srl	c
+   0C01 DD 7E EA      [19] 1467 	ld	a, -22 (ix)
+   0C04 B1            [ 4] 1468 	or	a, c
+   0C05 DD 77 E6      [19] 1469 	ld	-26 (ix), a
+   0C08 DD 7E EB      [19] 1470 	ld	a, -21 (ix)
+   0C0B B0            [ 4] 1471 	or	a, b
+   0C0C DD 77 E7      [19] 1472 	ld	-25 (ix), a
+   0C0F DD 7E EC      [19] 1473 	ld	a, -20 (ix)
+   0C12 B3            [ 4] 1474 	or	a, e
+   0C13 DD 77 E8      [19] 1475 	ld	-24 (ix), a
+   0C16 DD 7E ED      [19] 1476 	ld	a, -19 (ix)
+   0C19 B2            [ 4] 1477 	or	a, d
+   0C1A DD 77 E9      [19] 1478 	ld	-23 (ix), a
+   0C1D DD 5E D8      [19] 1479 	ld	e, -40 (ix)
+   0C20 DD 56 D9      [19] 1480 	ld	d, -39 (ix)
+   0C23 21 8C 00      [10] 1481 	ld	hl, #0x008c
+   0C26 39            [11] 1482 	add	hl, sp
+   0C27 01 04 00      [10] 1483 	ld	bc, #0x0004
+   0C2A ED B0         [21] 1484 	ldir
+                     0C2C  1485 	C$chacha20.c$28$3_0$38	= .
+                           1486 	.globl	C$chacha20.c$28$3_0$38
+                           1487 ;/work/source_code/chacha20.c:28: QR(x[0], x[5], x[10], x[15]); // diagonal 1 (main diagonal)
+   0C2C DD 7E EE      [19] 1488 	ld	a, -18 (ix)
+   0C2F DD 86 F6      [19] 1489 	add	a, -10 (ix)
+   0C32 DD 77 EA      [19] 1490 	ld	-22 (ix), a
+   0C35 DD 7E EF      [19] 1491 	ld	a, -17 (ix)
+   0C38 DD 8E F7      [19] 1492 	adc	a, -9 (ix)
+   0C3B DD 77 EB      [19] 1493 	ld	-21 (ix), a
+   0C3E DD 7E F0      [19] 1494 	ld	a, -16 (ix)
+   0C41 DD 8E F8      [19] 1495 	adc	a, -8 (ix)
+   0C44 DD 77 EC      [19] 1496 	ld	-20 (ix), a
+   0C47 DD 7E F1      [19] 1497 	ld	a, -15 (ix)
+   0C4A DD 8E F9      [19] 1498 	adc	a, -7 (ix)
+   0C4D DD 77 ED      [19] 1499 	ld	-19 (ix), a
+   0C50 DD 5E 9A      [19] 1500 	ld	e, -102 (ix)
+   0C53 DD 56 9B      [19] 1501 	ld	d, -101 (ix)
+   0C56 21 90 00      [10] 1502 	ld	hl, #0x0090
+   0C59 39            [11] 1503 	add	hl, sp
+   0C5A 01 04 00      [10] 1504 	ld	bc, #0x0004
+   0C5D ED B0         [21] 1505 	ldir
+   0C5F DD 7E F2      [19] 1506 	ld	a, -14 (ix)
+   0C62 DD AE EA      [19] 1507 	xor	a, -22 (ix)
+   0C65 5F            [ 4] 1508 	ld	e, a
+   0C66 DD 7E F3      [19] 1509 	ld	a, -13 (ix)
+   0C69 DD AE EB      [19] 1510 	xor	a, -21 (ix)
+   0C6C 57            [ 4] 1511 	ld	d, a
+   0C6D DD 7E F4      [19] 1512 	ld	a, -12 (ix)
+   0C70 DD AE EC      [19] 1513 	xor	a, -20 (ix)
+   0C73 4F            [ 4] 1514 	ld	c, a
+   0C74 DD 7E F5      [19] 1515 	ld	a, -11 (ix)
+   0C77 DD AE ED      [19] 1516 	xor	a, -19 (ix)
+   0C7A 47            [ 4] 1517 	ld	b, a
+   0C7B DD 6E DA      [19] 1518 	ld	l, -38 (ix)
+   0C7E DD 66 DB      [19] 1519 	ld	h, -37 (ix)
+   0C81 73            [ 7] 1520 	ld	(hl), e
+   0C82 23            [ 6] 1521 	inc	hl
+   0C83 72            [ 7] 1522 	ld	(hl), d
+   0C84 23            [ 6] 1523 	inc	hl
+   0C85 71            [ 7] 1524 	ld	(hl), c
+   0C86 23            [ 6] 1525 	inc	hl
+   0C87 70            [ 7] 1526 	ld	(hl), b
+   0C88 DD 73 F4      [19] 1527 	ld	-12 (ix), e
+   0C8B DD 72 F5      [19] 1528 	ld	-11 (ix), d
+   0C8E DD 36 F2 00   [19] 1529 	ld	-14 (ix), #0x00
+   0C92 DD 36 F3 00   [19] 1530 	ld	-13 (ix), #0x00
+   0C96 11 00 00      [10] 1531 	ld	de, #0x0000
+   0C99 DD 7E F2      [19] 1532 	ld	a, -14 (ix)
+   0C9C B1            [ 4] 1533 	or	a, c
+   0C9D DD 77 EE      [19] 1534 	ld	-18 (ix), a
+   0CA0 DD 7E F3      [19] 1535 	ld	a, -13 (ix)
+   0CA3 B0            [ 4] 1536 	or	a, b
+   0CA4 DD 77 EF      [19] 1537 	ld	-17 (ix), a
+   0CA7 DD 7E F4      [19] 1538 	ld	a, -12 (ix)
+   0CAA B3            [ 4] 1539 	or	a, e
+   0CAB DD 77 F0      [19] 1540 	ld	-16 (ix), a
+   0CAE DD 7E F5      [19] 1541 	ld	a, -11 (ix)
+   0CB1 B2            [ 4] 1542 	or	a, d
+   0CB2 DD 77 F1      [19] 1543 	ld	-15 (ix), a
+   0CB5 DD 5E DA      [19] 1544 	ld	e, -38 (ix)
+   0CB8 DD 56 DB      [19] 1545 	ld	d, -37 (ix)
+   0CBB 21 94 00      [10] 1546 	ld	hl, #0x0094
+   0CBE 39            [11] 1547 	add	hl, sp
+   0CBF 01 04 00      [10] 1548 	ld	bc, #0x0004
+   0CC2 ED B0         [21] 1549 	ldir
+   0CC4 DD 7E FA      [19] 1550 	ld	a, -6 (ix)
+   0CC7 DD 86 EE      [19] 1551 	add	a, -18 (ix)
+   0CCA DD 77 F2      [19] 1552 	ld	-14 (ix), a
+   0CCD DD 7E FB      [19] 1553 	ld	a, -5 (ix)
+   0CD0 DD 8E EF      [19] 1554 	adc	a, -17 (ix)
+   0CD3 DD 77 F3      [19] 1555 	ld	-13 (ix), a
+   0CD6 DD 7E FC      [19] 1556 	ld	a, -4 (ix)
+   0CD9 DD 8E F0      [19] 1557 	adc	a, -16 (ix)
+   0CDC DD 77 F4      [19] 1558 	ld	-12 (ix), a
+   0CDF DD 7E FD      [19] 1559 	ld	a, -3 (ix)
+   0CE2 DD 8E F1      [19] 1560 	adc	a, -15 (ix)
+   0CE5 DD 77 F5      [19] 1561 	ld	-11 (ix), a
+   0CE8 DD 5E C8      [19] 1562 	ld	e, -56 (ix)
+   0CEB DD 56 C9      [19] 1563 	ld	d, -55 (ix)
+   0CEE 21 98 00      [10] 1564 	ld	hl, #0x0098
+   0CF1 39            [11] 1565 	add	hl, sp
+   0CF2 01 04 00      [10] 1566 	ld	bc, #0x0004
+   0CF5 ED B0         [21] 1567 	ldir
+   0CF7 DD 7E F6      [19] 1568 	ld	a, -10 (ix)
+   0CFA DD AE F2      [19] 1569 	xor	a, -14 (ix)
+   0CFD 4F            [ 4] 1570 	ld	c, a
+   0CFE DD 7E F7      [19] 1571 	ld	a, -9 (ix)
+   0D01 DD AE F3      [19] 1572 	xor	a, -13 (ix)
+   0D04 47            [ 4] 1573 	ld	b, a
+   0D05 DD 7E F8      [19] 1574 	ld	a, -8 (ix)
+   0D08 DD AE F4      [19] 1575 	xor	a, -12 (ix)
+   0D0B 5F            [ 4] 1576 	ld	e, a
+   0D0C DD 7E F9      [19] 1577 	ld	a, -7 (ix)
+   0D0F DD AE F5      [19] 1578 	xor	a, -11 (ix)
+   0D12 57            [ 4] 1579 	ld	d, a
+   0D13 DD 6E B0      [19] 1580 	ld	l, -80 (ix)
+   0D16 DD 66 B1      [19] 1581 	ld	h, -79 (ix)
+   0D19 71            [ 7] 1582 	ld	(hl), c
+   0D1A 23            [ 6] 1583 	inc	hl
+   0D1B 70            [ 7] 1584 	ld	(hl), b
+   0D1C 23            [ 6] 1585 	inc	hl
+   0D1D 73            [ 7] 1586 	ld	(hl), e
+   0D1E 23            [ 6] 1587 	inc	hl
+   0D1F 72            [ 7] 1588 	ld	(hl), d
+   0D20 DD 71 F7      [19] 1589 	ld	-9 (ix), c
+   0D23 DD 70 F8      [19] 1590 	ld	-8 (ix), b
+   0D26 DD 73 F9      [19] 1591 	ld	-7 (ix), e
+   0D29 DD 36 F6 00   [19] 1592 	ld	-10 (ix), #0x00
+   0D2D 3E 04         [ 7] 1593 	ld	a, #0x04
+   0D2F                    1594 00211$:
+   0D2F DD CB F7 26   [23] 1595 	sla	-9 (ix)
+   0D33 DD CB F8 16   [23] 1596 	rl	-8 (ix)
+   0D37 DD CB F9 16   [23] 1597 	rl	-7 (ix)
+   0D3B 3D            [ 4] 1598 	dec	a
+   0D3C 20 F1         [12] 1599 	jr	NZ,00211$
+   0D3E 21 00 00      [10] 1600 	ld	hl, #0x0000
+   0D41 06 04         [ 7] 1601 	ld	b, #0x04
+   0D43                    1602 00213$:
+   0D43 CB 3A         [ 8] 1603 	srl	d
+   0D45 CB 1B         [ 8] 1604 	rr	e
+   0D47 10 FA         [13] 1605 	djnz	00213$
+   0D49 DD 7E F6      [19] 1606 	ld	a, -10 (ix)
+   0D4C B3            [ 4] 1607 	or	a, e
+   0D4D DD 77 FA      [19] 1608 	ld	-6 (ix), a
+   0D50 DD 7E F7      [19] 1609 	ld	a, -9 (ix)
+   0D53 B2            [ 4] 1610 	or	a, d
+   0D54 DD 77 FB      [19] 1611 	ld	-5 (ix), a
+   0D57 DD 7E F8      [19] 1612 	ld	a, -8 (ix)
+   0D5A B5            [ 4] 1613 	or	a, l
+   0D5B DD 77 FC      [19] 1614 	ld	-4 (ix), a
+   0D5E DD 7E F9      [19] 1615 	ld	a, -7 (ix)
+   0D61 B4            [ 4] 1616 	or	a, h
+   0D62 DD 77 FD      [19] 1617 	ld	-3 (ix), a
+   0D65 DD 5E B0      [19] 1618 	ld	e, -80 (ix)
+   0D68 DD 56 B1      [19] 1619 	ld	d, -79 (ix)
+   0D6B 21 A0 00      [10] 1620 	ld	hl, #0x00a0
+   0D6E 39            [11] 1621 	add	hl, sp
+   0D6F 01 04 00      [10] 1622 	ld	bc, #0x0004
+   0D72 ED B0         [21] 1623 	ldir
+   0D74 DD 7E EA      [19] 1624 	ld	a, -22 (ix)
+   0D77 DD 86 FA      [19] 1625 	add	a, -6 (ix)
+   0D7A 4F            [ 4] 1626 	ld	c, a
+   0D7B DD 7E EB      [19] 1627 	ld	a, -21 (ix)
+   0D7E DD 8E FB      [19] 1628 	adc	a, -5 (ix)
+   0D81 47            [ 4] 1629 	ld	b, a
+   0D82 DD 7E EC      [19] 1630 	ld	a, -20 (ix)
+   0D85 DD 8E FC      [19] 1631 	adc	a, -4 (ix)
+   0D88 5F            [ 4] 1632 	ld	e, a
+   0D89 DD 7E ED      [19] 1633 	ld	a, -19 (ix)
+   0D8C DD 8E FD      [19] 1634 	adc	a, -3 (ix)
+   0D8F 57            [ 4] 1635 	ld	d, a
+   0D90 DD 6E 9A      [19] 1636 	ld	l, -102 (ix)
+   0D93 DD 66 9B      [19] 1637 	ld	h, -101 (ix)
+   0D96 71            [ 7] 1638 	ld	(hl), c
+   0D97 23            [ 6] 1639 	inc	hl
+   0D98 70            [ 7] 1640 	ld	(hl), b
+   0D99 23            [ 6] 1641 	inc	hl
+   0D9A 73            [ 7] 1642 	ld	(hl), e
+   0D9B 23            [ 6] 1643 	inc	hl
+   0D9C 72            [ 7] 1644 	ld	(hl), d
+   0D9D 79            [ 4] 1645 	ld	a, c
+   0D9E DD AE EE      [19] 1646 	xor	a, -18 (ix)
+   0DA1 4F            [ 4] 1647 	ld	c, a
+   0DA2 78            [ 4] 1648 	ld	a, b
+   0DA3 DD AE EF      [19] 1649 	xor	a, -17 (ix)
+   0DA6 47            [ 4] 1650 	ld	b, a
+   0DA7 7B            [ 4] 1651 	ld	a, e
+   0DA8 DD AE F0      [19] 1652 	xor	a, -16 (ix)
+   0DAB 5F            [ 4] 1653 	ld	e, a
+   0DAC 7A            [ 4] 1654 	ld	a, d
+   0DAD DD AE F1      [19] 1655 	xor	a, -15 (ix)
+   0DB0 57            [ 4] 1656 	ld	d, a
+   0DB1 DD 6E DA      [19] 1657 	ld	l, -38 (ix)
+   0DB4 DD 66 DB      [19] 1658 	ld	h, -37 (ix)
+   0DB7 71            [ 7] 1659 	ld	(hl), c
+   0DB8 23            [ 6] 1660 	inc	hl
+   0DB9 70            [ 7] 1661 	ld	(hl), b
+   0DBA 23            [ 6] 1662 	inc	hl
+   0DBB 73            [ 7] 1663 	ld	(hl), e
+   0DBC 23            [ 6] 1664 	inc	hl
+   0DBD 72            [ 7] 1665 	ld	(hl), d
+   0DBE DD 71 F7      [19] 1666 	ld	-9 (ix), c
+   0DC1 DD 70 F8      [19] 1667 	ld	-8 (ix), b
+   0DC4 DD 73 F9      [19] 1668 	ld	-7 (ix), e
+   0DC7 DD 36 F6 00   [19] 1669 	ld	-10 (ix), #0x00
+   0DCB 4A            [ 4] 1670 	ld	c, d
+   0DCC 06 00         [ 7] 1671 	ld	b, #0x00
+   0DCE 21 00 00      [10] 1672 	ld	hl, #0x0000
+   0DD1 DD 7E F6      [19] 1673 	ld	a, -10 (ix)
+   0DD4 B1            [ 4] 1674 	or	a, c
+   0DD5 5F            [ 4] 1675 	ld	e, a
+   0DD6 DD 7E F7      [19] 1676 	ld	a, -9 (ix)
+   0DD9 B0            [ 4] 1677 	or	a, b
+   0DDA 57            [ 4] 1678 	ld	d, a
+   0DDB DD 7E F8      [19] 1679 	ld	a, -8 (ix)
+   0DDE B5            [ 4] 1680 	or	a, l
+   0DDF 4F            [ 4] 1681 	ld	c, a
+   0DE0 DD 7E F9      [19] 1682 	ld	a, -7 (ix)
+   0DE3 B4            [ 4] 1683 	or	a, h
+   0DE4 47            [ 4] 1684 	ld	b, a
+   0DE5 DD 6E DA      [19] 1685 	ld	l, -38 (ix)
+   0DE8 DD 66 DB      [19] 1686 	ld	h, -37 (ix)
+   0DEB 73            [ 7] 1687 	ld	(hl), e
+   0DEC 23            [ 6] 1688 	inc	hl
+   0DED 72            [ 7] 1689 	ld	(hl), d
+   0DEE 23            [ 6] 1690 	inc	hl
+   0DEF 71            [ 7] 1691 	ld	(hl), c
+   0DF0 23            [ 6] 1692 	inc	hl
+   0DF1 70            [ 7] 1693 	ld	(hl), b
+   0DF2 DD 7E F2      [19] 1694 	ld	a, -14 (ix)
+   0DF5 83            [ 4] 1695 	add	a, e
+   0DF6 5F            [ 4] 1696 	ld	e, a
+   0DF7 DD 7E F3      [19] 1697 	ld	a, -13 (ix)
+   0DFA 8A            [ 4] 1698 	adc	a, d
+   0DFB 57            [ 4] 1699 	ld	d, a
+   0DFC DD 7E F4      [19] 1700 	ld	a, -12 (ix)
+   0DFF 89            [ 4] 1701 	adc	a, c
+   0E00 4F            [ 4] 1702 	ld	c, a
+   0E01 DD 7E F5      [19] 1703 	ld	a, -11 (ix)
+   0E04 88            [ 4] 1704 	adc	a, b
+   0E05 47            [ 4] 1705 	ld	b, a
+   0E06 DD 6E C8      [19] 1706 	ld	l, -56 (ix)
+   0E09 DD 66 C9      [19] 1707 	ld	h, -55 (ix)
+   0E0C 73            [ 7] 1708 	ld	(hl), e
+   0E0D 23            [ 6] 1709 	inc	hl
+   0E0E 72            [ 7] 1710 	ld	(hl), d
+   0E0F 23            [ 6] 1711 	inc	hl
+   0E10 71            [ 7] 1712 	ld	(hl), c
+   0E11 23            [ 6] 1713 	inc	hl
+   0E12 70            [ 7] 1714 	ld	(hl), b
+   0E13 7B            [ 4] 1715 	ld	a, e
+   0E14 DD AE FA      [19] 1716 	xor	a, -6 (ix)
+   0E17 5F            [ 4] 1717 	ld	e, a
+   0E18 7A            [ 4] 1718 	ld	a, d
+   0E19 DD AE FB      [19] 1719 	xor	a, -5 (ix)
+   0E1C 57            [ 4] 1720 	ld	d, a
+   0E1D 79            [ 4] 1721 	ld	a, c
+   0E1E DD AE FC      [19] 1722 	xor	a, -4 (ix)
+   0E21 4F            [ 4] 1723 	ld	c, a
+   0E22 78            [ 4] 1724 	ld	a, b
+   0E23 DD AE FD      [19] 1725 	xor	a, -3 (ix)
+   0E26 47            [ 4] 1726 	ld	b, a
+   0E27 DD 6E B0      [19] 1727 	ld	l, -80 (ix)
+   0E2A DD 66 B1      [19] 1728 	ld	h, -79 (ix)
+   0E2D 73            [ 7] 1729 	ld	(hl), e
+   0E2E 23            [ 6] 1730 	inc	hl
+   0E2F 72            [ 7] 1731 	ld	(hl), d
+   0E30 23            [ 6] 1732 	inc	hl
+   0E31 71            [ 7] 1733 	ld	(hl), c
+   0E32 23            [ 6] 1734 	inc	hl
+   0E33 70            [ 7] 1735 	ld	(hl), b
+   0E34 DD 73 FA      [19] 1736 	ld	-6 (ix), e
+   0E37 DD 72 FB      [19] 1737 	ld	-5 (ix), d
+   0E3A DD 71 FC      [19] 1738 	ld	-4 (ix), c
+   0E3D DD 70 FD      [19] 1739 	ld	-3 (ix), b
+   0E40 3E 07         [ 7] 1740 	ld	a, #0x07
+   0E42                    1741 00219$:
+   0E42 DD CB FA 26   [23] 1742 	sla	-6 (ix)
+   0E46 DD CB FB 16   [23] 1743 	rl	-5 (ix)
+   0E4A DD CB FC 16   [23] 1744 	rl	-4 (ix)
+   0E4E DD CB FD 16   [23] 1745 	rl	-3 (ix)
+   0E52 3D            [ 4] 1746 	dec	a
+   0E53 20 ED         [12] 1747 	jr	NZ,00219$
+   0E55 48            [ 4] 1748 	ld	c, b
+   0E56 06 00         [ 7] 1749 	ld	b, #0x00
+   0E58 11 00 00      [10] 1750 	ld	de, #0x0000
+   0E5B CB 39         [ 8] 1751 	srl	c
+   0E5D 79            [ 4] 1752 	ld	a, c
+   0E5E DD B6 FA      [19] 1753 	or	a, -6 (ix)
+   0E61 4F            [ 4] 1754 	ld	c, a
+   0E62 78            [ 4] 1755 	ld	a, b
+   0E63 DD B6 FB      [19] 1756 	or	a, -5 (ix)
+   0E66 47            [ 4] 1757 	ld	b, a
+   0E67 7B            [ 4] 1758 	ld	a, e
+   0E68 DD B6 FC      [19] 1759 	or	a, -4 (ix)
+   0E6B 5F            [ 4] 1760 	ld	e, a
+   0E6C 7A            [ 4] 1761 	ld	a, d
+   0E6D DD B6 FD      [19] 1762 	or	a, -3 (ix)
+   0E70 57            [ 4] 1763 	ld	d, a
+   0E71 DD 6E B0      [19] 1764 	ld	l, -80 (ix)
+   0E74 DD 66 B1      [19] 1765 	ld	h, -79 (ix)
+   0E77 71            [ 7] 1766 	ld	(hl), c
+   0E78 23            [ 6] 1767 	inc	hl
+   0E79 70            [ 7] 1768 	ld	(hl), b
+   0E7A 23            [ 6] 1769 	inc	hl
+   0E7B 73            [ 7] 1770 	ld	(hl), e
+   0E7C 23            [ 6] 1771 	inc	hl
+   0E7D 72            [ 7] 1772 	ld	(hl), d
+                     0E7E  1773 	C$chacha20.c$29$3_0$38	= .
+                           1774 	.globl	C$chacha20.c$29$3_0$38
+                           1775 ;/work/source_code/chacha20.c:29: QR(x[1], x[6], x[11], x[12]); // diagonal 2
+   0E7E DD 7E B6      [19] 1776 	ld	a, -74 (ix)
+   0E81 DD 86 D2      [19] 1777 	add	a, -46 (ix)
+   0E84 DD 77 FA      [19] 1778 	ld	-6 (ix), a
+   0E87 DD 7E B7      [19] 1779 	ld	a, -73 (ix)
+   0E8A DD 8E D3      [19] 1780 	adc	a, -45 (ix)
+   0E8D DD 77 FB      [19] 1781 	ld	-5 (ix), a
+   0E90 DD 7E B8      [19] 1782 	ld	a, -72 (ix)
+   0E93 DD 8E D4      [19] 1783 	adc	a, -44 (ix)
+   0E96 DD 77 FC      [19] 1784 	ld	-4 (ix), a
+   0E99 DD 7E B9      [19] 1785 	ld	a, -71 (ix)
+   0E9C DD 8E D5      [19] 1786 	adc	a, -43 (ix)
+   0E9F DD 77 FD      [19] 1787 	ld	-3 (ix), a
+   0EA2 DD 5E AE      [19] 1788 	ld	e, -82 (ix)
+   0EA5 DD 56 AF      [19] 1789 	ld	d, -81 (ix)
+   0EA8 21 A0 00      [10] 1790 	ld	hl, #0x00a0
+   0EAB 39            [11] 1791 	add	hl, sp
+   0EAC 01 04 00      [10] 1792 	ld	bc, #0x0004
+   0EAF ED B0         [21] 1793 	ldir
+   0EB1 DD 7E A2      [19] 1794 	ld	a, -94 (ix)
+   0EB4 DD AE FA      [19] 1795 	xor	a, -6 (ix)
+   0EB7 5F            [ 4] 1796 	ld	e, a
+   0EB8 DD 7E A3      [19] 1797 	ld	a, -93 (ix)
+   0EBB DD AE FB      [19] 1798 	xor	a, -5 (ix)
+   0EBE 57            [ 4] 1799 	ld	d, a
+   0EBF DD 7E A4      [19] 1800 	ld	a, -92 (ix)
+   0EC2 DD AE FC      [19] 1801 	xor	a, -4 (ix)
+   0EC5 4F            [ 4] 1802 	ld	c, a
+   0EC6 DD 7E A5      [19] 1803 	ld	a, -91 (ix)
+   0EC9 DD AE FD      [19] 1804 	xor	a, -3 (ix)
+   0ECC 47            [ 4] 1805 	ld	b, a
+   0ECD DD 6E 9E      [19] 1806 	ld	l, -98 (ix)
+   0ED0 DD 66 9F      [19] 1807 	ld	h, -97 (ix)
+   0ED3 73            [ 7] 1808 	ld	(hl), e
+   0ED4 23            [ 6] 1809 	inc	hl
+   0ED5 72            [ 7] 1810 	ld	(hl), d
+   0ED6 23            [ 6] 1811 	inc	hl
+   0ED7 71            [ 7] 1812 	ld	(hl), c
+   0ED8 23            [ 6] 1813 	inc	hl
+   0ED9 70            [ 7] 1814 	ld	(hl), b
+   0EDA DD 73 F8      [19] 1815 	ld	-8 (ix), e
+   0EDD DD 72 F9      [19] 1816 	ld	-7 (ix), d
+   0EE0 DD 36 F6 00   [19] 1817 	ld	-10 (ix), #0x00
+   0EE4 DD 36 F7 00   [19] 1818 	ld	-9 (ix), #0x00
+   0EE8 11 00 00      [10] 1819 	ld	de, #0x0000
+   0EEB DD 7E F6      [19] 1820 	ld	a, -10 (ix)
+   0EEE B1            [ 4] 1821 	or	a, c
+   0EEF DD 77 F2      [19] 1822 	ld	-14 (ix), a
+   0EF2 DD 7E F7      [19] 1823 	ld	a, -9 (ix)
+   0EF5 B0            [ 4] 1824 	or	a, b
+   0EF6 DD 77 F3      [19] 1825 	ld	-13 (ix), a
+   0EF9 DD 7E F8      [19] 1826 	ld	a, -8 (ix)
+   0EFC B3            [ 4] 1827 	or	a, e
+   0EFD DD 77 F4      [19] 1828 	ld	-12 (ix), a
+   0F00 DD 7E F9      [19] 1829 	ld	a, -7 (ix)
+   0F03 B2            [ 4] 1830 	or	a, d
+   0F04 DD 77 F5      [19] 1831 	ld	-11 (ix), a
+   0F07 DD 5E 9E      [19] 1832 	ld	e, -98 (ix)
+   0F0A DD 56 9F      [19] 1833 	ld	d, -97 (ix)
+   0F0D 21 98 00      [10] 1834 	ld	hl, #0x0098
+   0F10 39            [11] 1835 	add	hl, sp
+   0F11 01 04 00      [10] 1836 	ld	bc, #0x0004
+   0F14 ED B0         [21] 1837 	ldir
+   0F16 DD 7E E2      [19] 1838 	ld	a, -30 (ix)
+   0F19 DD 86 F2      [19] 1839 	add	a, -14 (ix)
+   0F1C DD 77 F6      [19] 1840 	ld	-10 (ix), a
+   0F1F DD 7E E3      [19] 1841 	ld	a, -29 (ix)
+   0F22 DD 8E F3      [19] 1842 	adc	a, -13 (ix)
+   0F25 DD 77 F7      [19] 1843 	ld	-9 (ix), a
+   0F28 DD 7E E4      [19] 1844 	ld	a, -28 (ix)
+   0F2B DD 8E F4      [19] 1845 	adc	a, -12 (ix)
+   0F2E DD 77 F8      [19] 1846 	ld	-8 (ix), a
+   0F31 DD 7E E5      [19] 1847 	ld	a, -27 (ix)
+   0F34 DD 8E F5      [19] 1848 	adc	a, -11 (ix)
+   0F37 DD 77 F9      [19] 1849 	ld	-7 (ix), a
+   0F3A DD 5E DC      [19] 1850 	ld	e, -36 (ix)
+   0F3D DD 56 DD      [19] 1851 	ld	d, -35 (ix)
+   0F40 21 9C 00      [10] 1852 	ld	hl, #0x009c
+   0F43 39            [11] 1853 	add	hl, sp
+   0F44 01 04 00      [10] 1854 	ld	bc, #0x0004
+   0F47 ED B0         [21] 1855 	ldir
+   0F49 DD 7E D2      [19] 1856 	ld	a, -46 (ix)
+   0F4C DD AE F6      [19] 1857 	xor	a, -10 (ix)
+   0F4F 4F            [ 4] 1858 	ld	c, a
+   0F50 DD 7E D3      [19] 1859 	ld	a, -45 (ix)
+   0F53 DD AE F7      [19] 1860 	xor	a, -9 (ix)
+   0F56 47            [ 4] 1861 	ld	b, a
+   0F57 DD 7E D4      [19] 1862 	ld	a, -44 (ix)
+   0F5A DD AE F8      [19] 1863 	xor	a, -8 (ix)
+   0F5D 5F            [ 4] 1864 	ld	e, a
+   0F5E DD 7E D5      [19] 1865 	ld	a, -43 (ix)
+   0F61 DD AE F9      [19] 1866 	xor	a, -7 (ix)
+   0F64 57            [ 4] 1867 	ld	d, a
+   0F65 DD 6E C4      [19] 1868 	ld	l, -60 (ix)
+   0F68 DD 66 C5      [19] 1869 	ld	h, -59 (ix)
+   0F6B 71            [ 7] 1870 	ld	(hl), c
+   0F6C 23            [ 6] 1871 	inc	hl
+   0F6D 70            [ 7] 1872 	ld	(hl), b
+   0F6E 23            [ 6] 1873 	inc	hl
+   0F6F 73            [ 7] 1874 	ld	(hl), e
+   0F70 23            [ 6] 1875 	inc	hl
+   0F71 72            [ 7] 1876 	ld	(hl), d
+   0F72 DD 71 EB      [19] 1877 	ld	-21 (ix), c
+   0F75 DD 70 EC      [19] 1878 	ld	-20 (ix), b
+   0F78 DD 73 ED      [19] 1879 	ld	-19 (ix), e
+   0F7B DD 36 EA 00   [19] 1880 	ld	-22 (ix), #0x00
+   0F7F 3E 04         [ 7] 1881 	ld	a, #0x04
+   0F81                    1882 00227$:
+   0F81 DD CB EB 26   [23] 1883 	sla	-21 (ix)
+   0F85 DD CB EC 16   [23] 1884 	rl	-20 (ix)
+   0F89 DD CB ED 16   [23] 1885 	rl	-19 (ix)
+   0F8D 3D            [ 4] 1886 	dec	a
+   0F8E 20 F1         [12] 1887 	jr	NZ,00227$
+   0F90 21 00 00      [10] 1888 	ld	hl, #0x0000
+   0F93 06 04         [ 7] 1889 	ld	b, #0x04
+   0F95                    1890 00229$:
+   0F95 CB 3A         [ 8] 1891 	srl	d
+   0F97 CB 1B         [ 8] 1892 	rr	e
+   0F99 10 FA         [13] 1893 	djnz	00229$
+   0F9B DD 7E EA      [19] 1894 	ld	a, -22 (ix)
+   0F9E B3            [ 4] 1895 	or	a, e
+   0F9F DD 77 EE      [19] 1896 	ld	-18 (ix), a
+   0FA2 DD 7E EB      [19] 1897 	ld	a, -21 (ix)
+   0FA5 B2            [ 4] 1898 	or	a, d
+   0FA6 DD 77 EF      [19] 1899 	ld	-17 (ix), a
+   0FA9 DD 7E EC      [19] 1900 	ld	a, -20 (ix)
+   0FAC B5            [ 4] 1901 	or	a, l
+   0FAD DD 77 F0      [19] 1902 	ld	-16 (ix), a
+   0FB0 DD 7E ED      [19] 1903 	ld	a, -19 (ix)
+   0FB3 B4            [ 4] 1904 	or	a, h
+   0FB4 DD 77 F1      [19] 1905 	ld	-15 (ix), a
+   0FB7 DD 5E C4      [19] 1906 	ld	e, -60 (ix)
+   0FBA DD 56 C5      [19] 1907 	ld	d, -59 (ix)
+   0FBD 21 94 00      [10] 1908 	ld	hl, #0x0094
+   0FC0 39            [11] 1909 	add	hl, sp
+   0FC1 01 04 00      [10] 1910 	ld	bc, #0x0004
+   0FC4 ED B0         [21] 1911 	ldir
+   0FC6 DD 7E FA      [19] 1912 	ld	a, -6 (ix)
+   0FC9 DD 86 EE      [19] 1913 	add	a, -18 (ix)
+   0FCC 4F            [ 4] 1914 	ld	c, a
+   0FCD DD 7E FB      [19] 1915 	ld	a, -5 (ix)
+   0FD0 DD 8E EF      [19] 1916 	adc	a, -17 (ix)
+   0FD3 47            [ 4] 1917 	ld	b, a
+   0FD4 DD 7E FC      [19] 1918 	ld	a, -4 (ix)
+   0FD7 DD 8E F0      [19] 1919 	adc	a, -16 (ix)
+   0FDA 5F            [ 4] 1920 	ld	e, a
+   0FDB DD 7E FD      [19] 1921 	ld	a, -3 (ix)
+   0FDE DD 8E F1      [19] 1922 	adc	a, -15 (ix)
+   0FE1 57            [ 4] 1923 	ld	d, a
+   0FE2 DD 6E AE      [19] 1924 	ld	l, -82 (ix)
+   0FE5 DD 66 AF      [19] 1925 	ld	h, -81 (ix)
+   0FE8 71            [ 7] 1926 	ld	(hl), c
+   0FE9 23            [ 6] 1927 	inc	hl
+   0FEA 70            [ 7] 1928 	ld	(hl), b
+   0FEB 23            [ 6] 1929 	inc	hl
+   0FEC 73            [ 7] 1930 	ld	(hl), e
+   0FED 23            [ 6] 1931 	inc	hl
+   0FEE 72            [ 7] 1932 	ld	(hl), d
+   0FEF 79            [ 4] 1933 	ld	a, c
+   0FF0 DD AE F2      [19] 1934 	xor	a, -14 (ix)
+   0FF3 4F            [ 4] 1935 	ld	c, a
+   0FF4 78            [ 4] 1936 	ld	a, b
+   0FF5 DD AE F3      [19] 1937 	xor	a, -13 (ix)
+   0FF8 47            [ 4] 1938 	ld	b, a
+   0FF9 7B            [ 4] 1939 	ld	a, e
+   0FFA DD AE F4      [19] 1940 	xor	a, -12 (ix)
+   0FFD 5F            [ 4] 1941 	ld	e, a
+   0FFE 7A            [ 4] 1942 	ld	a, d
+   0FFF DD AE F5      [19] 1943 	xor	a, -11 (ix)
+   1002 57            [ 4] 1944 	ld	d, a
+   1003 DD 6E 9E      [19] 1945 	ld	l, -98 (ix)
+   1006 DD 66 9F      [19] 1946 	ld	h, -97 (ix)
+   1009 71            [ 7] 1947 	ld	(hl), c
+   100A 23            [ 6] 1948 	inc	hl
+   100B 70            [ 7] 1949 	ld	(hl), b
+   100C 23            [ 6] 1950 	inc	hl
+   100D 73            [ 7] 1951 	ld	(hl), e
+   100E 23            [ 6] 1952 	inc	hl
+   100F 72            [ 7] 1953 	ld	(hl), d
+   1010 DD 71 FB      [19] 1954 	ld	-5 (ix), c
+   1013 DD 70 FC      [19] 1955 	ld	-4 (ix), b
+   1016 DD 73 FD      [19] 1956 	ld	-3 (ix), e
+   1019 DD 36 FA 00   [19] 1957 	ld	-6 (ix), #0x00
+   101D 4A            [ 4] 1958 	ld	c, d
+   101E 06 00         [ 7] 1959 	ld	b, #0x00
+   1020 21 00 00      [10] 1960 	ld	hl, #0x0000
+   1023 DD 7E FA      [19] 1961 	ld	a, -6 (ix)
+   1026 B1            [ 4] 1962 	or	a, c
+   1027 5F            [ 4] 1963 	ld	e, a
+   1028 DD 7E FB      [19] 1964 	ld	a, -5 (ix)
+   102B B0            [ 4] 1965 	or	a, b
+   102C 57            [ 4] 1966 	ld	d, a
+   102D DD 7E FC      [19] 1967 	ld	a, -4 (ix)
+   1030 B5            [ 4] 1968 	or	a, l
+   1031 4F            [ 4] 1969 	ld	c, a
+   1032 DD 7E FD      [19] 1970 	ld	a, -3 (ix)
+   1035 B4            [ 4] 1971 	or	a, h
+   1036 47            [ 4] 1972 	ld	b, a
+   1037 DD 6E 9E      [19] 1973 	ld	l, -98 (ix)
+   103A DD 66 9F      [19] 1974 	ld	h, -97 (ix)
+   103D 73            [ 7] 1975 	ld	(hl), e
+   103E 23            [ 6] 1976 	inc	hl
+   103F 72            [ 7] 1977 	ld	(hl), d
+   1040 23            [ 6] 1978 	inc	hl
+   1041 71            [ 7] 1979 	ld	(hl), c
+   1042 23            [ 6] 1980 	inc	hl
+   1043 70            [ 7] 1981 	ld	(hl), b
+   1044 DD 7E F6      [19] 1982 	ld	a, -10 (ix)
+   1047 83            [ 4] 1983 	add	a, e
+   1048 5F            [ 4] 1984 	ld	e, a
+   1049 DD 7E F7      [19] 1985 	ld	a, -9 (ix)
+   104C 8A            [ 4] 1986 	adc	a, d
+   104D 57            [ 4] 1987 	ld	d, a
+   104E DD 7E F8      [19] 1988 	ld	a, -8 (ix)
+   1051 89            [ 4] 1989 	adc	a, c
+   1052 4F            [ 4] 1990 	ld	c, a
+   1053 DD 7E F9      [19] 1991 	ld	a, -7 (ix)
+   1056 88            [ 4] 1992 	adc	a, b
+   1057 47            [ 4] 1993 	ld	b, a
+   1058 DD 6E DC      [19] 1994 	ld	l, -36 (ix)
+   105B DD 66 DD      [19] 1995 	ld	h, -35 (ix)
+   105E 73            [ 7] 1996 	ld	(hl), e
+   105F 23            [ 6] 1997 	inc	hl
+   1060 72            [ 7] 1998 	ld	(hl), d
+   1061 23            [ 6] 1999 	inc	hl
+   1062 71            [ 7] 2000 	ld	(hl), c
+   1063 23            [ 6] 2001 	inc	hl
+   1064 70            [ 7] 2002 	ld	(hl), b
+   1065 7B            [ 4] 2003 	ld	a, e
+   1066 DD AE EE      [19] 2004 	xor	a, -18 (ix)
+   1069 5F            [ 4] 2005 	ld	e, a
+   106A 7A            [ 4] 2006 	ld	a, d
+   106B DD AE EF      [19] 2007 	xor	a, -17 (ix)
+   106E 57            [ 4] 2008 	ld	d, a
+   106F 79            [ 4] 2009 	ld	a, c
+   1070 DD AE F0      [19] 2010 	xor	a, -16 (ix)
+   1073 4F            [ 4] 2011 	ld	c, a
+   1074 78            [ 4] 2012 	ld	a, b
+   1075 DD AE F1      [19] 2013 	xor	a, -15 (ix)
+   1078 47            [ 4] 2014 	ld	b, a
+   1079 DD 6E C4      [19] 2015 	ld	l, -60 (ix)
+   107C DD 66 C5      [19] 2016 	ld	h, -59 (ix)
+   107F 73            [ 7] 2017 	ld	(hl), e
+   1080 23            [ 6] 2018 	inc	hl
+   1081 72            [ 7] 2019 	ld	(hl), d
+   1082 23            [ 6] 2020 	inc	hl
+   1083 71            [ 7] 2021 	ld	(hl), c
+   1084 23            [ 6] 2022 	inc	hl
+   1085 70            [ 7] 2023 	ld	(hl), b
+   1086 DD 73 FA      [19] 2024 	ld	-6 (ix), e
+   1089 DD 72 FB      [19] 2025 	ld	-5 (ix), d
+   108C DD 71 FC      [19] 2026 	ld	-4 (ix), c
+   108F DD 70 FD      [19] 2027 	ld	-3 (ix), b
+   1092 3E 07         [ 7] 2028 	ld	a, #0x07
+   1094                    2029 00235$:
+   1094 DD CB FA 26   [23] 2030 	sla	-6 (ix)
+   1098 DD CB FB 16   [23] 2031 	rl	-5 (ix)
+   109C DD CB FC 16   [23] 2032 	rl	-4 (ix)
+   10A0 DD CB FD 16   [23] 2033 	rl	-3 (ix)
+   10A4 3D            [ 4] 2034 	dec	a
+   10A5 20 ED         [12] 2035 	jr	NZ,00235$
+   10A7 48            [ 4] 2036 	ld	c, b
+   10A8 06 00         [ 7] 2037 	ld	b, #0x00
+   10AA 11 00 00      [10] 2038 	ld	de, #0x0000
+   10AD CB 39         [ 8] 2039 	srl	c
+   10AF 79            [ 4] 2040 	ld	a, c
+   10B0 DD B6 FA      [19] 2041 	or	a, -6 (ix)
+   10B3 4F            [ 4] 2042 	ld	c, a
+   10B4 78            [ 4] 2043 	ld	a, b
+   10B5 DD B6 FB      [19] 2044 	or	a, -5 (ix)
+   10B8 47            [ 4] 2045 	ld	b, a
+   10B9 7B            [ 4] 2046 	ld	a, e
+   10BA DD B6 FC      [19] 2047 	or	a, -4 (ix)
+   10BD 5F            [ 4] 2048 	ld	e, a
+   10BE 7A            [ 4] 2049 	ld	a, d
+   10BF DD B6 FD      [19] 2050 	or	a, -3 (ix)
+   10C2 57            [ 4] 2051 	ld	d, a
+   10C3 DD 6E C4      [19] 2052 	ld	l, -60 (ix)
+   10C6 DD 66 C5      [19] 2053 	ld	h, -59 (ix)
+   10C9 71            [ 7] 2054 	ld	(hl), c
+   10CA 23            [ 6] 2055 	inc	hl
+   10CB 70            [ 7] 2056 	ld	(hl), b
+   10CC 23            [ 6] 2057 	inc	hl
+   10CD 73            [ 7] 2058 	ld	(hl), e
+   10CE 23            [ 6] 2059 	inc	hl
+   10CF 72            [ 7] 2060 	ld	(hl), d
+                     10D0  2061 	C$chacha20.c$30$3_0$38	= .
+                           2062 	.globl	C$chacha20.c$30$3_0$38
+                           2063 ;/work/source_code/chacha20.c:30: QR(x[2], x[7], x[ 8], x[13]); // diagonal 3
+   10D0 DD 7E CA      [19] 2064 	ld	a, -54 (ix)
+   10D3 DD 86 E6      [19] 2065 	add	a, -26 (ix)
+   10D6 DD 77 FA      [19] 2066 	ld	-6 (ix), a
+   10D9 DD 7E CB      [19] 2067 	ld	a, -53 (ix)
+   10DC DD 8E E7      [19] 2068 	adc	a, -25 (ix)
+   10DF DD 77 FB      [19] 2069 	ld	-5 (ix), a
+   10E2 DD 7E CC      [19] 2070 	ld	a, -52 (ix)
+   10E5 DD 8E E8      [19] 2071 	adc	a, -24 (ix)
+   10E8 DD 77 FC      [19] 2072 	ld	-4 (ix), a
+   10EB DD 7E CD      [19] 2073 	ld	a, -51 (ix)
+   10EE DD 8E E9      [19] 2074 	adc	a, -23 (ix)
+   10F1 DD 77 FD      [19] 2075 	ld	-3 (ix), a
+   10F4 DD 5E C2      [19] 2076 	ld	e, -62 (ix)
+   10F7 DD 56 C3      [19] 2077 	ld	d, -61 (ix)
+   10FA 21 A0 00      [10] 2078 	ld	hl, #0x00a0
+   10FD 39            [11] 2079 	add	hl, sp
+   10FE 01 04 00      [10] 2080 	ld	bc, #0x0004
+   1101 ED B0         [21] 2081 	ldir
+   1103 DD 7E BA      [19] 2082 	ld	a, -70 (ix)
+   1106 DD AE FA      [19] 2083 	xor	a, -6 (ix)
+   1109 5F            [ 4] 2084 	ld	e, a
+   110A DD 7E BB      [19] 2085 	ld	a, -69 (ix)
+   110D DD AE FB      [19] 2086 	xor	a, -5 (ix)
+   1110 57            [ 4] 2087 	ld	d, a
+   1111 DD 7E BC      [19] 2088 	ld	a, -68 (ix)
+   1114 DD AE FC      [19] 2089 	xor	a, -4 (ix)
+   1117 4F            [ 4] 2090 	ld	c, a
+   1118 DD 7E BD      [19] 2091 	ld	a, -67 (ix)
+   111B DD AE FD      [19] 2092 	xor	a, -3 (ix)
+   111E 47            [ 4] 2093 	ld	b, a
+   111F DD 6E B2      [19] 2094 	ld	l, -78 (ix)
+   1122 DD 66 B3      [19] 2095 	ld	h, -77 (ix)
+   1125 73            [ 7] 2096 	ld	(hl), e
+   1126 23            [ 6] 2097 	inc	hl
+   1127 72            [ 7] 2098 	ld	(hl), d
+   1128 23            [ 6] 2099 	inc	hl
+   1129 71            [ 7] 2100 	ld	(hl), c
+   112A 23            [ 6] 2101 	inc	hl
+   112B 70            [ 7] 2102 	ld	(hl), b
+   112C DD 73 F8      [19] 2103 	ld	-8 (ix), e
+   112F DD 72 F9      [19] 2104 	ld	-7 (ix), d
+   1132 DD 36 F6 00   [19] 2105 	ld	-10 (ix), #0x00
+   1136 DD 36 F7 00   [19] 2106 	ld	-9 (ix), #0x00
+   113A 11 00 00      [10] 2107 	ld	de, #0x0000
+   113D DD 7E F6      [19] 2108 	ld	a, -10 (ix)
+   1140 B1            [ 4] 2109 	or	a, c
+   1141 DD 77 F2      [19] 2110 	ld	-14 (ix), a
+   1144 DD 7E F7      [19] 2111 	ld	a, -9 (ix)
+   1147 B0            [ 4] 2112 	or	a, b
+   1148 DD 77 F3      [19] 2113 	ld	-13 (ix), a
+   114B DD 7E F8      [19] 2114 	ld	a, -8 (ix)
+   114E B3            [ 4] 2115 	or	a, e
+   114F DD 77 F4      [19] 2116 	ld	-12 (ix), a
+   1152 DD 7E F9      [19] 2117 	ld	a, -7 (ix)
+   1155 B2            [ 4] 2118 	or	a, d
+   1156 DD 77 F5      [19] 2119 	ld	-11 (ix), a
+   1159 DD 5E B2      [19] 2120 	ld	e, -78 (ix)
+   115C DD 56 B3      [19] 2121 	ld	d, -77 (ix)
+   115F 21 98 00      [10] 2122 	ld	hl, #0x0098
+   1162 39            [11] 2123 	add	hl, sp
+   1163 01 04 00      [10] 2124 	ld	bc, #0x0004
+   1166 ED B0         [21] 2125 	ldir
+   1168 DD 7E A6      [19] 2126 	ld	a, -90 (ix)
+   116B DD 86 F2      [19] 2127 	add	a, -14 (ix)
+   116E DD 77 F6      [19] 2128 	ld	-10 (ix), a
+   1171 DD 7E A7      [19] 2129 	ld	a, -89 (ix)
+   1174 DD 8E F3      [19] 2130 	adc	a, -13 (ix)
+   1177 DD 77 F7      [19] 2131 	ld	-9 (ix), a
+   117A DD 7E A8      [19] 2132 	ld	a, -88 (ix)
+   117D DD 8E F4      [19] 2133 	adc	a, -12 (ix)
+   1180 DD 77 F8      [19] 2134 	ld	-8 (ix), a
+   1183 DD 7E A9      [19] 2135 	ld	a, -87 (ix)
+   1186 DD 8E F5      [19] 2136 	adc	a, -11 (ix)
+   1189 DD 77 F9      [19] 2137 	ld	-7 (ix), a
+   118C DD 5E A0      [19] 2138 	ld	e, -96 (ix)
+   118F DD 56 A1      [19] 2139 	ld	d, -95 (ix)
+   1192 21 9C 00      [10] 2140 	ld	hl, #0x009c
+   1195 39            [11] 2141 	add	hl, sp
+   1196 01 04 00      [10] 2142 	ld	bc, #0x0004
+   1199 ED B0         [21] 2143 	ldir
+   119B DD 7E E6      [19] 2144 	ld	a, -26 (ix)
+   119E DD AE F6      [19] 2145 	xor	a, -10 (ix)
+   11A1 4F            [ 4] 2146 	ld	c, a
+   11A2 DD 7E E7      [19] 2147 	ld	a, -25 (ix)
+   11A5 DD AE F7      [19] 2148 	xor	a, -9 (ix)
+   11A8 47            [ 4] 2149 	ld	b, a
+   11A9 DD 7E E8      [19] 2150 	ld	a, -24 (ix)
+   11AC DD AE F8      [19] 2151 	xor	a, -8 (ix)
+   11AF 5F            [ 4] 2152 	ld	e, a
+   11B0 DD 7E E9      [19] 2153 	ld	a, -23 (ix)
+   11B3 DD AE F9      [19] 2154 	xor	a, -7 (ix)
+   11B6 57            [ 4] 2155 	ld	d, a
+   11B7 DD 6E D8      [19] 2156 	ld	l, -40 (ix)
+   11BA DD 66 D9      [19] 2157 	ld	h, -39 (ix)
+   11BD 71            [ 7] 2158 	ld	(hl), c
+   11BE 23            [ 6] 2159 	inc	hl
+   11BF 70            [ 7] 2160 	ld	(hl), b
+   11C0 23            [ 6] 2161 	inc	hl
+   11C1 73            [ 7] 2162 	ld	(hl), e
+   11C2 23            [ 6] 2163 	inc	hl
+   11C3 72            [ 7] 2164 	ld	(hl), d
+   11C4 DD 71 EB      [19] 2165 	ld	-21 (ix), c
+   11C7 DD 70 EC      [19] 2166 	ld	-20 (ix), b
+   11CA DD 73 ED      [19] 2167 	ld	-19 (ix), e
+   11CD DD 36 EA 00   [19] 2168 	ld	-22 (ix), #0x00
+   11D1 3E 04         [ 7] 2169 	ld	a, #0x04
+   11D3                    2170 00243$:
+   11D3 DD CB EB 26   [23] 2171 	sla	-21 (ix)
+   11D7 DD CB EC 16   [23] 2172 	rl	-20 (ix)
+   11DB DD CB ED 16   [23] 2173 	rl	-19 (ix)
+   11DF 3D            [ 4] 2174 	dec	a
+   11E0 20 F1         [12] 2175 	jr	NZ,00243$
+   11E2 21 00 00      [10] 2176 	ld	hl, #0x0000
+   11E5 06 04         [ 7] 2177 	ld	b, #0x04
+   11E7                    2178 00245$:
+   11E7 CB 3A         [ 8] 2179 	srl	d
+   11E9 CB 1B         [ 8] 2180 	rr	e
+   11EB 10 FA         [13] 2181 	djnz	00245$
+   11ED DD 7E EA      [19] 2182 	ld	a, -22 (ix)
+   11F0 B3            [ 4] 2183 	or	a, e
+   11F1 DD 77 EE      [19] 2184 	ld	-18 (ix), a
+   11F4 DD 7E EB      [19] 2185 	ld	a, -21 (ix)
+   11F7 B2            [ 4] 2186 	or	a, d
+   11F8 DD 77 EF      [19] 2187 	ld	-17 (ix), a
+   11FB DD 7E EC      [19] 2188 	ld	a, -20 (ix)
+   11FE B5            [ 4] 2189 	or	a, l
+   11FF DD 77 F0      [19] 2190 	ld	-16 (ix), a
+   1202 DD 7E ED      [19] 2191 	ld	a, -19 (ix)
+   1205 B4            [ 4] 2192 	or	a, h
+   1206 DD 77 F1      [19] 2193 	ld	-15 (ix), a
+   1209 DD 5E D8      [19] 2194 	ld	e, -40 (ix)
+   120C DD 56 D9      [19] 2195 	ld	d, -39 (ix)
+   120F 21 94 00      [10] 2196 	ld	hl, #0x0094
+   1212 39            [11] 2197 	add	hl, sp
+   1213 01 04 00      [10] 2198 	ld	bc, #0x0004
+   1216 ED B0         [21] 2199 	ldir
+   1218 DD 7E FA      [19] 2200 	ld	a, -6 (ix)
+   121B DD 86 EE      [19] 2201 	add	a, -18 (ix)
+   121E 4F            [ 4] 2202 	ld	c, a
+   121F DD 7E FB      [19] 2203 	ld	a, -5 (ix)
+   1222 DD 8E EF      [19] 2204 	adc	a, -17 (ix)
+   1225 47            [ 4] 2205 	ld	b, a
+   1226 DD 7E FC      [19] 2206 	ld	a, -4 (ix)
+   1229 DD 8E F0      [19] 2207 	adc	a, -16 (ix)
+   122C 5F            [ 4] 2208 	ld	e, a
+   122D DD 7E FD      [19] 2209 	ld	a, -3 (ix)
+   1230 DD 8E F1      [19] 2210 	adc	a, -15 (ix)
+   1233 57            [ 4] 2211 	ld	d, a
+   1234 DD 6E C2      [19] 2212 	ld	l, -62 (ix)
+   1237 DD 66 C3      [19] 2213 	ld	h, -61 (ix)
+   123A 71            [ 7] 2214 	ld	(hl), c
+   123B 23            [ 6] 2215 	inc	hl
+   123C 70            [ 7] 2216 	ld	(hl), b
+   123D 23            [ 6] 2217 	inc	hl
+   123E 73            [ 7] 2218 	ld	(hl), e
+   123F 23            [ 6] 2219 	inc	hl
+   1240 72            [ 7] 2220 	ld	(hl), d
+   1241 79            [ 4] 2221 	ld	a, c
+   1242 DD AE F2      [19] 2222 	xor	a, -14 (ix)
+   1245 4F            [ 4] 2223 	ld	c, a
+   1246 78            [ 4] 2224 	ld	a, b
+   1247 DD AE F3      [19] 2225 	xor	a, -13 (ix)
+   124A 47            [ 4] 2226 	ld	b, a
+   124B 7B            [ 4] 2227 	ld	a, e
+   124C DD AE F4      [19] 2228 	xor	a, -12 (ix)
+   124F 5F            [ 4] 2229 	ld	e, a
+   1250 7A            [ 4] 2230 	ld	a, d
+   1251 DD AE F5      [19] 2231 	xor	a, -11 (ix)
+   1254 57            [ 4] 2232 	ld	d, a
+   1255 DD 6E B2      [19] 2233 	ld	l, -78 (ix)
+   1258 DD 66 B3      [19] 2234 	ld	h, -77 (ix)
+   125B 71            [ 7] 2235 	ld	(hl), c
+   125C 23            [ 6] 2236 	inc	hl
+   125D 70            [ 7] 2237 	ld	(hl), b
+   125E 23            [ 6] 2238 	inc	hl
+   125F 73            [ 7] 2239 	ld	(hl), e
+   1260 23            [ 6] 2240 	inc	hl
+   1261 72            [ 7] 2241 	ld	(hl), d
+   1262 DD 71 FB      [19] 2242 	ld	-5 (ix), c
+   1265 DD 70 FC      [19] 2243 	ld	-4 (ix), b
+   1268 DD 73 FD      [19] 2244 	ld	-3 (ix), e
+   126B DD 36 FA 00   [19] 2245 	ld	-6 (ix), #0x00
+   126F 4A            [ 4] 2246 	ld	c, d
+   1270 06 00         [ 7] 2247 	ld	b, #0x00
+   1272 21 00 00      [10] 2248 	ld	hl, #0x0000
+   1275 DD 7E FA      [19] 2249 	ld	a, -6 (ix)
+   1278 B1            [ 4] 2250 	or	a, c
+   1279 5F            [ 4] 2251 	ld	e, a
+   127A DD 7E FB      [19] 2252 	ld	a, -5 (ix)
+   127D B0            [ 4] 2253 	or	a, b
+   127E 57            [ 4] 2254 	ld	d, a
+   127F DD 7E FC      [19] 2255 	ld	a, -4 (ix)
+   1282 B5            [ 4] 2256 	or	a, l
+   1283 4F            [ 4] 2257 	ld	c, a
+   1284 DD 7E FD      [19] 2258 	ld	a, -3 (ix)
+   1287 B4            [ 4] 2259 	or	a, h
+   1288 47            [ 4] 2260 	ld	b, a
+   1289 DD 6E B2      [19] 2261 	ld	l, -78 (ix)
+   128C DD 66 B3      [19] 2262 	ld	h, -77 (ix)
+   128F 73            [ 7] 2263 	ld	(hl), e
+   1290 23            [ 6] 2264 	inc	hl
+   1291 72            [ 7] 2265 	ld	(hl), d
+   1292 23            [ 6] 2266 	inc	hl
+   1293 71            [ 7] 2267 	ld	(hl), c
+   1294 23            [ 6] 2268 	inc	hl
+   1295 70            [ 7] 2269 	ld	(hl), b
+   1296 DD 7E F6      [19] 2270 	ld	a, -10 (ix)
+   1299 83            [ 4] 2271 	add	a, e
+   129A 5F            [ 4] 2272 	ld	e, a
+   129B DD 7E F7      [19] 2273 	ld	a, -9 (ix)
+   129E 8A            [ 4] 2274 	adc	a, d
+   129F 57            [ 4] 2275 	ld	d, a
+   12A0 DD 7E F8      [19] 2276 	ld	a, -8 (ix)
+   12A3 89            [ 4] 2277 	adc	a, c
+   12A4 4F            [ 4] 2278 	ld	c, a
+   12A5 DD 7E F9      [19] 2279 	ld	a, -7 (ix)
+   12A8 88            [ 4] 2280 	adc	a, b
+   12A9 47            [ 4] 2281 	ld	b, a
+   12AA DD 6E A0      [19] 2282 	ld	l, -96 (ix)
+   12AD DD 66 A1      [19] 2283 	ld	h, -95 (ix)
+   12B0 73            [ 7] 2284 	ld	(hl), e
+   12B1 23            [ 6] 2285 	inc	hl
+   12B2 72            [ 7] 2286 	ld	(hl), d
+   12B3 23            [ 6] 2287 	inc	hl
+   12B4 71            [ 7] 2288 	ld	(hl), c
+   12B5 23            [ 6] 2289 	inc	hl
+   12B6 70            [ 7] 2290 	ld	(hl), b
+   12B7 7B            [ 4] 2291 	ld	a, e
+   12B8 DD AE EE      [19] 2292 	xor	a, -18 (ix)
+   12BB 5F            [ 4] 2293 	ld	e, a
+   12BC 7A            [ 4] 2294 	ld	a, d
+   12BD DD AE EF      [19] 2295 	xor	a, -17 (ix)
+   12C0 57            [ 4] 2296 	ld	d, a
+   12C1 79            [ 4] 2297 	ld	a, c
+   12C2 DD AE F0      [19] 2298 	xor	a, -16 (ix)
+   12C5 4F            [ 4] 2299 	ld	c, a
+   12C6 78            [ 4] 2300 	ld	a, b
+   12C7 DD AE F1      [19] 2301 	xor	a, -15 (ix)
+   12CA 47            [ 4] 2302 	ld	b, a
+   12CB DD 6E D8      [19] 2303 	ld	l, -40 (ix)
+   12CE DD 66 D9      [19] 2304 	ld	h, -39 (ix)
+   12D1 73            [ 7] 2305 	ld	(hl), e
+   12D2 23            [ 6] 2306 	inc	hl
+   12D3 72            [ 7] 2307 	ld	(hl), d
+   12D4 23            [ 6] 2308 	inc	hl
+   12D5 71            [ 7] 2309 	ld	(hl), c
+   12D6 23            [ 6] 2310 	inc	hl
+   12D7 70            [ 7] 2311 	ld	(hl), b
+   12D8 DD 73 FA      [19] 2312 	ld	-6 (ix), e
+   12DB DD 72 FB      [19] 2313 	ld	-5 (ix), d
+   12DE DD 71 FC      [19] 2314 	ld	-4 (ix), c
+   12E1 DD 70 FD      [19] 2315 	ld	-3 (ix), b
+   12E4 3E 07         [ 7] 2316 	ld	a, #0x07
+   12E6                    2317 00251$:
+   12E6 DD CB FA 26   [23] 2318 	sla	-6 (ix)
+   12EA DD CB FB 16   [23] 2319 	rl	-5 (ix)
+   12EE DD CB FC 16   [23] 2320 	rl	-4 (ix)
+   12F2 DD CB FD 16   [23] 2321 	rl	-3 (ix)
+   12F6 3D            [ 4] 2322 	dec	a
+   12F7 20 ED         [12] 2323 	jr	NZ,00251$
+   12F9 48            [ 4] 2324 	ld	c, b
+   12FA 06 00         [ 7] 2325 	ld	b, #0x00
+   12FC 11 00 00      [10] 2326 	ld	de, #0x0000
+   12FF CB 39         [ 8] 2327 	srl	c
+   1301 79            [ 4] 2328 	ld	a, c
+   1302 DD B6 FA      [19] 2329 	or	a, -6 (ix)
+   1305 4F            [ 4] 2330 	ld	c, a
+   1306 78            [ 4] 2331 	ld	a, b
+   1307 DD B6 FB      [19] 2332 	or	a, -5 (ix)
+   130A 47            [ 4] 2333 	ld	b, a
+   130B 7B            [ 4] 2334 	ld	a, e
+   130C DD B6 FC      [19] 2335 	or	a, -4 (ix)
+   130F 5F            [ 4] 2336 	ld	e, a
+   1310 7A            [ 4] 2337 	ld	a, d
+   1311 DD B6 FD      [19] 2338 	or	a, -3 (ix)
+   1314 57            [ 4] 2339 	ld	d, a
+   1315 DD 6E D8      [19] 2340 	ld	l, -40 (ix)
+   1318 DD 66 D9      [19] 2341 	ld	h, -39 (ix)
+   131B 71            [ 7] 2342 	ld	(hl), c
+   131C 23            [ 6] 2343 	inc	hl
+   131D 70            [ 7] 2344 	ld	(hl), b
+   131E 23            [ 6] 2345 	inc	hl
+   131F 73            [ 7] 2346 	ld	(hl), e
+   1320 23            [ 6] 2347 	inc	hl
+   1321 72            [ 7] 2348 	ld	(hl), d
+                     1322  2349 	C$chacha20.c$31$3_0$38	= .
+                           2350 	.globl	C$chacha20.c$31$3_0$38
+                           2351 ;/work/source_code/chacha20.c:31: QR(x[3], x[4], x[ 9], x[14]); // diagonal 4
+   1322 DD 7E DE      [19] 2352 	ld	a, -34 (ix)
+   1325 DD 86 AA      [19] 2353 	add	a, -86 (ix)
+   1328 DD 77 FA      [19] 2354 	ld	-6 (ix), a
+   132B DD 7E DF      [19] 2355 	ld	a, -33 (ix)
+   132E DD 8E AB      [19] 2356 	adc	a, -85 (ix)
+   1331 DD 77 FB      [19] 2357 	ld	-5 (ix), a
+   1334 DD 7E E0      [19] 2358 	ld	a, -32 (ix)
+   1337 DD 8E AC      [19] 2359 	adc	a, -84 (ix)
+   133A DD 77 FC      [19] 2360 	ld	-4 (ix), a
+   133D DD 7E E1      [19] 2361 	ld	a, -31 (ix)
+   1340 DD 8E AD      [19] 2362 	adc	a, -83 (ix)
+   1343 DD 77 FD      [19] 2363 	ld	-3 (ix), a
+   1346 DD 5E D6      [19] 2364 	ld	e, -42 (ix)
+   1349 DD 56 D7      [19] 2365 	ld	d, -41 (ix)
+   134C 21 A0 00      [10] 2366 	ld	hl, #0x00a0
+   134F 39            [11] 2367 	add	hl, sp
+   1350 01 04 00      [10] 2368 	ld	bc, #0x0004
+   1353 ED B0         [21] 2369 	ldir
+   1355 DD 7E CE      [19] 2370 	ld	a, -50 (ix)
+   1358 DD AE FA      [19] 2371 	xor	a, -6 (ix)
+   135B 5F            [ 4] 2372 	ld	e, a
+   135C DD 7E CF      [19] 2373 	ld	a, -49 (ix)
+   135F DD AE FB      [19] 2374 	xor	a, -5 (ix)
+   1362 57            [ 4] 2375 	ld	d, a
+   1363 DD 7E D0      [19] 2376 	ld	a, -48 (ix)
+   1366 DD AE FC      [19] 2377 	xor	a, -4 (ix)
+   1369 4F            [ 4] 2378 	ld	c, a
+   136A DD 7E D1      [19] 2379 	ld	a, -47 (ix)
+   136D DD AE FD      [19] 2380 	xor	a, -3 (ix)
+   1370 47            [ 4] 2381 	ld	b, a
+   1371 DD 6E C6      [19] 2382 	ld	l, -58 (ix)
+   1374 DD 66 C7      [19] 2383 	ld	h, -57 (ix)
+   1377 73            [ 7] 2384 	ld	(hl), e
+   1378 23            [ 6] 2385 	inc	hl
+   1379 72            [ 7] 2386 	ld	(hl), d
+   137A 23            [ 6] 2387 	inc	hl
+   137B 71            [ 7] 2388 	ld	(hl), c
+   137C 23            [ 6] 2389 	inc	hl
+   137D 70            [ 7] 2390 	ld	(hl), b
+   137E DD 73 F8      [19] 2391 	ld	-8 (ix), e
+   1381 DD 72 F9      [19] 2392 	ld	-7 (ix), d
+   1384 DD 36 F6 00   [19] 2393 	ld	-10 (ix), #0x00
+   1388 DD 36 F7 00   [19] 2394 	ld	-9 (ix), #0x00
+   138C 11 00 00      [10] 2395 	ld	de, #0x0000
+   138F DD 7E F6      [19] 2396 	ld	a, -10 (ix)
+   1392 B1            [ 4] 2397 	or	a, c
+   1393 DD 77 F2      [19] 2398 	ld	-14 (ix), a
+   1396 DD 7E F7      [19] 2399 	ld	a, -9 (ix)
+   1399 B0            [ 4] 2400 	or	a, b
+   139A DD 77 F3      [19] 2401 	ld	-13 (ix), a
+   139D DD 7E F8      [19] 2402 	ld	a, -8 (ix)
+   13A0 B3            [ 4] 2403 	or	a, e
+   13A1 DD 77 F4      [19] 2404 	ld	-12 (ix), a
+   13A4 DD 7E F9      [19] 2405 	ld	a, -7 (ix)
+   13A7 B2            [ 4] 2406 	or	a, d
+   13A8 DD 77 F5      [19] 2407 	ld	-11 (ix), a
+   13AB DD 5E C6      [19] 2408 	ld	e, -58 (ix)
+   13AE DD 56 C7      [19] 2409 	ld	d, -57 (ix)
+   13B1 21 98 00      [10] 2410 	ld	hl, #0x0098
+   13B4 39            [11] 2411 	add	hl, sp
+   13B5 01 04 00      [10] 2412 	ld	bc, #0x0004
+   13B8 ED B0         [21] 2413 	ldir
+   13BA DD 7E BE      [19] 2414 	ld	a, -66 (ix)
+   13BD DD 86 F2      [19] 2415 	add	a, -14 (ix)
+   13C0 DD 77 F6      [19] 2416 	ld	-10 (ix), a
+   13C3 DD 7E BF      [19] 2417 	ld	a, -65 (ix)
+   13C6 DD 8E F3      [19] 2418 	adc	a, -13 (ix)
+   13C9 DD 77 F7      [19] 2419 	ld	-9 (ix), a
+   13CC DD 7E C0      [19] 2420 	ld	a, -64 (ix)
+   13CF DD 8E F4      [19] 2421 	adc	a, -12 (ix)
+   13D2 DD 77 F8      [19] 2422 	ld	-8 (ix), a
+   13D5 DD 7E C1      [19] 2423 	ld	a, -63 (ix)
+   13D8 DD 8E F5      [19] 2424 	adc	a, -11 (ix)
+   13DB DD 77 F9      [19] 2425 	ld	-7 (ix), a
+   13DE DD 5E B4      [19] 2426 	ld	e, -76 (ix)
+   13E1 DD 56 B5      [19] 2427 	ld	d, -75 (ix)
+   13E4 21 9C 00      [10] 2428 	ld	hl, #0x009c
+   13E7 39            [11] 2429 	add	hl, sp
+   13E8 01 04 00      [10] 2430 	ld	bc, #0x0004
+   13EB ED B0         [21] 2431 	ldir
+   13ED DD 7E AA      [19] 2432 	ld	a, -86 (ix)
+   13F0 DD AE F6      [19] 2433 	xor	a, -10 (ix)
+   13F3 4F            [ 4] 2434 	ld	c, a
+   13F4 DD 7E AB      [19] 2435 	ld	a, -85 (ix)
+   13F7 DD AE F7      [19] 2436 	xor	a, -9 (ix)
+   13FA 47            [ 4] 2437 	ld	b, a
+   13FB DD 7E AC      [19] 2438 	ld	a, -84 (ix)
+   13FE DD AE F8      [19] 2439 	xor	a, -8 (ix)
+   1401 5F            [ 4] 2440 	ld	e, a
+   1402 DD 7E AD      [19] 2441 	ld	a, -83 (ix)
+   1405 DD AE F9      [19] 2442 	xor	a, -7 (ix)
+   1408 57            [ 4] 2443 	ld	d, a
+   1409 DD 6E 9C      [19] 2444 	ld	l, -100 (ix)
+   140C DD 66 9D      [19] 2445 	ld	h, -99 (ix)
+   140F 71            [ 7] 2446 	ld	(hl), c
+   1410 23            [ 6] 2447 	inc	hl
+   1411 70            [ 7] 2448 	ld	(hl), b
+   1412 23            [ 6] 2449 	inc	hl
+   1413 73            [ 7] 2450 	ld	(hl), e
+   1414 23            [ 6] 2451 	inc	hl
+   1415 72            [ 7] 2452 	ld	(hl), d
+   1416 DD 71 EB      [19] 2453 	ld	-21 (ix), c
+   1419 DD 70 EC      [19] 2454 	ld	-20 (ix), b
+   141C DD 73 ED      [19] 2455 	ld	-19 (ix), e
+   141F DD 36 EA 00   [19] 2456 	ld	-22 (ix), #0x00
+   1423 3E 04         [ 7] 2457 	ld	a, #0x04
+   1425                    2458 00259$:
+   1425 DD CB EB 26   [23] 2459 	sla	-21 (ix)
+   1429 DD CB EC 16   [23] 2460 	rl	-20 (ix)
+   142D DD CB ED 16   [23] 2461 	rl	-19 (ix)
+   1431 3D            [ 4] 2462 	dec	a
+   1432 20 F1         [12] 2463 	jr	NZ,00259$
+   1434 21 00 00      [10] 2464 	ld	hl, #0x0000
+   1437 06 04         [ 7] 2465 	ld	b, #0x04
+   1439                    2466 00261$:
+   1439 CB 3A         [ 8] 2467 	srl	d
+   143B CB 1B         [ 8] 2468 	rr	e
+   143D 10 FA         [13] 2469 	djnz	00261$
+   143F DD 7E EA      [19] 2470 	ld	a, -22 (ix)
+   1442 B3            [ 4] 2471 	or	a, e
+   1443 DD 77 EE      [19] 2472 	ld	-18 (ix), a
+   1446 DD 7E EB      [19] 2473 	ld	a, -21 (ix)
+   1449 B2            [ 4] 2474 	or	a, d
+   144A DD 77 EF      [19] 2475 	ld	-17 (ix), a
+   144D DD 7E EC      [19] 2476 	ld	a, -20 (ix)
+   1450 B5            [ 4] 2477 	or	a, l
+   1451 DD 77 F0      [19] 2478 	ld	-16 (ix), a
+   1454 DD 7E ED      [19] 2479 	ld	a, -19 (ix)
+   1457 B4            [ 4] 2480 	or	a, h
+   1458 DD 77 F1      [19] 2481 	ld	-15 (ix), a
+   145B DD 5E 9C      [19] 2482 	ld	e, -100 (ix)
+   145E DD 56 9D      [19] 2483 	ld	d, -99 (ix)
+   1461 21 94 00      [10] 2484 	ld	hl, #0x0094
+   1464 39            [11] 2485 	add	hl, sp
+   1465 01 04 00      [10] 2486 	ld	bc, #0x0004
+   1468 ED B0         [21] 2487 	ldir
+   146A DD 7E FA      [19] 2488 	ld	a, -6 (ix)
+   146D DD 86 EE      [19] 2489 	add	a, -18 (ix)
+   1470 4F            [ 4] 2490 	ld	c, a
+   1471 DD 7E FB      [19] 2491 	ld	a, -5 (ix)
+   1474 DD 8E EF      [19] 2492 	adc	a, -17 (ix)
+   1477 47            [ 4] 2493 	ld	b, a
+   1478 DD 7E FC      [19] 2494 	ld	a, -4 (ix)
+   147B DD 8E F0      [19] 2495 	adc	a, -16 (ix)
+   147E 5F            [ 4] 2496 	ld	e, a
+   147F DD 7E FD      [19] 2497 	ld	a, -3 (ix)
+   1482 DD 8E F1      [19] 2498 	adc	a, -15 (ix)
+   1485 57            [ 4] 2499 	ld	d, a
+   1486 DD 6E D6      [19] 2500 	ld	l, -42 (ix)
+   1489 DD 66 D7      [19] 2501 	ld	h, -41 (ix)
+   148C 71            [ 7] 2502 	ld	(hl), c
+   148D 23            [ 6] 2503 	inc	hl
+   148E 70            [ 7] 2504 	ld	(hl), b
+   148F 23            [ 6] 2505 	inc	hl
+   1490 73            [ 7] 2506 	ld	(hl), e
+   1491 23            [ 6] 2507 	inc	hl
+   1492 72            [ 7] 2508 	ld	(hl), d
+   1493 79            [ 4] 2509 	ld	a, c
+   1494 DD AE F2      [19] 2510 	xor	a, -14 (ix)
+   1497 4F            [ 4] 2511 	ld	c, a
+   1498 78            [ 4] 2512 	ld	a, b
+   1499 DD AE F3      [19] 2513 	xor	a, -13 (ix)
+   149C 47            [ 4] 2514 	ld	b, a
+   149D 7B            [ 4] 2515 	ld	a, e
+   149E DD AE F4      [19] 2516 	xor	a, -12 (ix)
+   14A1 5F            [ 4] 2517 	ld	e, a
+   14A2 7A            [ 4] 2518 	ld	a, d
+   14A3 DD AE F5      [19] 2519 	xor	a, -11 (ix)
+   14A6 57            [ 4] 2520 	ld	d, a
+   14A7 DD 6E C6      [19] 2521 	ld	l, -58 (ix)
+   14AA DD 66 C7      [19] 2522 	ld	h, -57 (ix)
+   14AD 71            [ 7] 2523 	ld	(hl), c
+   14AE 23            [ 6] 2524 	inc	hl
+   14AF 70            [ 7] 2525 	ld	(hl), b
+   14B0 23            [ 6] 2526 	inc	hl
+   14B1 73            [ 7] 2527 	ld	(hl), e
+   14B2 23            [ 6] 2528 	inc	hl
+   14B3 72            [ 7] 2529 	ld	(hl), d
+   14B4 DD 71 FB      [19] 2530 	ld	-5 (ix), c
+   14B7 DD 70 FC      [19] 2531 	ld	-4 (ix), b
+   14BA DD 73 FD      [19] 2532 	ld	-3 (ix), e
+   14BD DD 36 FA 00   [19] 2533 	ld	-6 (ix), #0x00
+   14C1 4A            [ 4] 2534 	ld	c, d
+   14C2 06 00         [ 7] 2535 	ld	b, #0x00
+   14C4 21 00 00      [10] 2536 	ld	hl, #0x0000
+   14C7 DD 7E FA      [19] 2537 	ld	a, -6 (ix)
+   14CA B1            [ 4] 2538 	or	a, c
+   14CB 5F            [ 4] 2539 	ld	e, a
+   14CC DD 7E FB      [19] 2540 	ld	a, -5 (ix)
+   14CF B0            [ 4] 2541 	or	a, b
+   14D0 57            [ 4] 2542 	ld	d, a
+   14D1 DD 7E FC      [19] 2543 	ld	a, -4 (ix)
+   14D4 B5            [ 4] 2544 	or	a, l
+   14D5 4F            [ 4] 2545 	ld	c, a
+   14D6 DD 7E FD      [19] 2546 	ld	a, -3 (ix)
+   14D9 B4            [ 4] 2547 	or	a, h
+   14DA 47            [ 4] 2548 	ld	b, a
+   14DB DD 6E C6      [19] 2549 	ld	l, -58 (ix)
+   14DE DD 66 C7      [19] 2550 	ld	h, -57 (ix)
+   14E1 73            [ 7] 2551 	ld	(hl), e
+   14E2 23            [ 6] 2552 	inc	hl
+   14E3 72            [ 7] 2553 	ld	(hl), d
+   14E4 23            [ 6] 2554 	inc	hl
+   14E5 71            [ 7] 2555 	ld	(hl), c
+   14E6 23            [ 6] 2556 	inc	hl
+   14E7 70            [ 7] 2557 	ld	(hl), b
+   14E8 DD 7E F6      [19] 2558 	ld	a, -10 (ix)
+   14EB 83            [ 4] 2559 	add	a, e
+   14EC 5F            [ 4] 2560 	ld	e, a
+   14ED DD 7E F7      [19] 2561 	ld	a, -9 (ix)
+   14F0 8A            [ 4] 2562 	adc	a, d
+   14F1 57            [ 4] 2563 	ld	d, a
+   14F2 DD 7E F8      [19] 2564 	ld	a, -8 (ix)
+   14F5 89            [ 4] 2565 	adc	a, c
+   14F6 4F            [ 4] 2566 	ld	c, a
+   14F7 DD 7E F9      [19] 2567 	ld	a, -7 (ix)
+   14FA 88            [ 4] 2568 	adc	a, b
+   14FB 47            [ 4] 2569 	ld	b, a
+   14FC DD 6E B4      [19] 2570 	ld	l, -76 (ix)
+   14FF DD 66 B5      [19] 2571 	ld	h, -75 (ix)
+   1502 73            [ 7] 2572 	ld	(hl), e
+   1503 23            [ 6] 2573 	inc	hl
+   1504 72            [ 7] 2574 	ld	(hl), d
+   1505 23            [ 6] 2575 	inc	hl
+   1506 71            [ 7] 2576 	ld	(hl), c
+   1507 23            [ 6] 2577 	inc	hl
+   1508 70            [ 7] 2578 	ld	(hl), b
+   1509 7B            [ 4] 2579 	ld	a, e
+   150A DD AE EE      [19] 2580 	xor	a, -18 (ix)
+   150D 5F            [ 4] 2581 	ld	e, a
+   150E 7A            [ 4] 2582 	ld	a, d
+   150F DD AE EF      [19] 2583 	xor	a, -17 (ix)
+   1512 57            [ 4] 2584 	ld	d, a
+   1513 79            [ 4] 2585 	ld	a, c
+   1514 DD AE F0      [19] 2586 	xor	a, -16 (ix)
+   1517 4F            [ 4] 2587 	ld	c, a
+   1518 78            [ 4] 2588 	ld	a, b
+   1519 DD AE F1      [19] 2589 	xor	a, -15 (ix)
+   151C 47            [ 4] 2590 	ld	b, a
+   151D DD 6E 9C      [19] 2591 	ld	l, -100 (ix)
+   1520 DD 66 9D      [19] 2592 	ld	h, -99 (ix)
+   1523 73            [ 7] 2593 	ld	(hl), e
+   1524 23            [ 6] 2594 	inc	hl
+   1525 72            [ 7] 2595 	ld	(hl), d
+   1526 23            [ 6] 2596 	inc	hl
+   1527 71            [ 7] 2597 	ld	(hl), c
+   1528 23            [ 6] 2598 	inc	hl
+   1529 70            [ 7] 2599 	ld	(hl), b
+   152A DD 73 FA      [19] 2600 	ld	-6 (ix), e
+   152D DD 72 FB      [19] 2601 	ld	-5 (ix), d
+   1530 DD 71 FC      [19] 2602 	ld	-4 (ix), c
+   1533 DD 70 FD      [19] 2603 	ld	-3 (ix), b
+   1536 3E 07         [ 7] 2604 	ld	a, #0x07
+   1538                    2605 00267$:
+   1538 DD CB FA 26   [23] 2606 	sla	-6 (ix)
+   153C DD CB FB 16   [23] 2607 	rl	-5 (ix)
+   1540 DD CB FC 16   [23] 2608 	rl	-4 (ix)
+   1544 DD CB FD 16   [23] 2609 	rl	-3 (ix)
+   1548 3D            [ 4] 2610 	dec	a
+   1549 20 ED         [12] 2611 	jr	NZ,00267$
+   154B 48            [ 4] 2612 	ld	c, b
+   154C 06 00         [ 7] 2613 	ld	b, #0x00
+   154E 11 00 00      [10] 2614 	ld	de, #0x0000
+   1551 CB 39         [ 8] 2615 	srl	c
+   1553 79            [ 4] 2616 	ld	a, c
+   1554 DD B6 FA      [19] 2617 	or	a, -6 (ix)
+   1557 4F            [ 4] 2618 	ld	c, a
+   1558 78            [ 4] 2619 	ld	a, b
+   1559 DD B6 FB      [19] 2620 	or	a, -5 (ix)
+   155C 47            [ 4] 2621 	ld	b, a
+   155D 7B            [ 4] 2622 	ld	a, e
+   155E DD B6 FC      [19] 2623 	or	a, -4 (ix)
+   1561 5F            [ 4] 2624 	ld	e, a
+   1562 7A            [ 4] 2625 	ld	a, d
+   1563 DD B6 FD      [19] 2626 	or	a, -3 (ix)
+   1566 57            [ 4] 2627 	ld	d, a
+   1567 DD 6E 9C      [19] 2628 	ld	l, -100 (ix)
+   156A DD 66 9D      [19] 2629 	ld	h, -99 (ix)
+   156D 71            [ 7] 2630 	ld	(hl), c
+   156E 23            [ 6] 2631 	inc	hl
+   156F 70            [ 7] 2632 	ld	(hl), b
+   1570 23            [ 6] 2633 	inc	hl
+   1571 73            [ 7] 2634 	ld	(hl), e
+   1572 23            [ 6] 2635 	inc	hl
+   1573 72            [ 7] 2636 	ld	(hl), d
+   1574 DD 6E FE      [19] 2637 	ld	l, -2 (ix)
+   1577 DD 66 FF      [19] 2638 	ld	h, -1 (ix)
+   157A 2B            [ 6] 2639 	dec	hl
+   157B DD 75 FE      [19] 2640 	ld	-2 (ix), l
+                     157E  2641 	C$chacha20.c$21$3_0$38	= .
+                           2642 	.globl	C$chacha20.c$21$3_0$38
+                           2643 ;/work/source_code/chacha20.c:21: for (i = 0; i < 10; i++) {
+   157E DD 74 FF      [19] 2644 	ld	-1 (ix), h
+   1581 7C            [ 4] 2645 	ld	a, h
+   1582 DD B6 FE      [19] 2646 	or	a, -2 (ix)
+   1585 C2r64r00      [10] 2647 	jp	NZ, 00108$
+                     1588  2648 	C$chacha20.c$34$2_0$35	= .
+                           2649 	.globl	C$chacha20.c$34$2_0$35
+                           2650 ;/work/source_code/chacha20.c:34: for (i = 0; i < 16; ++i)
+   1588 01 00 00      [10] 2651 	ld	bc, #0x0000
+   158B                    2652 00109$:
+                     158B  2653 	C$chacha20.c$35$2_0$39	= .
+                           2654 	.globl	C$chacha20.c$35$2_0$39
+                           2655 ;/work/source_code/chacha20.c:35: out[i] = x[i] + in[i];
+   158B 59            [ 4] 2656 	ld	e, c
+   158C 50            [ 4] 2657 	ld	d, b
+   158D CB 23         [ 8] 2658 	sla	e
+   158F CB 12         [ 8] 2659 	rl	d
+   1591 CB 23         [ 8] 2660 	sla	e
+   1593 CB 12         [ 8] 2661 	rl	d
+   1595 DD 7E 04      [19] 2662 	ld	a, 4 (ix)
+   1598 83            [ 4] 2663 	add	a, e
+   1599 DD 77 F6      [19] 2664 	ld	-10 (ix), a
+   159C DD 7E 05      [19] 2665 	ld	a, 5 (ix)
+   159F 8A            [ 4] 2666 	adc	a, d
+   15A0 DD 77 F7      [19] 2667 	ld	-9 (ix), a
+   15A3 DD 6E 9A      [19] 2668 	ld	l, -102 (ix)
+   15A6 DD 66 9B      [19] 2669 	ld	h, -101 (ix)
+   15A9 19            [11] 2670 	add	hl, de
+   15AA D5            [11] 2671 	push	de
+   15AB C5            [11] 2672 	push	bc
+   15AC EB            [ 4] 2673 	ex	de,hl
+   15AD 21 A2 00      [10] 2674 	ld	hl, #0x00a2
+   15B0 39            [11] 2675 	add	hl, sp
+   15B1 EB            [ 4] 2676 	ex	de, hl
+   15B2 01 04 00      [10] 2677 	ld	bc, #0x0004
+   15B5 ED B0         [21] 2678 	ldir
+   15B7 C1            [10] 2679 	pop	bc
+   15B8 D1            [10] 2680 	pop	de
+   15B9 DD 6E 06      [19] 2681 	ld	l, 6 (ix)
+   15BC DD 66 07      [19] 2682 	ld	h, 7 (ix)
+   15BF 19            [11] 2683 	add	hl, de
+   15C0 5E            [ 7] 2684 	ld	e, (hl)
+   15C1 23            [ 6] 2685 	inc	hl
+   15C2 56            [ 7] 2686 	ld	d, (hl)
+   15C3 23            [ 6] 2687 	inc	hl
+   15C4 23            [ 6] 2688 	inc	hl
+   15C5 7E            [ 7] 2689 	ld	a, (hl)
+   15C6 2B            [ 6] 2690 	dec	hl
+   15C7 6E            [ 7] 2691 	ld	l, (hl)
+   15C8 67            [ 4] 2692 	ld	h, a
+   15C9 DD 7E F8      [19] 2693 	ld	a, -8 (ix)
+   15CC 83            [ 4] 2694 	add	a, e
+   15CD DD 77 FC      [19] 2695 	ld	-4 (ix), a
+   15D0 DD 7E F9      [19] 2696 	ld	a, -7 (ix)
+   15D3 8A            [ 4] 2697 	adc	a, d
+   15D4 DD 77 FD      [19] 2698 	ld	-3 (ix), a
+   15D7 DD 7E FA      [19] 2699 	ld	a, -6 (ix)
+   15DA 8D            [ 4] 2700 	adc	a, l
+   15DB DD 77 FE      [19] 2701 	ld	-2 (ix), a
+   15DE DD 7E FB      [19] 2702 	ld	a, -5 (ix)
+   15E1 8C            [ 4] 2703 	adc	a, h
+   15E2 DD 77 FF      [19] 2704 	ld	-1 (ix), a
+   15E5 C5            [11] 2705 	push	bc
+   15E6 DD 5E F6      [19] 2706 	ld	e, -10 (ix)
+   15E9 DD 56 F7      [19] 2707 	ld	d, -9 (ix)
+   15EC 21 A4 00      [10] 2708 	ld	hl, #0x00a4
+   15EF 39            [11] 2709 	add	hl, sp
+   15F0 01 04 00      [10] 2710 	ld	bc, #0x0004
+   15F3 ED B0         [21] 2711 	ldir
+   15F5 C1            [10] 2712 	pop	bc
+                     15F6  2713 	C$chacha20.c$34$2_0$39	= .
+                           2714 	.globl	C$chacha20.c$34$2_0$39
+                           2715 ;/work/source_code/chacha20.c:34: for (i = 0; i < 16; ++i)
+   15F6 03            [ 6] 2716 	inc	bc
+   15F7 79            [ 4] 2717 	ld	a, c
+   15F8 D6 10         [ 7] 2718 	sub	a, #0x10
+   15FA 78            [ 4] 2719 	ld	a, b
+   15FB 17            [ 4] 2720 	rla
+   15FC 3F            [ 4] 2721 	ccf
+   15FD 1F            [ 4] 2722 	rra
+   15FE DE 80         [ 7] 2723 	sbc	a, #0x80
+   1600 38 89         [12] 2724 	jr	C,00109$
+                     1602  2725 	C$chacha20.c$36$2_0$35	= .
+                           2726 	.globl	C$chacha20.c$36$2_0$35
+                           2727 ;/work/source_code/chacha20.c:36: }
+   1602 DD F9         [10] 2728 	ld	sp, ix
+   1604 DD E1         [14] 2729 	pop	ix
+                     1606  2730 	C$chacha20.c$36$2_0$35	= .
+                           2731 	.globl	C$chacha20.c$36$2_0$35
+                     1606  2732 	XG$chacha20_block$0$0	= .
+                           2733 	.globl	XG$chacha20_block$0$0
+   1606 C9            [10] 2734 	ret
+                     1607  2735 	G$chacha20_encrypt$0$0	= .
+                           2736 	.globl	G$chacha20_encrypt$0$0
+                     1607  2737 	C$chacha20.c$38$2_0$41	= .
+                           2738 	.globl	C$chacha20.c$38$2_0$41
+                           2739 ;/work/source_code/chacha20.c:38: void chacha20_encrypt(uint8_t *out, const uint8_t *in, size_t len, const uint8_t key[32], const uint8_t nonce[12], uint32_t counter)
+                           2740 ;	---------------------------------
+                           2741 ; Function chacha20_encrypt
+                           2742 ; ---------------------------------
+   1607                    2743 _chacha20_encrypt::
+   1607 CDr00r00      [17] 2744 	call	___sdcc_enter_ix
+   160A 21 2F FF      [10] 2745 	ld	hl, #-209
+   160D 39            [11] 2746 	add	hl, sp
+   160E F9            [ 6] 2747 	ld	sp, hl
+                     160F  2748 	C$chacha20.c$45$2_0$41	= .
+                           2749 	.globl	C$chacha20.c$45$2_0$41
+                           2750 ;/work/source_code/chacha20.c:45: const char *constants = "expand 32-byte k";
+                     160F  2751 	C$chacha20.c$48$1_0$41	= .
+                           2752 	.globl	C$chacha20.c$48$1_0$41
+                           2753 ;/work/source_code/chacha20.c:48: state[0] = ((uint32_t*)constants)[0];
+   160F 21 04 00      [10] 2754 	ld	hl, #4
+   1612 39            [11] 2755 	add	hl, sp
+   1613 DD 75 FE      [19] 2756 	ld	-2 (ix), l
+   1616 DD 74 FF      [19] 2757 	ld	-1 (ix), h
+   1619 ED 4BrE7r18   [20] 2758 	ld	bc, (#___str_0 + 0)
+   161D ED 5BrE9r18   [20] 2759 	ld	de, (#___str_0 + 2)
+   1621 DD 6E FE      [19] 2760 	ld	l, -2 (ix)
+   1624 DD 66 FF      [19] 2761 	ld	h, -1 (ix)
+   1627 71            [ 7] 2762 	ld	(hl), c
+   1628 23            [ 6] 2763 	inc	hl
+   1629 70            [ 7] 2764 	ld	(hl), b
+   162A 23            [ 6] 2765 	inc	hl
+   162B 73            [ 7] 2766 	ld	(hl), e
+   162C 23            [ 6] 2767 	inc	hl
+   162D 72            [ 7] 2768 	ld	(hl), d
+                     162E  2769 	C$chacha20.c$49$1_0$41	= .
+                           2770 	.globl	C$chacha20.c$49$1_0$41
+                           2771 ;/work/source_code/chacha20.c:49: state[1] = ((uint32_t*)constants)[1];
+   162E DD 7E FE      [19] 2772 	ld	a, -2 (ix)
+   1631 C6 04         [ 7] 2773 	add	a, #0x04
+   1633 5F            [ 4] 2774 	ld	e, a
+   1634 DD 7E FF      [19] 2775 	ld	a, -1 (ix)
+   1637 CE 00         [ 7] 2776 	adc	a, #0x00
+   1639 57            [ 4] 2777 	ld	d, a
+   163A D5            [11] 2778 	push	de
+   163B 11rEBr18      [10] 2779 	ld	de, #___str_0 + 4
+   163E 21 CD 00      [10] 2780 	ld	hl, #0x00cd
+   1641 39            [11] 2781 	add	hl, sp
+   1642 EB            [ 4] 2782 	ex	de, hl
+   1643 01 04 00      [10] 2783 	ld	bc, #0x0004
+   1646 ED B0         [21] 2784 	ldir
+   1648 D1            [10] 2785 	pop	de
+   1649 21 CB 00      [10] 2786 	ld	hl, #0x00cb
+   164C 39            [11] 2787 	add	hl, sp
+   164D 01 04 00      [10] 2788 	ld	bc, #0x0004
+   1650 ED B0         [21] 2789 	ldir
+                     1652  2790 	C$chacha20.c$50$1_0$41	= .
+                           2791 	.globl	C$chacha20.c$50$1_0$41
+                           2792 ;/work/source_code/chacha20.c:50: state[2] = ((uint32_t*)constants)[2];
+   1652 DD 7E FE      [19] 2793 	ld	a, -2 (ix)
+   1655 C6 08         [ 7] 2794 	add	a, #0x08
+   1657 5F            [ 4] 2795 	ld	e, a
+   1658 DD 7E FF      [19] 2796 	ld	a, -1 (ix)
+   165B CE 00         [ 7] 2797 	adc	a, #0x00
+   165D 57            [ 4] 2798 	ld	d, a
+   165E D5            [11] 2799 	push	de
+   165F 11rEFr18      [10] 2800 	ld	de, #___str_0 + 8
+   1662 21 CD 00      [10] 2801 	ld	hl, #0x00cd
+   1665 39            [11] 2802 	add	hl, sp
+   1666 EB            [ 4] 2803 	ex	de, hl
+   1667 01 04 00      [10] 2804 	ld	bc, #0x0004
+   166A ED B0         [21] 2805 	ldir
+   166C D1            [10] 2806 	pop	de
+   166D 21 CB 00      [10] 2807 	ld	hl, #0x00cb
+   1670 39            [11] 2808 	add	hl, sp
+   1671 01 04 00      [10] 2809 	ld	bc, #0x0004
+   1674 ED B0         [21] 2810 	ldir
+                     1676  2811 	C$chacha20.c$51$1_0$41	= .
+                           2812 	.globl	C$chacha20.c$51$1_0$41
+                           2813 ;/work/source_code/chacha20.c:51: state[3] = ((uint32_t*)constants)[3];
+   1676 DD 7E FE      [19] 2814 	ld	a, -2 (ix)
+   1679 C6 0C         [ 7] 2815 	add	a, #0x0c
+   167B 5F            [ 4] 2816 	ld	e, a
+   167C DD 7E FF      [19] 2817 	ld	a, -1 (ix)
+   167F CE 00         [ 7] 2818 	adc	a, #0x00
+   1681 57            [ 4] 2819 	ld	d, a
+   1682 D5            [11] 2820 	push	de
+   1683 11rF3r18      [10] 2821 	ld	de, #___str_0 + 12
+   1686 21 CD 00      [10] 2822 	ld	hl, #0x00cd
+   1689 39            [11] 2823 	add	hl, sp
+   168A EB            [ 4] 2824 	ex	de, hl
+   168B 01 04 00      [10] 2825 	ld	bc, #0x0004
+   168E ED B0         [21] 2826 	ldir
+   1690 D1            [10] 2827 	pop	de
+   1691 21 CB 00      [10] 2828 	ld	hl, #0x00cb
+   1694 39            [11] 2829 	add	hl, sp
+   1695 01 04 00      [10] 2830 	ld	bc, #0x0004
+   1698 ED B0         [21] 2831 	ldir
+                     169A  2832 	C$chacha20.c$53$1_0$41	= .
+                           2833 	.globl	C$chacha20.c$53$1_0$41
+                           2834 ;/work/source_code/chacha20.c:53: for(i=0; i<8; i++) state[4+i] = ((uint32_t*)key)[i];
+   169A 01 00 00      [10] 2835 	ld	bc, #0x0000
+   169D                    2836 00108$:
+   169D 79            [ 4] 2837 	ld	a, c
+   169E C6 04         [ 7] 2838 	add	a, #0x04
+   16A0 6F            [ 4] 2839 	ld	l, a
+   16A1 17            [ 4] 2840 	rla
+   16A2 9F            [ 4] 2841 	sbc	a, a
+   16A3 67            [ 4] 2842 	ld	h, a
+   16A4 29            [11] 2843 	add	hl, hl
+   16A5 29            [11] 2844 	add	hl, hl
+   16A6 EB            [ 4] 2845 	ex	de,hl
+   16A7 DD 7E FE      [19] 2846 	ld	a, -2 (ix)
+   16AA 83            [ 4] 2847 	add	a, e
+   16AB DD 77 F8      [19] 2848 	ld	-8 (ix), a
+   16AE DD 7E FF      [19] 2849 	ld	a, -1 (ix)
+   16B1 8A            [ 4] 2850 	adc	a, d
+   16B2 DD 77 F9      [19] 2851 	ld	-7 (ix), a
+   16B5 DD 5E 0A      [19] 2852 	ld	e, 10 (ix)
+   16B8 DD 56 0B      [19] 2853 	ld	d, 11 (ix)
+   16BB 69            [ 4] 2854 	ld	l, c
+   16BC 60            [ 4] 2855 	ld	h, b
+   16BD 29            [11] 2856 	add	hl, hl
+   16BE 29            [11] 2857 	add	hl, hl
+   16BF 19            [11] 2858 	add	hl, de
+   16C0 EB            [ 4] 2859 	ex	de, hl
+   16C1 C5            [11] 2860 	push	bc
+   16C2 21 CD 00      [10] 2861 	ld	hl, #0x00cd
+   16C5 39            [11] 2862 	add	hl, sp
+   16C6 EB            [ 4] 2863 	ex	de, hl
+   16C7 01 04 00      [10] 2864 	ld	bc, #0x0004
+   16CA ED B0         [21] 2865 	ldir
+   16CC DD 5E F8      [19] 2866 	ld	e, -8 (ix)
+   16CF DD 56 F9      [19] 2867 	ld	d, -7 (ix)
+   16D2 21 CD 00      [10] 2868 	ld	hl, #0x00cd
+   16D5 39            [11] 2869 	add	hl, sp
+   16D6 01 04 00      [10] 2870 	ld	bc, #0x0004
+   16D9 ED B0         [21] 2871 	ldir
+   16DB C1            [10] 2872 	pop	bc
+   16DC 03            [ 6] 2873 	inc	bc
+   16DD 79            [ 4] 2874 	ld	a, c
+   16DE D6 08         [ 7] 2875 	sub	a, #0x08
+   16E0 78            [ 4] 2876 	ld	a, b
+   16E1 DE 00         [ 7] 2877 	sbc	a, #0x00
+   16E3 38 B8         [12] 2878 	jr	C,00108$
+                     16E5  2879 	C$chacha20.c$55$1_0$41	= .
+                           2880 	.globl	C$chacha20.c$55$1_0$41
+                           2881 ;/work/source_code/chacha20.c:55: state[12] = counter;
+   16E5 DD 7E FE      [19] 2882 	ld	a, -2 (ix)
+   16E8 C6 30         [ 7] 2883 	add	a, #0x30
+   16EA DD 77 F3      [19] 2884 	ld	-13 (ix), a
+   16ED DD 7E FF      [19] 2885 	ld	a, -1 (ix)
+   16F0 CE 00         [ 7] 2886 	adc	a, #0x00
+   16F2 DD 77 F4      [19] 2887 	ld	-12 (ix), a
+   16F5 DD 5E F3      [19] 2888 	ld	e, -13 (ix)
+   16F8 DD 56 F4      [19] 2889 	ld	d, -12 (ix)
+   16FB 21 DF 00      [10] 2890 	ld	hl, #0x00df
+   16FE 39            [11] 2891 	add	hl, sp
+   16FF 01 04 00      [10] 2892 	ld	bc, #0x0004
+   1702 ED B0         [21] 2893 	ldir
+                     1704  2894 	C$chacha20.c$56$1_0$41	= .
+                           2895 	.globl	C$chacha20.c$56$1_0$41
+                           2896 ;/work/source_code/chacha20.c:56: for(i=0; i<3; i++) state[13+i] = ((uint32_t*)nonce)[i];
+   1704 01 00 00      [10] 2897 	ld	bc, #0x0000
+   1707                    2898 00110$:
+   1707 79            [ 4] 2899 	ld	a, c
+   1708 C6 0D         [ 7] 2900 	add	a, #0x0d
+   170A 6F            [ 4] 2901 	ld	l, a
+   170B 17            [ 4] 2902 	rla
+   170C 9F            [ 4] 2903 	sbc	a, a
+   170D 67            [ 4] 2904 	ld	h, a
+   170E 29            [11] 2905 	add	hl, hl
+   170F 29            [11] 2906 	add	hl, hl
+   1710 EB            [ 4] 2907 	ex	de,hl
+   1711 DD 7E FE      [19] 2908 	ld	a, -2 (ix)
+   1714 83            [ 4] 2909 	add	a, e
+   1715 DD 77 F8      [19] 2910 	ld	-8 (ix), a
+   1718 DD 7E FF      [19] 2911 	ld	a, -1 (ix)
+   171B 8A            [ 4] 2912 	adc	a, d
+   171C DD 77 F9      [19] 2913 	ld	-7 (ix), a
+   171F DD 5E 0C      [19] 2914 	ld	e, 12 (ix)
+   1722 DD 56 0D      [19] 2915 	ld	d, 13 (ix)
+   1725 69            [ 4] 2916 	ld	l, c
+   1726 60            [ 4] 2917 	ld	h, b
+   1727 29            [11] 2918 	add	hl, hl
+   1728 29            [11] 2919 	add	hl, hl
+   1729 19            [11] 2920 	add	hl, de
+   172A EB            [ 4] 2921 	ex	de, hl
+   172B C5            [11] 2922 	push	bc
+   172C 21 CD 00      [10] 2923 	ld	hl, #0x00cd
+   172F 39            [11] 2924 	add	hl, sp
+   1730 EB            [ 4] 2925 	ex	de, hl
+   1731 01 04 00      [10] 2926 	ld	bc, #0x0004
+   1734 ED B0         [21] 2927 	ldir
+   1736 DD 5E F8      [19] 2928 	ld	e, -8 (ix)
+   1739 DD 56 F9      [19] 2929 	ld	d, -7 (ix)
+   173C 21 CD 00      [10] 2930 	ld	hl, #0x00cd
+   173F 39            [11] 2931 	add	hl, sp
+   1740 01 04 00      [10] 2932 	ld	bc, #0x0004
+   1743 ED B0         [21] 2933 	ldir
+   1745 C1            [10] 2934 	pop	bc
+   1746 03            [ 6] 2935 	inc	bc
+   1747 79            [ 4] 2936 	ld	a, c
+   1748 D6 03         [ 7] 2937 	sub	a, #0x03
+   174A 78            [ 4] 2938 	ld	a, b
+   174B DE 00         [ 7] 2939 	sbc	a, #0x00
+   174D 38 B8         [12] 2940 	jr	C,00110$
+                     174F  2941 	C$chacha20.c$58$2_0$44	= .
+                           2942 	.globl	C$chacha20.c$58$2_0$44
+                           2943 ;/work/source_code/chacha20.c:58: while (len > 0) {
+   174F DD 7E FE      [19] 2944 	ld	a, -2 (ix)
+   1752 DD 77 F5      [19] 2945 	ld	-11 (ix), a
+   1755 DD 7E FF      [19] 2946 	ld	a, -1 (ix)
+   1758 DD 77 F6      [19] 2947 	ld	-10 (ix), a
+   175B 21 44 00      [10] 2948 	ld	hl, #68
+   175E 39            [11] 2949 	add	hl, sp
+   175F DD 75 F7      [19] 2950 	ld	-9 (ix), l
+   1762 DD 74 F8      [19] 2951 	ld	-8 (ix), h
+   1765 21 84 00      [10] 2952 	ld	hl, #132
+   1768 39            [11] 2953 	add	hl, sp
+   1769 DD 75 F9      [19] 2954 	ld	-7 (ix), l
+   176C DD 74 FA      [19] 2955 	ld	-6 (ix), h
+   176F                    2956 00105$:
+   176F DD 7E 09      [19] 2957 	ld	a, 9 (ix)
+   1772 DD B6 08      [19] 2958 	or	a, 8 (ix)
+   1775 CArE2r18      [10] 2959 	jp	Z, 00117$
+                     1778  2960 	C$chacha20.c$59$2_0$44	= .
+                           2961 	.globl	C$chacha20.c$59$2_0$44
+                           2962 ;/work/source_code/chacha20.c:59: chacha20_block(block, state);
+   1778 DD 5E F5      [19] 2963 	ld	e, -11 (ix)
+   177B DD 56 F6      [19] 2964 	ld	d, -10 (ix)
+   177E DD 4E F7      [19] 2965 	ld	c, -9 (ix)
+   1781 DD 46 F8      [19] 2966 	ld	b, -8 (ix)
+   1784 D5            [11] 2967 	push	de
+   1785 C5            [11] 2968 	push	bc
+   1786 CDr00r00      [17] 2969 	call	_chacha20_block
+   1789 F1            [10] 2970 	pop	af
+   178A F1            [10] 2971 	pop	af
+                     178B  2972 	C$chacha20.c$60$2_0$44	= .
+                           2973 	.globl	C$chacha20.c$60$2_0$44
+                           2974 ;/work/source_code/chacha20.c:60: state[12]++; // Increment counter
+   178B DD 6E F3      [19] 2975 	ld	l, -13 (ix)
+   178E DD 66 F4      [19] 2976 	ld	h, -12 (ix)
+   1791 4E            [ 7] 2977 	ld	c, (hl)
+   1792 23            [ 6] 2978 	inc	hl
+   1793 46            [ 7] 2979 	ld	b, (hl)
+   1794 23            [ 6] 2980 	inc	hl
+   1795 5E            [ 7] 2981 	ld	e, (hl)
+   1796 23            [ 6] 2982 	inc	hl
+   1797 56            [ 7] 2983 	ld	d, (hl)
+   1798 0C            [ 4] 2984 	inc	c
+   1799 20 04         [12] 2985 	jr	NZ,00179$
+   179B 04            [ 4] 2986 	inc	b
+   179C 20 01         [12] 2987 	jr	NZ,00179$
+   179E 13            [ 6] 2988 	inc	de
+   179F                    2989 00179$:
+   179F DD 6E F3      [19] 2990 	ld	l, -13 (ix)
+   17A2 DD 66 F4      [19] 2991 	ld	h, -12 (ix)
+   17A5 71            [ 7] 2992 	ld	(hl), c
+   17A6 23            [ 6] 2993 	inc	hl
+   17A7 70            [ 7] 2994 	ld	(hl), b
+   17A8 23            [ 6] 2995 	inc	hl
+   17A9 73            [ 7] 2996 	ld	(hl), e
+   17AA 23            [ 6] 2997 	inc	hl
+   17AB 72            [ 7] 2998 	ld	(hl), d
+                     17AC  2999 	C$chacha20.c$63$1_0$41	= .
+                           3000 	.globl	C$chacha20.c$63$1_0$41
+                           3001 ;/work/source_code/chacha20.c:63: for (i = 0; i < 16; i++) {
+   17AC AF            [ 4] 3002 	xor	a, a
+   17AD DD 77 FE      [19] 3003 	ld	-2 (ix), a
+   17B0 DD 77 FF      [19] 3004 	ld	-1 (ix), a
+   17B3                    3005 00112$:
+                     17B3  3006 	C$chacha20.c$64$4_0$46	= .
+                           3007 	.globl	C$chacha20.c$64$4_0$46
+                           3008 ;/work/source_code/chacha20.c:64: uint32_t v = block[i];
+   17B3 DD 4E FE      [19] 3009 	ld	c, -2 (ix)
+   17B6 DD 46 FF      [19] 3010 	ld	b, -1 (ix)
+   17B9 CB 21         [ 8] 3011 	sla	c
+   17BB CB 10         [ 8] 3012 	rl	b
+   17BD CB 21         [ 8] 3013 	sla	c
+   17BF CB 10         [ 8] 3014 	rl	b
+   17C1 DD 6E F7      [19] 3015 	ld	l, -9 (ix)
+   17C4 DD 66 F8      [19] 3016 	ld	h, -8 (ix)
+   17C7 09            [11] 3017 	add	hl, bc
+   17C8 EB            [ 4] 3018 	ex	de,hl
+   17C9 21 00 00      [10] 3019 	ld	hl, #0x0000
+   17CC 39            [11] 3020 	add	hl, sp
+   17CD EB            [ 4] 3021 	ex	de, hl
+   17CE 01 04 00      [10] 3022 	ld	bc, #0x0004
+   17D1 ED B0         [21] 3023 	ldir
+                     17D3  3024 	C$chacha20.c$65$4_0$46	= .
+                           3025 	.globl	C$chacha20.c$65$4_0$46
+                           3026 ;/work/source_code/chacha20.c:65: block8[i*4+0] = (uint8_t)(v >> 0);
+   17D3 DD 7E FE      [19] 3027 	ld	a, -2 (ix)
+   17D6 87            [ 4] 3028 	add	a, a
+   17D7 87            [ 4] 3029 	add	a, a
+   17D8 DD 77 FD      [19] 3030 	ld	-3 (ix), a
+   17DB 4F            [ 4] 3031 	ld	c, a
+   17DC 17            [ 4] 3032 	rla
+   17DD 9F            [ 4] 3033 	sbc	a, a
+   17DE 47            [ 4] 3034 	ld	b, a
+   17DF DD 6E F9      [19] 3035 	ld	l, -7 (ix)
+   17E2 DD 66 FA      [19] 3036 	ld	h, -6 (ix)
+   17E5 09            [11] 3037 	add	hl, bc
+   17E6 FD 21 00 00   [14] 3038 	ld	iy, #0
+   17EA FD 39         [15] 3039 	add	iy, sp
+   17EC FD 7E 00      [19] 3040 	ld	a, 0 (iy)
+   17EF 77            [ 7] 3041 	ld	(hl), a
+                     17F0  3042 	C$chacha20.c$66$4_0$46	= .
+                           3043 	.globl	C$chacha20.c$66$4_0$46
+                           3044 ;/work/source_code/chacha20.c:66: block8[i*4+1] = (uint8_t)(v >> 8);
+   17F0 DD 7E FD      [19] 3045 	ld	a, -3 (ix)
+   17F3 3C            [ 4] 3046 	inc	a
+   17F4 4F            [ 4] 3047 	ld	c, a
+   17F5 17            [ 4] 3048 	rla
+   17F6 9F            [ 4] 3049 	sbc	a, a
+   17F7 47            [ 4] 3050 	ld	b, a
+   17F8 DD 6E F9      [19] 3051 	ld	l, -7 (ix)
+   17FB DD 66 FA      [19] 3052 	ld	h, -6 (ix)
+   17FE 09            [11] 3053 	add	hl, bc
+   17FF C1            [10] 3054 	pop	bc
+   1800 C5            [11] 3055 	push	bc
+   1801 70            [ 7] 3056 	ld	(hl), b
+                     1802  3057 	C$chacha20.c$67$4_0$46	= .
+                           3058 	.globl	C$chacha20.c$67$4_0$46
+                           3059 ;/work/source_code/chacha20.c:67: block8[i*4+2] = (uint8_t)(v >> 16);
+   1802 DD 7E FD      [19] 3060 	ld	a, -3 (ix)
+   1805 3C            [ 4] 3061 	inc	a
+   1806 3C            [ 4] 3062 	inc	a
+   1807 4F            [ 4] 3063 	ld	c, a
+   1808 17            [ 4] 3064 	rla
+   1809 9F            [ 4] 3065 	sbc	a, a
+   180A 47            [ 4] 3066 	ld	b, a
+   180B DD 6E F9      [19] 3067 	ld	l, -7 (ix)
+   180E DD 66 FA      [19] 3068 	ld	h, -6 (ix)
+   1811 09            [11] 3069 	add	hl, bc
+   1812 FD 4E 02      [19] 3070 	ld	c, 2 (iy)
+   1815 71            [ 7] 3071 	ld	(hl), c
+                     1816  3072 	C$chacha20.c$68$4_0$46	= .
+                           3073 	.globl	C$chacha20.c$68$4_0$46
+                           3074 ;/work/source_code/chacha20.c:68: block8[i*4+3] = (uint8_t)(v >> 24);
+   1816 DD 7E FD      [19] 3075 	ld	a, -3 (ix)
+   1819 3C            [ 4] 3076 	inc	a
+   181A 3C            [ 4] 3077 	inc	a
+   181B 3C            [ 4] 3078 	inc	a
+   181C 4F            [ 4] 3079 	ld	c, a
+   181D 17            [ 4] 3080 	rla
+   181E 9F            [ 4] 3081 	sbc	a, a
+   181F 47            [ 4] 3082 	ld	b, a
+   1820 DD 6E F9      [19] 3083 	ld	l, -7 (ix)
+   1823 DD 66 FA      [19] 3084 	ld	h, -6 (ix)
+   1826 09            [11] 3085 	add	hl, bc
+   1827 FD 4E 03      [19] 3086 	ld	c, 3 (iy)
+   182A 71            [ 7] 3087 	ld	(hl), c
+                     182B  3088 	C$chacha20.c$63$3_0$45	= .
+                           3089 	.globl	C$chacha20.c$63$3_0$45
+                           3090 ;/work/source_code/chacha20.c:63: for (i = 0; i < 16; i++) {
+   182B DD 34 FE      [23] 3091 	inc	-2 (ix)
+   182E 20 03         [12] 3092 	jr	NZ,00186$
+   1830 DD 34 FF      [23] 3093 	inc	-1 (ix)
+   1833                    3094 00186$:
+   1833 DD 7E FE      [19] 3095 	ld	a, -2 (ix)
+   1836 D6 10         [ 7] 3096 	sub	a, #0x10
+   1838 DD 7E FF      [19] 3097 	ld	a, -1 (ix)
+   183B DE 00         [ 7] 3098 	sbc	a, #0x00
+   183D DArB3r17      [10] 3099 	jp	C, 00112$
+                     1840  3100 	C$chacha20.c$71$2_1$47	= .
+                           3101 	.globl	C$chacha20.c$71$2_1$47
+                           3102 ;/work/source_code/chacha20.c:71: size_t chunk = (len < 64) ? len : 64;
+   1840 DD 7E 08      [19] 3103 	ld	a, 8 (ix)
+   1843 D6 40         [ 7] 3104 	sub	a, #0x40
+   1845 DD 7E 09      [19] 3105 	ld	a, 9 (ix)
+   1848 DE 00         [ 7] 3106 	sbc	a, #0x00
+   184A 30 0E         [12] 3107 	jr	NC,00119$
+   184C DD 7E 08      [19] 3108 	ld	a, 8 (ix)
+   184F DD 77 FE      [19] 3109 	ld	-2 (ix), a
+   1852 DD 7E 09      [19] 3110 	ld	a, 9 (ix)
+   1855 DD 77 FF      [19] 3111 	ld	-1 (ix), a
+   1858 18 08         [12] 3112 	jr	00120$
+   185A                    3113 00119$:
+   185A DD 36 FE 40   [19] 3114 	ld	-2 (ix), #0x40
+   185E AF            [ 4] 3115 	xor	a, a
+   185F DD 77 FF      [19] 3116 	ld	-1 (ix), a
+   1862                    3117 00120$:
+   1862 DD 7E FE      [19] 3118 	ld	a, -2 (ix)
+   1865 DD 77 FB      [19] 3119 	ld	-5 (ix), a
+   1868 DD 7E FF      [19] 3120 	ld	a, -1 (ix)
+   186B DD 77 FC      [19] 3121 	ld	-4 (ix), a
+                     186E  3122 	C$chacha20.c$72$1_0$41	= .
+                           3123 	.globl	C$chacha20.c$72$1_0$41
+                           3124 ;/work/source_code/chacha20.c:72: for (j = 0; j < chunk; j++) {
+   186E 11 00 00      [10] 3125 	ld	de, #0x0000
+   1871                    3126 00115$:
+   1871 7B            [ 4] 3127 	ld	a, e
+   1872 DD 96 FB      [19] 3128 	sub	a, -5 (ix)
+   1875 7A            [ 4] 3129 	ld	a, d
+   1876 DD 9E FC      [19] 3130 	sbc	a, -4 (ix)
+   1879 30 2E         [12] 3131 	jr	NC,00104$
+                     187B  3132 	C$chacha20.c$73$4_1$49	= .
+                           3133 	.globl	C$chacha20.c$73$4_1$49
+                           3134 ;/work/source_code/chacha20.c:73: out[j] = in[j] ^ block8[j];
+   187B DD 7E 04      [19] 3135 	ld	a, 4 (ix)
+   187E 83            [ 4] 3136 	add	a, e
+   187F DD 77 FD      [19] 3137 	ld	-3 (ix), a
+   1882 DD 7E 05      [19] 3138 	ld	a, 5 (ix)
+   1885 8A            [ 4] 3139 	adc	a, d
+   1886 DD 77 FE      [19] 3140 	ld	-2 (ix), a
+   1889 DD 6E 06      [19] 3141 	ld	l, 6 (ix)
+   188C DD 66 07      [19] 3142 	ld	h, 7 (ix)
+   188F 19            [11] 3143 	add	hl, de
+   1890 7E            [ 7] 3144 	ld	a, (hl)
+   1891 DD 77 FF      [19] 3145 	ld	-1 (ix), a
+   1894 DD 6E F9      [19] 3146 	ld	l, -7 (ix)
+   1897 DD 66 FA      [19] 3147 	ld	h, -6 (ix)
+   189A 19            [11] 3148 	add	hl, de
+   189B 7E            [ 7] 3149 	ld	a, (hl)
+   189C DD AE FF      [19] 3150 	xor	a, -1 (ix)
+   189F DD 6E FD      [19] 3151 	ld	l, -3 (ix)
+   18A2 DD 66 FE      [19] 3152 	ld	h, -2 (ix)
+   18A5 77            [ 7] 3153 	ld	(hl), a
+                     18A6  3154 	C$chacha20.c$72$3_1$48	= .
+                           3155 	.globl	C$chacha20.c$72$3_1$48
+                           3156 ;/work/source_code/chacha20.c:72: for (j = 0; j < chunk; j++) {
+   18A6 13            [ 6] 3157 	inc	de
+   18A7 18 C8         [12] 3158 	jr	00115$
+   18A9                    3159 00104$:
+                     18A9  3160 	C$chacha20.c$76$2_1$47	= .
+                           3161 	.globl	C$chacha20.c$76$2_1$47
+                           3162 ;/work/source_code/chacha20.c:76: len -= chunk;
+   18A9 DD 7E 08      [19] 3163 	ld	a, 8 (ix)
+   18AC DD 96 FB      [19] 3164 	sub	a, -5 (ix)
+   18AF DD 77 08      [19] 3165 	ld	8 (ix), a
+   18B2 DD 7E 09      [19] 3166 	ld	a, 9 (ix)
+   18B5 DD 9E FC      [19] 3167 	sbc	a, -4 (ix)
+   18B8 DD 77 09      [19] 3168 	ld	9 (ix), a
+                     18BB  3169 	C$chacha20.c$77$2_1$47	= .
+                           3170 	.globl	C$chacha20.c$77$2_1$47
+                           3171 ;/work/source_code/chacha20.c:77: in += chunk;
+   18BB DD 7E 06      [19] 3172 	ld	a, 6 (ix)
+   18BE DD 86 FB      [19] 3173 	add	a, -5 (ix)
+   18C1 DD 77 06      [19] 3174 	ld	6 (ix), a
+   18C4 DD 7E 07      [19] 3175 	ld	a, 7 (ix)
+   18C7 DD 8E FC      [19] 3176 	adc	a, -4 (ix)
+   18CA DD 77 07      [19] 3177 	ld	7 (ix), a
+                     18CD  3178 	C$chacha20.c$78$2_1$47	= .
+                           3179 	.globl	C$chacha20.c$78$2_1$47
+                           3180 ;/work/source_code/chacha20.c:78: out += chunk;
+   18CD DD 7E 04      [19] 3181 	ld	a, 4 (ix)
+   18D0 DD 86 FB      [19] 3182 	add	a, -5 (ix)
+   18D3 DD 77 04      [19] 3183 	ld	4 (ix), a
+   18D6 DD 7E 05      [19] 3184 	ld	a, 5 (ix)
+   18D9 DD 8E FC      [19] 3185 	adc	a, -4 (ix)
+   18DC DD 77 05      [19] 3186 	ld	5 (ix), a
+   18DF C3r6Fr17      [10] 3187 	jp	00105$
+   18E2                    3188 00117$:
+                     18E2  3189 	C$chacha20.c$80$1_0$41	= .
+                           3190 	.globl	C$chacha20.c$80$1_0$41
+                           3191 ;/work/source_code/chacha20.c:80: }
+   18E2 DD F9         [10] 3192 	ld	sp, ix
+   18E4 DD E1         [14] 3193 	pop	ix
+                     18E6  3194 	C$chacha20.c$80$1_0$41	= .
+                           3195 	.globl	C$chacha20.c$80$1_0$41
+                     18E6  3196 	XG$chacha20_encrypt$0$0	= .
+                           3197 	.globl	XG$chacha20_encrypt$0$0
+   18E6 C9            [10] 3198 	ret
+                     18E7  3199 Fchacha20$__str_0$0_0$0 == .
+   18E7                    3200 ___str_0:
+   18E7 65 78 70 61 6E 64  3201 	.ascii "expand 32-byte k"
+        20 33 32 2D 62 79
+        74 65 20 6B
+   18F7 00                 3202 	.db 0x00
+                     18F8  3203 	G$main$0$0	= .
+                           3204 	.globl	G$main$0$0
+                     18F8  3205 	C$chacha20.c$82$1_0$50	= .
+                           3206 	.globl	C$chacha20.c$82$1_0$50
+                           3207 ;/work/source_code/chacha20.c:82: int main() {
+                           3208 ;	---------------------------------
+                           3209 ; Function main
+                           3210 ; ---------------------------------
+   18F8                    3211 _main::
+   18F8 CDr00r00      [17] 3212 	call	___sdcc_enter_ix
+   18FB 21 4E FF      [10] 3213 	ld	hl, #-178
+   18FE 39            [11] 3214 	add	hl, sp
+   18FF F9            [ 6] 3215 	ld	sp, hl
+                     1900  3216 	C$chacha20.c$83$2_0$50	= .
+                           3217 	.globl	C$chacha20.c$83$2_0$50
+                           3218 ;/work/source_code/chacha20.c:83: uint8_t key[32] = {0};
+   1900 21 00 00      [10] 3219 	ld	hl, #0
+   1903 39            [11] 3220 	add	hl, sp
+   1904 EB            [ 4] 3221 	ex	de, hl
+   1905 AF            [ 4] 3222 	xor	a, a
+   1906 12            [ 7] 3223 	ld	(de), a
+   1907 4B            [ 4] 3224 	ld	c, e
+   1908 42            [ 4] 3225 	ld	b, d
+   1909 03            [ 6] 3226 	inc	bc
+   190A AF            [ 4] 3227 	xor	a, a
+   190B 02            [ 7] 3228 	ld	(bc), a
+   190C 4B            [ 4] 3229 	ld	c, e
+   190D 42            [ 4] 3230 	ld	b, d
+   190E 03            [ 6] 3231 	inc	bc
+   190F 03            [ 6] 3232 	inc	bc
+   1910 AF            [ 4] 3233 	xor	a, a
+   1911 02            [ 7] 3234 	ld	(bc), a
+   1912 4B            [ 4] 3235 	ld	c, e
+   1913 42            [ 4] 3236 	ld	b, d
+   1914 03            [ 6] 3237 	inc	bc
+   1915 03            [ 6] 3238 	inc	bc
+   1916 03            [ 6] 3239 	inc	bc
+   1917 AF            [ 4] 3240 	xor	a, a
+   1918 02            [ 7] 3241 	ld	(bc), a
+   1919 21 04 00      [10] 3242 	ld	hl, #0x0004
+   191C 19            [11] 3243 	add	hl, de
+   191D 36 00         [10] 3244 	ld	(hl), #0x00
+   191F 21 05 00      [10] 3245 	ld	hl, #0x0005
+   1922 19            [11] 3246 	add	hl, de
+   1923 36 00         [10] 3247 	ld	(hl), #0x00
+   1925 21 06 00      [10] 3248 	ld	hl, #0x0006
+   1928 19            [11] 3249 	add	hl, de
+   1929 36 00         [10] 3250 	ld	(hl), #0x00
+   192B 21 07 00      [10] 3251 	ld	hl, #0x0007
+   192E 19            [11] 3252 	add	hl, de
+   192F 36 00         [10] 3253 	ld	(hl), #0x00
+   1931 21 08 00      [10] 3254 	ld	hl, #0x0008
+   1934 19            [11] 3255 	add	hl, de
+   1935 36 00         [10] 3256 	ld	(hl), #0x00
+   1937 21 09 00      [10] 3257 	ld	hl, #0x0009
+   193A 19            [11] 3258 	add	hl, de
+   193B 36 00         [10] 3259 	ld	(hl), #0x00
+   193D 21 0A 00      [10] 3260 	ld	hl, #0x000a
+   1940 19            [11] 3261 	add	hl, de
+   1941 36 00         [10] 3262 	ld	(hl), #0x00
+   1943 21 0B 00      [10] 3263 	ld	hl, #0x000b
+   1946 19            [11] 3264 	add	hl, de
+   1947 36 00         [10] 3265 	ld	(hl), #0x00
+   1949 21 0C 00      [10] 3266 	ld	hl, #0x000c
+   194C 19            [11] 3267 	add	hl, de
+   194D 36 00         [10] 3268 	ld	(hl), #0x00
+   194F 21 0D 00      [10] 3269 	ld	hl, #0x000d
+   1952 19            [11] 3270 	add	hl, de
+   1953 36 00         [10] 3271 	ld	(hl), #0x00
+   1955 21 0E 00      [10] 3272 	ld	hl, #0x000e
+   1958 19            [11] 3273 	add	hl, de
+   1959 36 00         [10] 3274 	ld	(hl), #0x00
+   195B 21 0F 00      [10] 3275 	ld	hl, #0x000f
+   195E 19            [11] 3276 	add	hl, de
+   195F 36 00         [10] 3277 	ld	(hl), #0x00
+   1961 21 10 00      [10] 3278 	ld	hl, #0x0010
+   1964 19            [11] 3279 	add	hl, de
+   1965 36 00         [10] 3280 	ld	(hl), #0x00
+   1967 21 11 00      [10] 3281 	ld	hl, #0x0011
+   196A 19            [11] 3282 	add	hl, de
+   196B 36 00         [10] 3283 	ld	(hl), #0x00
+   196D 21 12 00      [10] 3284 	ld	hl, #0x0012
+   1970 19            [11] 3285 	add	hl, de
+   1971 36 00         [10] 3286 	ld	(hl), #0x00
+   1973 21 13 00      [10] 3287 	ld	hl, #0x0013
+   1976 19            [11] 3288 	add	hl, de
+   1977 36 00         [10] 3289 	ld	(hl), #0x00
+   1979 21 14 00      [10] 3290 	ld	hl, #0x0014
+   197C 19            [11] 3291 	add	hl, de
+   197D 36 00         [10] 3292 	ld	(hl), #0x00
+   197F 21 15 00      [10] 3293 	ld	hl, #0x0015
+   1982 19            [11] 3294 	add	hl, de
+   1983 36 00         [10] 3295 	ld	(hl), #0x00
+   1985 21 16 00      [10] 3296 	ld	hl, #0x0016
+   1988 19            [11] 3297 	add	hl, de
+   1989 36 00         [10] 3298 	ld	(hl), #0x00
+   198B 21 17 00      [10] 3299 	ld	hl, #0x0017
+   198E 19            [11] 3300 	add	hl, de
+   198F 36 00         [10] 3301 	ld	(hl), #0x00
+   1991 21 18 00      [10] 3302 	ld	hl, #0x0018
+   1994 19            [11] 3303 	add	hl, de
+   1995 36 00         [10] 3304 	ld	(hl), #0x00
+   1997 21 19 00      [10] 3305 	ld	hl, #0x0019
+   199A 19            [11] 3306 	add	hl, de
+   199B 36 00         [10] 3307 	ld	(hl), #0x00
+   199D 21 1A 00      [10] 3308 	ld	hl, #0x001a
+   19A0 19            [11] 3309 	add	hl, de
+   19A1 36 00         [10] 3310 	ld	(hl), #0x00
+   19A3 21 1B 00      [10] 3311 	ld	hl, #0x001b
+   19A6 19            [11] 3312 	add	hl, de
+   19A7 36 00         [10] 3313 	ld	(hl), #0x00
+   19A9 21 1C 00      [10] 3314 	ld	hl, #0x001c
+   19AC 19            [11] 3315 	add	hl, de
+   19AD 36 00         [10] 3316 	ld	(hl), #0x00
+   19AF 21 1D 00      [10] 3317 	ld	hl, #0x001d
+   19B2 19            [11] 3318 	add	hl, de
+   19B3 36 00         [10] 3319 	ld	(hl), #0x00
+   19B5 21 1E 00      [10] 3320 	ld	hl, #0x001e
+   19B8 19            [11] 3321 	add	hl, de
+   19B9 36 00         [10] 3322 	ld	(hl), #0x00
+   19BB 21 1F 00      [10] 3323 	ld	hl, #0x001f
+   19BE 19            [11] 3324 	add	hl, de
+   19BF 36 00         [10] 3325 	ld	(hl), #0x00
+                     19C1  3326 	C$chacha20.c$84$2_0$50	= .
+                           3327 	.globl	C$chacha20.c$84$2_0$50
+                           3328 ;/work/source_code/chacha20.c:84: uint8_t nonce[12] = {0};
+   19C1 21 20 00      [10] 3329 	ld	hl, #32
+   19C4 39            [11] 3330 	add	hl, sp
+   19C5 DD 75 FE      [19] 3331 	ld	-2 (ix), l
+   19C8 DD 74 FF      [19] 3332 	ld	-1 (ix), h
+   19CB 36 00         [10] 3333 	ld	(hl), #0x00
+   19CD DD 4E FE      [19] 3334 	ld	c, -2 (ix)
+   19D0 DD 46 FF      [19] 3335 	ld	b, -1 (ix)
+   19D3 03            [ 6] 3336 	inc	bc
+   19D4 AF            [ 4] 3337 	xor	a, a
+   19D5 02            [ 7] 3338 	ld	(bc), a
+   19D6 DD 4E FE      [19] 3339 	ld	c, -2 (ix)
+   19D9 DD 46 FF      [19] 3340 	ld	b, -1 (ix)
+   19DC 03            [ 6] 3341 	inc	bc
+   19DD 03            [ 6] 3342 	inc	bc
+   19DE AF            [ 4] 3343 	xor	a, a
+   19DF 02            [ 7] 3344 	ld	(bc), a
+   19E0 DD 4E FE      [19] 3345 	ld	c, -2 (ix)
+   19E3 DD 46 FF      [19] 3346 	ld	b, -1 (ix)
+   19E6 03            [ 6] 3347 	inc	bc
+   19E7 03            [ 6] 3348 	inc	bc
+   19E8 03            [ 6] 3349 	inc	bc
+   19E9 AF            [ 4] 3350 	xor	a, a
+   19EA 02            [ 7] 3351 	ld	(bc), a
+   19EB DD 7E FE      [19] 3352 	ld	a, -2 (ix)
+   19EE C6 04         [ 7] 3353 	add	a, #0x04
+   19F0 4F            [ 4] 3354 	ld	c, a
+   19F1 DD 7E FF      [19] 3355 	ld	a, -1 (ix)
+   19F4 CE 00         [ 7] 3356 	adc	a, #0x00
+   19F6 47            [ 4] 3357 	ld	b, a
+   19F7 AF            [ 4] 3358 	xor	a, a
+   19F8 02            [ 7] 3359 	ld	(bc), a
+   19F9 DD 7E FE      [19] 3360 	ld	a, -2 (ix)
+   19FC C6 05         [ 7] 3361 	add	a, #0x05
+   19FE 4F            [ 4] 3362 	ld	c, a
+   19FF DD 7E FF      [19] 3363 	ld	a, -1 (ix)
+   1A02 CE 00         [ 7] 3364 	adc	a, #0x00
+   1A04 47            [ 4] 3365 	ld	b, a
+   1A05 AF            [ 4] 3366 	xor	a, a
+   1A06 02            [ 7] 3367 	ld	(bc), a
+   1A07 DD 7E FE      [19] 3368 	ld	a, -2 (ix)
+   1A0A C6 06         [ 7] 3369 	add	a, #0x06
+   1A0C 4F            [ 4] 3370 	ld	c, a
+   1A0D DD 7E FF      [19] 3371 	ld	a, -1 (ix)
+   1A10 CE 00         [ 7] 3372 	adc	a, #0x00
+   1A12 47            [ 4] 3373 	ld	b, a
+   1A13 AF            [ 4] 3374 	xor	a, a
+   1A14 02            [ 7] 3375 	ld	(bc), a
+   1A15 DD 7E FE      [19] 3376 	ld	a, -2 (ix)
+   1A18 C6 07         [ 7] 3377 	add	a, #0x07
+   1A1A 4F            [ 4] 3378 	ld	c, a
+   1A1B DD 7E FF      [19] 3379 	ld	a, -1 (ix)
+   1A1E CE 00         [ 7] 3380 	adc	a, #0x00
+   1A20 47            [ 4] 3381 	ld	b, a
+   1A21 AF            [ 4] 3382 	xor	a, a
+   1A22 02            [ 7] 3383 	ld	(bc), a
+   1A23 DD 7E FE      [19] 3384 	ld	a, -2 (ix)
+   1A26 C6 08         [ 7] 3385 	add	a, #0x08
+   1A28 4F            [ 4] 3386 	ld	c, a
+   1A29 DD 7E FF      [19] 3387 	ld	a, -1 (ix)
+   1A2C CE 00         [ 7] 3388 	adc	a, #0x00
+   1A2E 47            [ 4] 3389 	ld	b, a
+   1A2F AF            [ 4] 3390 	xor	a, a
+   1A30 02            [ 7] 3391 	ld	(bc), a
+   1A31 DD 7E FE      [19] 3392 	ld	a, -2 (ix)
+   1A34 C6 09         [ 7] 3393 	add	a, #0x09
+   1A36 4F            [ 4] 3394 	ld	c, a
+   1A37 DD 7E FF      [19] 3395 	ld	a, -1 (ix)
+   1A3A CE 00         [ 7] 3396 	adc	a, #0x00
+   1A3C 47            [ 4] 3397 	ld	b, a
+   1A3D AF            [ 4] 3398 	xor	a, a
+   1A3E 02            [ 7] 3399 	ld	(bc), a
+   1A3F DD 7E FE      [19] 3400 	ld	a, -2 (ix)
+   1A42 C6 0A         [ 7] 3401 	add	a, #0x0a
+   1A44 4F            [ 4] 3402 	ld	c, a
+   1A45 DD 7E FF      [19] 3403 	ld	a, -1 (ix)
+   1A48 CE 00         [ 7] 3404 	adc	a, #0x00
+   1A4A 47            [ 4] 3405 	ld	b, a
+   1A4B AF            [ 4] 3406 	xor	a, a
+   1A4C 02            [ 7] 3407 	ld	(bc), a
+   1A4D DD 7E FE      [19] 3408 	ld	a, -2 (ix)
+   1A50 C6 0B         [ 7] 3409 	add	a, #0x0b
+   1A52 4F            [ 4] 3410 	ld	c, a
+   1A53 DD 7E FF      [19] 3411 	ld	a, -1 (ix)
+   1A56 CE 00         [ 7] 3412 	adc	a, #0x00
+   1A58 47            [ 4] 3413 	ld	b, a
+   1A59 AF            [ 4] 3414 	xor	a, a
+   1A5A 02            [ 7] 3415 	ld	(bc), a
+                     1A5B  3416 	C$chacha20.c$85$2_0$50	= .
+                           3417 	.globl	C$chacha20.c$85$2_0$50
+                           3418 ;/work/source_code/chacha20.c:85: uint8_t data[64] = "Hello ChaCha20!";
+   1A5B 21 2C 00      [10] 3419 	ld	hl, #44
+   1A5E 39            [11] 3420 	add	hl, sp
+   1A5F 4D            [ 4] 3421 	ld	c,l
+   1A60 44            [ 4] 3422 	ld	b,h
+   1A61 36 48         [10] 3423 	ld	(hl),#0x48
+   1A63 69            [ 4] 3424 	ld	l, c
+   1A64 60            [ 4] 3425 	ld	h, b
+   1A65 23            [ 6] 3426 	inc	hl
+   1A66 36 65         [10] 3427 	ld	(hl), #0x65
+   1A68 69            [ 4] 3428 	ld	l, c
+   1A69 60            [ 4] 3429 	ld	h, b
+   1A6A 23            [ 6] 3430 	inc	hl
+   1A6B 23            [ 6] 3431 	inc	hl
+   1A6C 36 6C         [10] 3432 	ld	(hl), #0x6c
+   1A6E 69            [ 4] 3433 	ld	l, c
+   1A6F 60            [ 4] 3434 	ld	h, b
+   1A70 23            [ 6] 3435 	inc	hl
+   1A71 23            [ 6] 3436 	inc	hl
+   1A72 23            [ 6] 3437 	inc	hl
+   1A73 36 6C         [10] 3438 	ld	(hl), #0x6c
+   1A75 21 04 00      [10] 3439 	ld	hl, #0x0004
+   1A78 09            [11] 3440 	add	hl, bc
+   1A79 36 6F         [10] 3441 	ld	(hl), #0x6f
+   1A7B 21 05 00      [10] 3442 	ld	hl, #0x0005
+   1A7E 09            [11] 3443 	add	hl, bc
+   1A7F 36 20         [10] 3444 	ld	(hl), #0x20
+   1A81 21 06 00      [10] 3445 	ld	hl, #0x0006
+   1A84 09            [11] 3446 	add	hl, bc
+   1A85 36 43         [10] 3447 	ld	(hl), #0x43
+   1A87 21 07 00      [10] 3448 	ld	hl, #0x0007
+   1A8A 09            [11] 3449 	add	hl, bc
+   1A8B 36 68         [10] 3450 	ld	(hl), #0x68
+   1A8D 21 08 00      [10] 3451 	ld	hl, #0x0008
+   1A90 09            [11] 3452 	add	hl, bc
+   1A91 36 61         [10] 3453 	ld	(hl), #0x61
+   1A93 21 09 00      [10] 3454 	ld	hl, #0x0009
+   1A96 09            [11] 3455 	add	hl, bc
+   1A97 36 43         [10] 3456 	ld	(hl), #0x43
+   1A99 21 0A 00      [10] 3457 	ld	hl, #0x000a
+   1A9C 09            [11] 3458 	add	hl, bc
+   1A9D 36 68         [10] 3459 	ld	(hl), #0x68
+   1A9F 21 0B 00      [10] 3460 	ld	hl, #0x000b
+   1AA2 09            [11] 3461 	add	hl, bc
+   1AA3 36 61         [10] 3462 	ld	(hl), #0x61
+   1AA5 21 0C 00      [10] 3463 	ld	hl, #0x000c
+   1AA8 09            [11] 3464 	add	hl, bc
+   1AA9 36 32         [10] 3465 	ld	(hl), #0x32
+   1AAB 21 0D 00      [10] 3466 	ld	hl, #0x000d
+   1AAE 09            [11] 3467 	add	hl, bc
+   1AAF 36 30         [10] 3468 	ld	(hl), #0x30
+   1AB1 21 0E 00      [10] 3469 	ld	hl, #0x000e
+   1AB4 09            [11] 3470 	add	hl, bc
+   1AB5 36 21         [10] 3471 	ld	(hl), #0x21
+   1AB7 21 0F 00      [10] 3472 	ld	hl, #0x000f
+   1ABA 09            [11] 3473 	add	hl, bc
+   1ABB 36 00         [10] 3474 	ld	(hl), #0x00
+   1ABD 21 10 00      [10] 3475 	ld	hl, #0x0010
+   1AC0 09            [11] 3476 	add	hl, bc
+   1AC1 36 00         [10] 3477 	ld	(hl), #0x00
+   1AC3 21 11 00      [10] 3478 	ld	hl, #0x0011
+   1AC6 09            [11] 3479 	add	hl, bc
+   1AC7 36 00         [10] 3480 	ld	(hl), #0x00
+   1AC9 21 12 00      [10] 3481 	ld	hl, #0x0012
+   1ACC 09            [11] 3482 	add	hl, bc
+   1ACD 36 00         [10] 3483 	ld	(hl), #0x00
+   1ACF 21 13 00      [10] 3484 	ld	hl, #0x0013
+   1AD2 09            [11] 3485 	add	hl, bc
+   1AD3 36 00         [10] 3486 	ld	(hl), #0x00
+   1AD5 21 14 00      [10] 3487 	ld	hl, #0x0014
+   1AD8 09            [11] 3488 	add	hl, bc
+   1AD9 36 00         [10] 3489 	ld	(hl), #0x00
+   1ADB 21 15 00      [10] 3490 	ld	hl, #0x0015
+   1ADE 09            [11] 3491 	add	hl, bc
+   1ADF 36 00         [10] 3492 	ld	(hl), #0x00
+   1AE1 21 16 00      [10] 3493 	ld	hl, #0x0016
+   1AE4 09            [11] 3494 	add	hl, bc
+   1AE5 36 00         [10] 3495 	ld	(hl), #0x00
+   1AE7 21 17 00      [10] 3496 	ld	hl, #0x0017
+   1AEA 09            [11] 3497 	add	hl, bc
+   1AEB 36 00         [10] 3498 	ld	(hl), #0x00
+   1AED 21 18 00      [10] 3499 	ld	hl, #0x0018
+   1AF0 09            [11] 3500 	add	hl, bc
+   1AF1 36 00         [10] 3501 	ld	(hl), #0x00
+   1AF3 21 19 00      [10] 3502 	ld	hl, #0x0019
+   1AF6 09            [11] 3503 	add	hl, bc
+   1AF7 36 00         [10] 3504 	ld	(hl), #0x00
+   1AF9 21 1A 00      [10] 3505 	ld	hl, #0x001a
+   1AFC 09            [11] 3506 	add	hl, bc
+   1AFD 36 00         [10] 3507 	ld	(hl), #0x00
+   1AFF 21 1B 00      [10] 3508 	ld	hl, #0x001b
+   1B02 09            [11] 3509 	add	hl, bc
+   1B03 36 00         [10] 3510 	ld	(hl), #0x00
+   1B05 21 1C 00      [10] 3511 	ld	hl, #0x001c
+   1B08 09            [11] 3512 	add	hl, bc
+   1B09 36 00         [10] 3513 	ld	(hl), #0x00
+   1B0B 21 1D 00      [10] 3514 	ld	hl, #0x001d
+   1B0E 09            [11] 3515 	add	hl, bc
+   1B0F 36 00         [10] 3516 	ld	(hl), #0x00
+   1B11 21 1E 00      [10] 3517 	ld	hl, #0x001e
+   1B14 09            [11] 3518 	add	hl, bc
+   1B15 36 00         [10] 3519 	ld	(hl), #0x00
+   1B17 21 1F 00      [10] 3520 	ld	hl, #0x001f
+   1B1A 09            [11] 3521 	add	hl, bc
+   1B1B 36 00         [10] 3522 	ld	(hl), #0x00
+   1B1D 21 20 00      [10] 3523 	ld	hl, #0x0020
+   1B20 09            [11] 3524 	add	hl, bc
+   1B21 36 00         [10] 3525 	ld	(hl), #0x00
+   1B23 21 21 00      [10] 3526 	ld	hl, #0x0021
+   1B26 09            [11] 3527 	add	hl, bc
+   1B27 36 00         [10] 3528 	ld	(hl), #0x00
+   1B29 21 22 00      [10] 3529 	ld	hl, #0x0022
+   1B2C 09            [11] 3530 	add	hl, bc
+   1B2D 36 00         [10] 3531 	ld	(hl), #0x00
+   1B2F 21 23 00      [10] 3532 	ld	hl, #0x0023
+   1B32 09            [11] 3533 	add	hl, bc
+   1B33 36 00         [10] 3534 	ld	(hl), #0x00
+   1B35 21 24 00      [10] 3535 	ld	hl, #0x0024
+   1B38 09            [11] 3536 	add	hl, bc
+   1B39 36 00         [10] 3537 	ld	(hl), #0x00
+   1B3B 21 25 00      [10] 3538 	ld	hl, #0x0025
+   1B3E 09            [11] 3539 	add	hl, bc
+   1B3F 36 00         [10] 3540 	ld	(hl), #0x00
+   1B41 21 26 00      [10] 3541 	ld	hl, #0x0026
+   1B44 09            [11] 3542 	add	hl, bc
+   1B45 36 00         [10] 3543 	ld	(hl), #0x00
+   1B47 21 27 00      [10] 3544 	ld	hl, #0x0027
+   1B4A 09            [11] 3545 	add	hl, bc
+   1B4B 36 00         [10] 3546 	ld	(hl), #0x00
+   1B4D 21 28 00      [10] 3547 	ld	hl, #0x0028
+   1B50 09            [11] 3548 	add	hl, bc
+   1B51 36 00         [10] 3549 	ld	(hl), #0x00
+   1B53 21 29 00      [10] 3550 	ld	hl, #0x0029
+   1B56 09            [11] 3551 	add	hl, bc
+   1B57 36 00         [10] 3552 	ld	(hl), #0x00
+   1B59 21 2A 00      [10] 3553 	ld	hl, #0x002a
+   1B5C 09            [11] 3554 	add	hl, bc
+   1B5D 36 00         [10] 3555 	ld	(hl), #0x00
+   1B5F 21 2B 00      [10] 3556 	ld	hl, #0x002b
+   1B62 09            [11] 3557 	add	hl, bc
+   1B63 36 00         [10] 3558 	ld	(hl), #0x00
+   1B65 21 2C 00      [10] 3559 	ld	hl, #0x002c
+   1B68 09            [11] 3560 	add	hl, bc
+   1B69 36 00         [10] 3561 	ld	(hl), #0x00
+   1B6B 21 2D 00      [10] 3562 	ld	hl, #0x002d
+   1B6E 09            [11] 3563 	add	hl, bc
+   1B6F 36 00         [10] 3564 	ld	(hl), #0x00
+   1B71 21 2E 00      [10] 3565 	ld	hl, #0x002e
+   1B74 09            [11] 3566 	add	hl, bc
+   1B75 36 00         [10] 3567 	ld	(hl), #0x00
+   1B77 21 2F 00      [10] 3568 	ld	hl, #0x002f
+   1B7A 09            [11] 3569 	add	hl, bc
+   1B7B 36 00         [10] 3570 	ld	(hl), #0x00
+   1B7D 21 30 00      [10] 3571 	ld	hl, #0x0030
+   1B80 09            [11] 3572 	add	hl, bc
+   1B81 36 00         [10] 3573 	ld	(hl), #0x00
+   1B83 21 31 00      [10] 3574 	ld	hl, #0x0031
+   1B86 09            [11] 3575 	add	hl, bc
+   1B87 36 00         [10] 3576 	ld	(hl), #0x00
+   1B89 21 32 00      [10] 3577 	ld	hl, #0x0032
+   1B8C 09            [11] 3578 	add	hl, bc
+   1B8D 36 00         [10] 3579 	ld	(hl), #0x00
+   1B8F 21 33 00      [10] 3580 	ld	hl, #0x0033
+   1B92 09            [11] 3581 	add	hl, bc
+   1B93 36 00         [10] 3582 	ld	(hl), #0x00
+   1B95 21 34 00      [10] 3583 	ld	hl, #0x0034
+   1B98 09            [11] 3584 	add	hl, bc
+   1B99 36 00         [10] 3585 	ld	(hl), #0x00
+   1B9B 21 35 00      [10] 3586 	ld	hl, #0x0035
+   1B9E 09            [11] 3587 	add	hl, bc
+   1B9F 36 00         [10] 3588 	ld	(hl), #0x00
+   1BA1 21 36 00      [10] 3589 	ld	hl, #0x0036
+   1BA4 09            [11] 3590 	add	hl, bc
+   1BA5 36 00         [10] 3591 	ld	(hl), #0x00
+   1BA7 21 37 00      [10] 3592 	ld	hl, #0x0037
+   1BAA 09            [11] 3593 	add	hl, bc
+   1BAB 36 00         [10] 3594 	ld	(hl), #0x00
+   1BAD 21 38 00      [10] 3595 	ld	hl, #0x0038
+   1BB0 09            [11] 3596 	add	hl, bc
+   1BB1 36 00         [10] 3597 	ld	(hl), #0x00
+   1BB3 21 39 00      [10] 3598 	ld	hl, #0x0039
+   1BB6 09            [11] 3599 	add	hl, bc
+   1BB7 36 00         [10] 3600 	ld	(hl), #0x00
+   1BB9 21 3A 00      [10] 3601 	ld	hl, #0x003a
+   1BBC 09            [11] 3602 	add	hl, bc
+   1BBD 36 00         [10] 3603 	ld	(hl), #0x00
+   1BBF 21 3B 00      [10] 3604 	ld	hl, #0x003b
+   1BC2 09            [11] 3605 	add	hl, bc
+   1BC3 36 00         [10] 3606 	ld	(hl), #0x00
+   1BC5 21 3C 00      [10] 3607 	ld	hl, #0x003c
+   1BC8 09            [11] 3608 	add	hl, bc
+   1BC9 36 00         [10] 3609 	ld	(hl), #0x00
+   1BCB 21 3D 00      [10] 3610 	ld	hl, #0x003d
+   1BCE 09            [11] 3611 	add	hl, bc
+   1BCF 36 00         [10] 3612 	ld	(hl), #0x00
+   1BD1 21 3E 00      [10] 3613 	ld	hl, #0x003e
+   1BD4 09            [11] 3614 	add	hl, bc
+   1BD5 36 00         [10] 3615 	ld	(hl), #0x00
+   1BD7 21 3F 00      [10] 3616 	ld	hl, #0x003f
+   1BDA 09            [11] 3617 	add	hl, bc
+   1BDB 36 00         [10] 3618 	ld	(hl), #0x00
+                     1BDD  3619 	C$chacha20.c$88$1_0$50	= .
+                           3620 	.globl	C$chacha20.c$88$1_0$50
+                           3621 ;/work/source_code/chacha20.c:88: chacha20_encrypt(ciphertext, data, 64, key, nonce, 1);
+   1BDD DD 6E FE      [19] 3622 	ld	l, -2 (ix)
+   1BE0 DD 66 FF      [19] 3623 	ld	h, -1 (ix)
+   1BE3 DD 75 FA      [19] 3624 	ld	-6 (ix), l
+   1BE6 DD 74 FB      [19] 3625 	ld	-5 (ix), h
+   1BE9 DD 73 FC      [19] 3626 	ld	-4 (ix), e
+   1BEC DD 72 FD      [19] 3627 	ld	-3 (ix), d
+   1BEF 21 6C 00      [10] 3628 	ld	hl, #108
+   1BF2 39            [11] 3629 	add	hl, sp
+   1BF3 EB            [ 4] 3630 	ex	de, hl
+   1BF4 DD 73 FE      [19] 3631 	ld	-2 (ix), e
+   1BF7 DD 72 FF      [19] 3632 	ld	-1 (ix), d
+   1BFA D5            [11] 3633 	push	de
+   1BFB 21 00 00      [10] 3634 	ld	hl, #0x0000
+   1BFE E5            [11] 3635 	push	hl
+   1BFF 21 01 00      [10] 3636 	ld	hl, #0x0001
+   1C02 E5            [11] 3637 	push	hl
+   1C03 DD 6E FA      [19] 3638 	ld	l, -6 (ix)
+   1C06 DD 66 FB      [19] 3639 	ld	h, -5 (ix)
+   1C09 E5            [11] 3640 	push	hl
+   1C0A DD 6E FC      [19] 3641 	ld	l, -4 (ix)
+   1C0D DD 66 FD      [19] 3642 	ld	h, -3 (ix)
+   1C10 E5            [11] 3643 	push	hl
+   1C11 21 40 00      [10] 3644 	ld	hl, #0x0040
+   1C14 E5            [11] 3645 	push	hl
+   1C15 C5            [11] 3646 	push	bc
+   1C16 DD 6E FE      [19] 3647 	ld	l, -2 (ix)
+   1C19 DD 66 FF      [19] 3648 	ld	h, -1 (ix)
+   1C1C E5            [11] 3649 	push	hl
+   1C1D CDr07r16      [17] 3650 	call	_chacha20_encrypt
+   1C20 21 0E 00      [10] 3651 	ld	hl, #14
+   1C23 39            [11] 3652 	add	hl, sp
+   1C24 F9            [ 6] 3653 	ld	sp, hl
+   1C25 D1            [10] 3654 	pop	de
+                     1C26  3655 	C$chacha20.c$90$1_0$50	= .
+                           3656 	.globl	C$chacha20.c$90$1_0$50
+                           3657 ;/work/source_code/chacha20.c:90: printf("ChaCha20 Test: %02x %02x\n", ciphertext[0], ciphertext[1]);
+   1C26 6B            [ 4] 3658 	ld	l, e
+   1C27 62            [ 4] 3659 	ld	h, d
+   1C28 23            [ 6] 3660 	inc	hl
+   1C29 4E            [ 7] 3661 	ld	c, (hl)
+   1C2A 06 00         [ 7] 3662 	ld	b, #0x00
+   1C2C 1A            [ 7] 3663 	ld	a, (de)
+   1C2D 5F            [ 4] 3664 	ld	e, a
+   1C2E 16 00         [ 7] 3665 	ld	d, #0x00
+   1C30 C5            [11] 3666 	push	bc
+   1C31 D5            [11] 3667 	push	de
+   1C32 21r44r1C      [10] 3668 	ld	hl, #___str_2
+   1C35 E5            [11] 3669 	push	hl
+   1C36 CDr00r00      [17] 3670 	call	_printf
+   1C39 F1            [10] 3671 	pop	af
+   1C3A F1            [10] 3672 	pop	af
+   1C3B F1            [10] 3673 	pop	af
+                     1C3C  3674 	C$chacha20.c$91$1_0$50	= .
+                           3675 	.globl	C$chacha20.c$91$1_0$50
+                           3676 ;/work/source_code/chacha20.c:91: return 0;
+   1C3C 21 00 00      [10] 3677 	ld	hl, #0x0000
+                     1C3F  3678 	C$chacha20.c$92$1_0$50	= .
+                           3679 	.globl	C$chacha20.c$92$1_0$50
+                           3680 ;/work/source_code/chacha20.c:92: }
+   1C3F DD F9         [10] 3681 	ld	sp, ix
+   1C41 DD E1         [14] 3682 	pop	ix
+                     1C43  3683 	C$chacha20.c$92$1_0$50	= .
+                           3684 	.globl	C$chacha20.c$92$1_0$50
+                     1C43  3685 	XG$main$0$0	= .
+                           3686 	.globl	XG$main$0$0
+   1C43 C9            [10] 3687 	ret
+                     1C44  3688 Fchacha20$__str_2$0_0$0 == .
+   1C44                    3689 ___str_2:
+   1C44 43 68 61 43 68 61  3690 	.ascii "ChaCha20 Test: %02x %02x"
+        32 30 20 54 65 73
+        74 3A 20 25 30 32
+        78 20 25 30 32 78
+   1C5C 0A                 3691 	.db 0x0a
+   1C5D 00                 3692 	.db 0x00
+                           3693 	.area _CODE
+                           3694 	.area _INITIALIZER
+                           3695 	.area _CABS (ABS)

@@ -180,7 +180,6 @@ if __name__ == "__main__":
     analyzer = AdvancedLinuxAnalyzer()
     # Create dummy shadow for test
     os.makedirs("test_fs/etc/ssh", exist_ok=True)
-    os.makedirs("test_fs/bin", exist_ok=True)
     with open("test_fs/etc/shadow", "w") as f: f.write("root:$1$salt$hash:0:0:99999:7:::\n") # MD5 weak
     with open("test_fs/etc/ssh/sshd_config", "w") as f: f.write("PermitRootLogin yes\n")
     
@@ -188,4 +187,5 @@ if __name__ == "__main__":
     
     # Clean up
     import shutil
-    shutil.rmtree("test_fs")
+    if os.path.exists("test_fs"):
+        shutil.rmtree("test_fs")

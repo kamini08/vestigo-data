@@ -2,6 +2,14 @@
 #include <stdint.h>
 #include <string.h>
 
+#ifdef __SDCC
+int putchar(int c) { (void)c; return c; }
+#endif
+
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
 #define Nb 4
 #define Nk 4
 #define Nr 10
