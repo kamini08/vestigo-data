@@ -20,6 +20,8 @@ sys.path.append(str(current_dir))
 from config.logging_config import logger
 from services.ingest_service import IngestService
 from services.feature_extraction_service import FeatureExtractionService
+from services.filesystem_scan_service import FilesystemScanService
+from services.secure_boot_analysis_service import SecureBootAnalysisService
 from services.job_manager import job_manager, JobStatus
 
 # ==========================================================
@@ -31,6 +33,8 @@ app = FastAPI(title="Vestigo Backend")
 # Initialize services
 ingest_service = IngestService()
 feature_service = FeatureExtractionService()
+filesystem_service = FilesystemScanService()
+secureboot_service = SecureBootAnalysisService()
 
 logger.info("Vestigo Backend starting up...")
 
@@ -185,11 +189,27 @@ async def upload_and_analyze(background_tasks: BackgroundTasks, file: UploadFile
                 },
                 "analysis_workspace": analysis_result["analysis"]["workspace_path"]
             }
+            
+            # Add bootloaders if found
+            if "bootloaders" in analysis_result["analysis"]:
+                ingest_results["bootloaders"] = analysis_result["analysis"]["bootloaders"]
+            
             job_manager.update_job_ingest_results(job_id, ingest_results)
 
         # If it's PATH_A_BARE_METAL, add background task for feature extraction
         if analysis_result["analysis"]["routing_decision"] == "PATH_A_BARE_METAL":
             background_tasks.add_task(process_bare_metal_features, job_id, analysis_result)
+        
+        # If it's PATH_B_LINUX_FS, add background task for filesystem scanning
+        elif analysis_result["analysis"]["routing_decision"] == "PATH_B_LINUX_FS":
+            background_tasks.add_task(process_filesystem_scan, job_id, analysis_result)
+            
+            # If bootloaders were found, create separate jobs for each
+            if "bootloaders" in analysis_result["analysis"]:
+                bootloaders = analysis_result["analysis"]["bootloaders"]
+                if bootloaders:
+                    logger.info(f"Creating separate jobs for {len(bootloaders)} bootloader(s)")
+                    background_tasks.add_task(process_bootloader_analyses, job_id, bootloaders)
 
         logger.info(f"Analysis initiated successfully - JobID: {job_id}")
         return analysis_result
@@ -241,6 +261,102 @@ async def process_bare_metal_features(job_id: str, analysis_result: dict):
     except Exception as e:
         logger.error(f"Background feature extraction failed - JobID: {job_id}, Error: {str(e)}", exc_info=True)
         job_manager.mark_job_failed(job_id, f"Feature extraction failed: {str(e)}")
+
+
+async def process_filesystem_scan(job_id: str, analysis_result: dict):
+    """Background task to process PATH_B_LINUX_FS filesystem scanning"""
+    try:
+        logger.info(f"Starting background filesystem scan - JobID: {job_id}")
+        
+        # Update job status
+        job_manager.update_job_status(job_id, JobStatus.EXTRACTING_FEATURES)
+        
+        # Get extracted filesystem path from analysis results
+        extracted_path = None
+        if "analysis" in analysis_result:
+            if "filesystem_info" in analysis_result["analysis"]:
+                extracted_path = analysis_result["analysis"]["filesystem_info"].get("extracted_path")
+            elif "workspace_path" in analysis_result["analysis"]:
+                # Fallback to workspace path
+                workspace_path = analysis_result["analysis"]["workspace_path"]
+                # Check if there's an extracted directory in the workspace
+                if workspace_path and os.path.exists(workspace_path):
+                    for item in os.listdir(workspace_path):
+                        item_path = os.path.join(workspace_path, item)
+                        if os.path.isdir(item_path):
+                            extracted_path = item_path
+                            break
+        
+        if extracted_path and os.path.exists(extracted_path):
+            logger.info(f"Found extracted filesystem - JobID: {job_id}, Path: {extracted_path}")
+            
+            # Run filesystem scan
+            scan_results = await filesystem_service.scan_filesystem(job_id, extracted_path)
+            
+            # Update job with results (using feature_extraction_results for now)
+            job_manager.update_job_feature_results(job_id, scan_results)
+            
+            logger.info(f"Background filesystem scan completed - JobID: {job_id}")
+        else:
+            logger.error(f"Extracted filesystem path not found - JobID: {job_id}")
+            job_manager.mark_job_failed(job_id, "Extracted filesystem path not available")
+            
+    except Exception as e:
+        logger.error(f"Background filesystem scan failed - JobID: {job_id}, Error: {str(e)}", exc_info=True)
+        job_manager.mark_job_failed(job_id, f"Filesystem scan failed: {str(e)}")
+
+
+async def process_bootloader_analyses(parent_job_id: str, bootloaders: list):
+    """Background task to create separate jobs for bootloader secure boot analysis"""
+    try:
+        logger.info(f"Starting bootloader analysis jobs - ParentJob: {parent_job_id}, Count: {len(bootloaders)}")
+        
+        import uuid
+        
+        for bootloader_info in bootloaders:
+            # Create a new job for each bootloader analysis
+            bootloader_job_id = str(uuid.uuid4())
+            bootloader_name = bootloader_info.get("file", "unknown")
+            
+            logger.info(f"Creating bootloader analysis job - JobID: {bootloader_job_id}, Bootloader: {bootloader_name}")
+            
+            # Create job with bootloader- prefix for easy identification
+            job = job_manager.create_job(
+                bootloader_job_id, 
+                f"bootloader-{bootloader_name}",
+                bootloader_info.get("size", 0)
+            )
+            
+            # Mark as bootloader analysis type
+            job_manager.update_job_status(
+                bootloader_job_id,
+                JobStatus.EXTRACTING_FEATURES,
+                routing_decision="BOOTLOADER_ANALYSIS",
+                routing_reason=f"Secure boot analysis for {bootloader_info.get('type', 'unknown')} bootloader",
+                workspace_path=f"parent:{parent_job_id}"
+            )
+            
+            # Run secure boot analysis
+            try:
+                analysis_results = await secureboot_service.analyze_bootloader(
+                    parent_job_id,
+                    bootloader_info.get("path"),
+                    bootloader_info
+                )
+                
+                # Update job with results
+                job_manager.update_job_feature_results(bootloader_job_id, analysis_results)
+                
+                logger.info(f"Bootloader analysis completed - JobID: {bootloader_job_id}")
+                
+            except Exception as e:
+                logger.error(f"Bootloader analysis failed - JobID: {bootloader_job_id}, Error: {str(e)}")
+                job_manager.mark_job_failed(bootloader_job_id, f"Bootloader analysis failed: {str(e)}")
+        
+        logger.info(f"All bootloader analysis jobs created - ParentJob: {parent_job_id}")
+        
+    except Exception as e:
+        logger.error(f"Failed to create bootloader analysis jobs - ParentJob: {parent_job_id}, Error: {str(e)}", exc_info=True)
 
 
 # ==========================================================
@@ -327,6 +443,36 @@ async def trigger_feature_extraction(job_id: str, background_tasks: BackgroundTa
     except Exception as e:
         logger.error(f"Error triggering feature extraction for job {job_id}: {str(e)}")
         raise HTTPException(status_code=500, detail="Error starting feature extraction")
+
+
+@app.post("/job/{job_id}/fs-scan")
+async def trigger_filesystem_scan(job_id: str, background_tasks: BackgroundTasks):
+    """Manually trigger filesystem scan for a PATH_B_LINUX_FS job"""
+    try:
+        job = job_manager.get_job(job_id)
+        if not job:
+            raise HTTPException(status_code=404, detail="Job not found")
+        
+        if job.routing_decision != "PATH_B_LINUX_FS":
+            raise HTTPException(status_code=400, detail="Filesystem scan only available for PATH_B_LINUX_FS")
+        
+        if job.status == JobStatus.EXTRACTING_FEATURES:
+            return {"message": "Filesystem scan already in progress"}
+        
+        # Add background task
+        background_tasks.add_task(process_filesystem_scan, job_id, job.analysis_results)
+        
+        return {
+            "message": "Filesystem scan started",
+            "jobId": job_id,
+            "status": "processing"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error triggering filesystem scan for job {job_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error starting filesystem scan")
 
 
 @app.get("/jobs")

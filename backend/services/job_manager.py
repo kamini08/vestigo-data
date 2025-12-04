@@ -33,6 +33,7 @@ class JobData:
     routing_reason: Optional[str] = None
     file_type: Optional[str] = None
     workspace_path: Optional[str] = None
+    bootloaders: Optional[List[Dict[str, Any]]] = None
     analysis_results: Optional[Dict[str, Any]] = None
     feature_extraction_results: Optional[Dict[str, Any]] = None
     classification_results: Optional[Dict[str, Any]] = None
@@ -92,14 +93,22 @@ class JobManager:
     
     def update_job_ingest_results(self, job_id: str, ingest_results: Dict[str, Any]) -> Optional[JobData]:
         """Update job with ingest analysis results"""
+        update_fields = {
+            "routing_decision": ingest_results["routing"]["decision"],
+            "routing_reason": ingest_results["routing"]["reason"],
+            "file_type": ingest_results["file_info"]["detected_type"],
+            "workspace_path": ingest_results.get("analysis_workspace"),
+            "analysis_results": ingest_results
+        }
+        
+        # Add bootloaders if present
+        if "bootloaders" in ingest_results:
+            update_fields["bootloaders"] = ingest_results["bootloaders"]
+        
         return self.update_job_status(
             job_id, 
             JobStatus.INGEST_COMPLETE,
-            routing_decision=ingest_results["routing"]["decision"],
-            routing_reason=ingest_results["routing"]["reason"],
-            file_type=ingest_results["file_info"]["detected_type"],
-            workspace_path=ingest_results.get("analysis_workspace"),
-            analysis_results=ingest_results
+            **update_fields
         )
     
     def update_job_feature_results(self, job_id: str, feature_results: Dict[str, Any]) -> Optional[JobData]:
@@ -227,6 +236,10 @@ class JobManager:
         
         if job.error_message:
             summary["error"] = job.error_message
+        
+        # Add bootloaders if found
+        if job.bootloaders:
+            summary["bootloaders"] = job.bootloaders
         
         # Add progress information
         if job.status == JobStatus.INGEST_COMPLETE:
