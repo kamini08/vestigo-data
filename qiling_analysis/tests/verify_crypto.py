@@ -203,20 +203,26 @@ def get_rootfs(binary_path):
     
     print(f"[+] Detected architecture: {arch}")
     
-    # Map architecture to rootfs path
+    # Map architecture to rootfs path (relative to qiling_analysis directory)
+    # Get the directory where this script is located (qiling_analysis/tests)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Go up one level to qiling_analysis, then into rootfs
+    rootfs_base = os.path.join(os.path.dirname(script_dir), "rootfs")
+    
     rootfs_map = {
-        'arm64': "/home/prajwal/Documents/dynamic/rootfs/arm64_linux",
-        'arm': "/home/prajwal/Documents/dynamic/rootfs/arm_linux",
-        'x86_64': "/home/prajwal/Documents/dynamic/rootfs/x8664_linux",
-        'x86': "/home/prajwal/Documents/dynamic/rootfs/x86_linux",
-        'mips': "/home/prajwal/Documents/dynamic/rootfs/mips32_linux",
-        'mips64': "/home/prajwal/Documents/dynamic/rootfs/mips32_linux",  # Fallback
-        'riscv64': "/home/prajwal/Documents/dynamic/rootfs/riscv64_linux",
-        'riscv32': "/home/prajwal/Documents/dynamic/rootfs/riscv32_linux",
-        'powerpc': "/home/prajwal/Documents/dynamic/rootfs/powerpc_linux",
+        'arm64': "arm64_linux",
+        'arm': "arm_linux",
+        'x86_64': "x8664_linux",
+        'x86': "x86_linux",
+        'mips': "mips32_linux",
+        'mips64': "mips32_linux",  # Fallback
+        'riscv64': "riscv64_linux",
+        'riscv32': "riscv32_linux",
+        'powerpc': "powerpc_linux",
     }
     
-    rootfs = rootfs_map.get(arch)
+    rootfs_dir = rootfs_map.get(arch)
+    rootfs = os.path.join(rootfs_base, rootfs_dir) if rootfs_dir else None
     
     if not rootfs:
         print(f"[-] No rootfs mapping found for architecture: {arch}")
