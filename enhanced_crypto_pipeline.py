@@ -112,7 +112,7 @@ class GhidraFeatureExtractor:
             return df, extracted_functions
             
         except Exception as e:
-            print(f"❌ Error processing Ghidra JSON: {e}")
+            print(f"Error processing Ghidra JSON: {e}")
             return None, None
     
     def _extract_function_features(self, func_data, func_index, ghidra_data):
@@ -962,16 +962,16 @@ class EnhancedCryptoAnalysisPipeline:
             df, function_data = self.feature_extractor.extract_from_ghidra_json(json_file)
             
             if df is None or function_data is None:
-                print("❌ Failed to extract features from Ghidra JSON")
+                print("Failed to extract features from Ghidra JSON")
                 return None
             
             # Save intermediate CSV for reference
             csv_output = str(output_file).replace('.json', '_features.csv')
             df.to_csv(csv_output, index=False)
-            print(f"📊 Features saved to CSV: {csv_output}")
+            print(f"Features saved to CSV: {csv_output}")
             
             # Analyze each function
-            print(f"🔍 Analyzing {len(df)} functions...")
+            print(f"Analyzing {len(df)} functions...")
             function_analyses = []
             
             for idx, row in df.iterrows():
@@ -1028,13 +1028,13 @@ class EnhancedCryptoAnalysisPipeline:
             with open(output_file, 'w') as f:
                 f.write(results_str)
             
-            print(f"📄 Comprehensive analysis saved to: {output_file}")
+            print(f"Comprehensive analysis saved to: {output_file}")
             self._print_analysis_summary(file_analysis)
             
             return results
             
         except Exception as e:
-            print(f"❌ Error processing Ghidra JSON: {e}")
+            print(f"Error processing Ghidra JSON: {e}")
             return None
     
     def process_csv_file(self, csv_file, output_file):
@@ -1042,7 +1042,7 @@ class EnhancedCryptoAnalysisPipeline:
         
         try:
             df = pd.read_csv(csv_file)
-            print(f"📊 Processing {len(df)} samples from {csv_file}")
+            print(f"Processing {len(df)} samples from {csv_file}")
             
             # Analyze each row as a function
             function_analyses = []
@@ -1093,13 +1093,13 @@ class EnhancedCryptoAnalysisPipeline:
             with open(output_file, 'w') as f:
                 f.write(results_str)
             
-            print(f"📄 Analysis saved to: {output_file}")
+            print(f"Analysis saved to: {output_file}")
             self._print_analysis_summary(file_analysis)
             
             return results
             
         except Exception as e:
-            print(f"❌ Error processing CSV file: {e}")
+            print(f"Error processing CSV file: {e}")
             return None
     
     def _generate_file_analysis(self, function_analyses, input_file):
@@ -1329,7 +1329,7 @@ class EnhancedCryptoAnalysisPipeline:
         """Print comprehensive analysis summary"""
         
         print("\\n" + "="*80)
-        print("🔍 COMPREHENSIVE CRYPTOGRAPHIC ANALYSIS SUMMARY")
+        print("COMPREHENSIVE CRYPTOGRAPHIC ANALYSIS SUMMARY")
         print("="*80)
         
         file_info = file_analysis['file_info']
@@ -1337,32 +1337,32 @@ class EnhancedCryptoAnalysisPipeline:
         encryption = file_analysis['encryption_distribution']
         algorithms = file_analysis['algorithm_distribution']
         
-        print(f"📁 File: {file_info['input_file']}")
-        print(f"📊 Total Functions: {file_info['total_functions']}")
-        print(f"✅ Successful Analyses: {file_info['successful_analyses']}")
+        print(f"File: {file_info['input_file']}")
+        print(f"Total Functions: {file_info['total_functions']}")
+        print(f"Successful Analyses: {file_info['successful_analyses']}")
         
-        print(f"\\n🎯 Overall Assessment:")
+        print(f"\\n Overall Assessment:")
         print(f"  Status: {assessment['file_status']}")
         print(f"  {assessment['message']}")
         print(f"  Crypto Percentage: {assessment['crypto_percentage']:.1f}%")
         print(f"  Average Confidence: {assessment['average_confidence']:.1%}")
         
-        print(f"\\n🔐 Encryption Distribution:")
+        print(f"\\n Encryption Distribution:")
         print(f"  Encrypted: {encryption['encrypted_functions']} ({encryption['encrypted_percentage']:.1f}%)")
         print(f"  Possibly Encrypted: {encryption['possibly_encrypted_functions']}")
         print(f"  Not Encrypted: {encryption['not_encrypted_functions']}")
         
-        print(f"\\n🧮 Top Detected Algorithms:")
+        print(f"\\n Top Detected Algorithms:")
         for algorithm, count in algorithms['top_algorithms']:
             percentage = (count / file_info['total_functions']) * 100
             print(f"  {algorithm}: {count} functions ({percentage:.1f}%)")
         
-        print(f"\\n📊 Algorithm Ranking (by total confidence):")
+        print(f"\\n Algorithm Ranking (by total confidence):")
         if 'algorithm_ranking' in algorithms:
             for i, rank in enumerate(algorithms['algorithm_ranking'][:5], 1):
                 print(f"  {i}. {rank['algorithm']}: Total={rank['total_confidence']:.1f}, Avg={rank['avg_confidence']:.1f}%, Functions={rank['function_count']}")
         
-        print(f"\\n📈 Algorithm Diversity: {algorithms['algorithm_diversity']} different algorithms detected")
+        print(f"\\n Algorithm Diversity: {algorithms['algorithm_diversity']} different algorithms detected")
         print("="*80)
 
 def main():
@@ -1386,17 +1386,17 @@ def main():
         
         if args.ghidra:
             # Process Ghidra JSON file
-            print(f"🎯 Processing Ghidra JSON: {args.ghidra}")
+            print(f" Processing Ghidra JSON: {args.ghidra}")
             results = pipeline.process_ghidra_json(args.ghidra, args.output)
             
         elif args.csv:
             # Process CSV file
-            print(f"📊 Processing CSV: {args.csv}")
+            print(f" Processing CSV: {args.csv}")
             results = pipeline.process_csv_file(args.csv, args.output)
         
         elif args.features:
             # Process single JSON file
-            print(f"📁 Loading features from: {args.features}")
+            print(f" Loading features from: {args.features}")
             with open(args.features, 'r') as f:
                 features = json.load(f)
             
@@ -1421,22 +1421,22 @@ def main():
             with open(args.output, 'w') as f:
                 f.write(results_str)
             
-            print(f"📄 Single function analysis saved to: {args.output}")
+            print(f" Single function analysis saved to: {args.output}")
             
             # Print results
             if analysis['encryption_analysis']['is_encrypted']:
-                print(f"\\n🔐 {analysis['encryption_analysis']['message']}")
+                print(f"\\n {analysis['encryption_analysis']['message']}")
                 print(f"Algorithm: {analysis['prediction']['predicted_algorithm']}")
                 print(f"Confidence: {analysis['prediction']['confidence_percent']:.1f}%")
                 
-                print("\\n🎯 Top Algorithm Probabilities:")
+                print("\\n Top Algorithm Probabilities:")
                 for pred in analysis['top_predictions'][:3]:
                     print(f"  {pred['algorithm']}: {pred['confidence_percent']:.1f}%")
             else:
-                print(f"\\n🔓 {analysis['encryption_analysis']['message']}")
+                print(f"\\n {analysis['encryption_analysis']['message']}")
     
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f" Error: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
