@@ -15,7 +15,7 @@ import math
 import struct
 from collections import defaultdict
 from datetime import datetime
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 
 from qiling import Qiling
 from qiling.const import QL_VERBOSE, QL_ARCH
@@ -121,6 +121,7 @@ class ExecutionTracer:
     """
     Captures unified time-series execution trace of basic blocks and syscalls.
     Implements block coalescing to compress repetitive hardware loops (rep stosd, crypto rounds).
+    Enhanced with runtime profiling for memory access patterns and execution timing.
     """
     
     def __init__(self, output_path: str = "trace.jsonl", enable_coalescing: bool = True):
@@ -136,6 +137,12 @@ class ExecutionTracer:
         self.last_block_hash = None
         self.repeat_count = 0
         self.pending_coalesced_block = None
+        
+        # Runtime profiling state
+        self.start_time = None
+        self.memory_access_count = 0
+        self.memory_footprint = set()  # Track unique memory addresses accessed
+        self.instruction_count = 0
         
     def initialize_disassembler(self, ql: Qiling):
         """Initialize Capstone disassembler based on architecture."""
@@ -329,6 +336,66 @@ class ExecutionTracer:
         
         return mem_state
     
+    def _extract_memory_accesses(self, insn, ql: Qiling) -> Tuple[List[int], List[int]]:
+        """
+        Extract memory read and write addresses from an instruction.
+        Returns (read_addresses, write_addresses)
+        """
+        read_addrs = []
+        write_addrs = []
+        
+        try:
+            # Use Capstone's detail mode if available
+            if hasattr(insn, 'operands'):
+                for op in insn.operands:
+                    # Check if it's a memory operand
+                    if hasattr(op, 'type') and op.type == 3:  # MEM type
+                        # Try to resolve the memory address
+                        # This is architecture-specific and simplified
+                        # In production, you'd need full operand evaluation
+                        pass
+            
+            # Fallback: Parse operand string for memory references
+            op_str = insn.op_str
+            if '[' in op_str:
+                # Has memory operand - classify as read or write based on mnemonic
+                write_mnemonics = ['mov', 'store', 'st', 'str', 'push', 'pop']
+                is_write = any(w in insn.mnemonic.lower() for w in write_mnemonics)
+                
+                # For now, just mark that memory was accessed
+                # Full address resolution requires emulation state
+                if is_write:
+                    write_addrs.append(0)  # Placeholder
+                else:
+                    read_addrs.append(0)  # Placeholder
+        
+        except Exception:
+            pass
+        
+        return read_addrs, write_addrs
+    
+    def _extract_registers_used(self, insn) -> List[str]:
+        """Extract register names used in instruction"""
+        registers = []
+        
+        try:
+            if hasattr(insn, 'regs_read'):
+                for reg_id in insn.regs_read:
+                    reg_name = insn.reg_name(reg_id)
+                    if reg_name:
+                        registers.append(reg_name)
+            
+            if hasattr(insn, 'regs_write'):
+                for reg_id in insn.regs_write:
+                    reg_name = insn.reg_name(reg_id)
+                    if reg_name and reg_name not in registers:
+                        registers.append(reg_name)
+        
+        except Exception:
+            pass
+        
+        return registers
+    
     def extract_block_features(self, ql: Qiling, address: int, size: int) -> Dict[str, Any]:
         """
         Extract features from a basic block.
@@ -367,8 +434,17 @@ class ExecutionTracer:
                     mnemonics_typed.append(self._get_instruction_with_operands(insn))
                     instruction_count += 1
             
-            # Detect crypto patterns
+            # Detect crypto patterns (legacy)
             has_crypto = self._detect_crypto_patterns(mnemonics_simple)
+            
+            # NEW: Detect structural crypto patterns
+            has_spn = self._detect_spn_structure(mnemonics_simple)
+            has_modexp = self._detect_modular_exponentiation(mnemonics_simple)
+            has_ntt = self._detect_ntt_operations(mnemonics_simple)
+            
+            # Calculate composite confidence score
+            patterns_detected = sum([has_spn, has_modexp, has_ntt])
+            crypto_confidence = patterns_detected / 3.0 if patterns_detected > 0 else 0.0
             
             features = {
                 "address": hex(address),
@@ -379,12 +455,17 @@ class ExecutionTracer:
                 "instruction_count": instruction_count,
                 # MOVED: has_crypto_patterns to metadata (not for model input)
                 "metadata": {
-                    "has_crypto_patterns": has_crypto
+                    "has_crypto_patterns": has_crypto,  # Legacy detector
+                    "has_spn": has_spn,                 # NEW: SPN detection
+                    "has_modexp": has_modexp,           # NEW: Modular exponentiation
+                    "has_ntt": has_ntt,                 # NEW: NTT detection
+                    "crypto_confidence": crypto_confidence  # NEW: Composite score
                 }
             }
             
             # AVALANCHE ENHANCEMENT: Capture register/memory state for crypto blocks
-            if has_crypto:
+            # Capture if ANY crypto pattern is detected (legacy OR structural)
+            if has_crypto or has_spn or has_modexp or has_ntt:
                 features["register_state"] = self._capture_register_state(ql)
                 features["memory_state"] = self._capture_memory_state(ql)
             
@@ -400,10 +481,135 @@ class ExecutionTracer:
                 "error": str(e)
             }
     
+    def _detect_spn_structure(self, mnemonics: List[str]) -> bool:
+        """
+        Detect Substitution-Permutation Network (SPN) structure.
+        Common in block ciphers like AES, DES, and proprietary variants.
+        
+        Pattern: XOR/AND/OR (substitution) → Rotation/Shift (permutation) → Repeat
+        This is the fundamental structure of most block ciphers.
+        """
+        if len(mnemonics) < 10:
+            return False
+        
+        # Substitution operations (S-box like operations)
+        substitution_ops = ['xor', 'and', 'orr', 'eor', 'orn', 'not', 'mvn']
+        substitution_count = sum(1 for m in mnemonics if any(op in m.lower() for op in substitution_ops))
+        
+        # Permutation operations (P-box, bit shuffling)
+        permutation_ops = ['shl', 'shr', 'rol', 'ror', 'lsl', 'lsr', 'asr', 'rrx', 'sll', 'srl', 'sra']
+        permutation_count = sum(1 for m in mnemonics if any(op in m.lower() for op in permutation_ops))
+        
+        # SPN signature: High substitution + permutation ratio
+        total = len(mnemonics)
+        substitution_ratio = substitution_count / total
+        permutation_ratio = permutation_count / total
+        
+        # SPN requires BOTH substitution and permutation
+        has_spn = (
+            substitution_ratio >= 0.15 and  # At least 15% substitution
+            permutation_ratio >= 0.10 and   # At least 10% permutation
+            (substitution_count + permutation_count) >= 5  # Absolute minimum
+        )
+        
+        return has_spn
+    
+    def _detect_modular_exponentiation(self, mnemonics: List[str]) -> bool:
+        """
+        Detect Modular Exponentiation pattern (RSA, Diffie-Hellman, DSA).
+        Used in pre-quantum public key cryptography.
+        
+        Pattern: Repeated MUL → MOD/DIV (square-and-multiply algorithm)
+        Also detects Montgomery multiplication patterns.
+        """
+        if len(mnemonics) < 8:
+            return False
+        
+        # Multiplication operations (core of modexp)
+        mul_ops = ['mul', 'umull', 'smull', 'imul', 'multu', 'mult', 'mulu', 'muls']
+        mul_count = sum(1 for m in mnemonics if any(op in m.lower() for op in mul_ops))
+        
+        # Modular reduction operations (div/mod for modulo)
+        mod_ops = ['div', 'udiv', 'sdiv', 'mod', 'divu', 'divs', 'rem', 'remu']
+        mod_count = sum(1 for m in mnemonics if any(op in m.lower() for op in mod_ops))
+        
+        # Addition/subtraction (Montgomery reduction)
+        add_sub_ops = ['add', 'adc', 'sub', 'sbc', 'addu', 'subu', 'addi', 'subi']
+        add_sub_count = sum(1 for m in mnemonics if any(op in m.lower() for op in add_sub_ops))
+        
+        total = len(mnemonics)
+        mul_ratio = mul_count / total
+        mod_ratio = mod_count / total
+        add_sub_ratio = add_sub_count / total
+        
+        # RSA/ModExp signature: High multiplication with modular reduction
+        # OR Montgomery ladder (mul + add/sub without explicit div)
+        has_modexp = (
+            # Classic modexp: mul + div/mod
+            (mul_ratio >= 0.20 and mod_ratio >= 0.05) or
+            # Montgomery multiplication: mul + add/sub (no div)
+            (mul_ratio >= 0.15 and add_sub_ratio >= 0.25 and mul_count >= 3)
+        )
+        
+        return has_modexp
+    
+    def _detect_ntt_operations(self, mnemonics: List[str]) -> bool:
+        """
+        Detect Number Theoretic Transform (NTT) operations.
+        Used in post-quantum cryptography (KYBER, Dilithium, NTRU).
+        
+        Pattern: Balanced ADD/SUB with MUL (butterfly operations in NTT)
+        Polynomial multiplication via FFT-like structure.
+        """
+        if len(mnemonics) < 12:
+            return False
+        
+        # Addition operations (butterfly additions)
+        add_ops = ['add', 'adc', 'addu', 'addi', 'addiu', 'vadd', 'paddq', 'paddd']
+        add_count = sum(1 for m in mnemonics if any(op in m.lower() for op in add_ops))
+        
+        # Subtraction operations (butterfly subtractions)
+        sub_ops = ['sub', 'sbc', 'subu', 'subi', 'subiu', 'vsub', 'psubd', 'psubq']
+        sub_count = sum(1 for m in mnemonics if any(op in m.lower() for op in sub_ops))
+        
+        # Multiplication operations (twiddle factor multiplication)
+        mul_ops = ['mul', 'umull', 'smull', 'imul', 'multu', 'vmul', 'pmull', 'pmullw']
+        mul_count = sum(1 for m in mnemonics if any(op in m.lower() for op in mul_ops))
+        
+        # SIMD operations (vectorized polynomial operations)
+        simd_ops = ['movdqu', 'movdqa', 'vmovdqu', 'vmovdqa', 'pxor', 'vpxor', 'vpmul', 'vpadd', 'vpsub']
+        simd_count = sum(1 for m in mnemonics if any(op in m.lower() for op in simd_ops))
+        
+        total = len(mnemonics)
+        add_ratio = add_count / total
+        sub_ratio = sub_count / total
+        mul_ratio = mul_count / total
+        simd_ratio = simd_count / total
+        
+        # NTT signature: Balanced ADD/SUB (butterfly structure) + MUL + optional SIMD
+        has_ntt = (
+            # Butterfly structure: balanced adds and subs
+            add_ratio >= 0.15 and
+            sub_ratio >= 0.15 and
+            abs(add_count - sub_count) < total * 0.10 and  # Balanced (within 10%)
+            mul_ratio >= 0.10 and
+            (add_count + sub_count + mul_count) >= 8  # Absolute minimum operations
+        ) or (
+            # Vectorized NTT (SIMD optimization)
+            simd_ratio >= 0.20 and
+            mul_ratio >= 0.05 and
+            (add_ratio + sub_ratio) >= 0.15
+        )
+        
+        return has_ntt
+    
     def _detect_crypto_patterns(self, mnemonics: List[str]) -> bool:
         """
         Heuristic detection of crypto-like instruction patterns.
         XOR loops, bit rotations, SIMD operations are common.
+        
+        DEPRECATED: Use specific pattern detectors (_detect_spn_structure, etc.)
+        Kept for backward compatibility.
         """
         crypto_indicators = ["xor", "rol", "ror", "shl", "shr", "pxor", "aes"]
         xor_count = sum(1 for m in mnemonics if "xor" in m.lower())
