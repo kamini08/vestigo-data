@@ -97,8 +97,8 @@ def unpack_firmware(firmware_path, extract_dir):
         # Run binwalk in container with volume mounts
         cmd = [
             "podman", "run", "--rm",
-            "-v", f"{abs_firmware_path}:/work/firmware.bin:ro",
-            "-v", f"{abs_extract_dir}:/work/output",
+            "-v", f"{abs_firmware_path}:/work/firmware.bin:z",
+            "-v", f"{abs_extract_dir}:/work/output:z",
             "firmware-extractor",
             "binwalk", "-eM", "/work/firmware.bin", "-C", "/work/output"
         ]
@@ -124,6 +124,19 @@ def unpack_firmware(firmware_path, extract_dir):
         return None
 
 
+def automate_unpacking(firmware_path, extract_dir):
+    """Wrapper function for automated unpacking - used by ingest.py.
+    
+    Args:
+        firmware_path: Path to the firmware file to unpack
+        extract_dir: Directory where extracted files will be placed
+        
+    Returns:
+        Path to the extracted directory, or None if unpacking failed
+    """
+    return unpack_firmware(firmware_path, extract_dir)
+
+
 def main(target_file):
     if not os.path.exists(target_file):
         print(f"Error: File '{target_file}' does not exist.")
@@ -133,7 +146,7 @@ def main(target_file):
         print("Error: This script is intended to be used with .bin files.")
         return
 
-    extract_dir = f"extracted_{os.path.basename(target_file)}"
+    extract_dir = f"_{os.path.basename(target_file)}"
     if os.path.exists(extract_dir):
         shutil.rmtree(extract_dir)
     os.makedirs(extract_dir)

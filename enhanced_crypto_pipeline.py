@@ -112,7 +112,7 @@ class GhidraFeatureExtractor:
             return df, extracted_functions
             
         except Exception as e:
-            print(f"❌ Error processing Ghidra JSON: {e}")
+            print(f"Error processing Ghidra JSON: {e}")
             return None, None
     
     def _extract_function_features(self, func_data, func_index, ghidra_data):
@@ -160,17 +160,51 @@ class GhidraFeatureExtractor:
         features['opcode_entropy'] = entropy_metrics.get('opcode_entropy', 0.0)
         features['cyclomatic_complexity_density'] = entropy_metrics.get('cyclomatic_complexity_density', 0.0)
         
-        # Advanced features (crypto indicators and other metrics)
+        # Extract crypto signatures (if available at top level)
+        crypto_sigs = func_data.get('crypto_signatures', {})
+        features['has_aes_sbox'] = crypto_sigs.get('has_aes_sbox', 0)
+        features['rsa_bigint_detected'] = crypto_sigs.get('rsa_bigint_detected', 0)
+        features['has_aes_rcon'] = crypto_sigs.get('has_aes_rcon', 0)
+        features['has_sha_constants'] = crypto_sigs.get('has_sha_constants', 0)
+
+        # Extract data references
+        data_refs = func_data.get('data_references', {})
+        features['rodata_refs_count'] = data_refs.get('rodata_refs_count', 0)
+        features['string_refs_count'] = data_refs.get('string_refs_count', 0)
+        features['stack_frame_size'] = data_refs.get('stack_frame_size', 64)
+
+        # Extract crypto_constant_hits from node_level
+        node_level = func_data.get('node_level', [])
+        if node_level:
+            # Sum crypto_constant_hits from all blocks
+            total_crypto_hits = sum(block.get('crypto_constant_hits', 0) for block in node_level)
+            features['crypto_constant_hits'] = total_crypto_hits
+
+            # Check for table_lookup_presence in any block
+            has_table = any(block.get('table_lookup_presence', False) for block in node_level)
+            features['table_lookup_presence'] = 1 if has_table else 0
+        else:
+            features['crypto_constant_hits'] = 0
+            features['table_lookup_presence'] = 0
+
+        # Fallback to advanced_features if crypto_signatures not available
         advanced = func_data.get('advanced_features', {})
-        features['has_aes_sbox'] = 1 if advanced.get('has_aes_sbox', False) else 0
-        features['rsa_bigint_detected'] = 1 if advanced.get('bigint_op_count', 0) > 0 else 0
-        features['has_aes_rcon'] = 1 if advanced.get('has_aes_rcon', False) else 0
-        features['has_sha_constants'] = 1 if advanced.get('sha_init_constants_hits', 0) > 0 else 0
-        features['rodata_refs_count'] = advanced.get('rodata_refs_count', 0)
-        features['string_refs_count'] = advanced.get('string_refs_count', 0)
-        features['stack_frame_size'] = advanced.get('stack_frame_size', 64)
-        features['table_lookup_presence'] = 1 if advanced.get('num_large_tables', 0) > 0 else 0
-        features['crypto_constant_hits'] = advanced.get('aes_sbox_match_score', 0) + advanced.get('sha_k_table_hits', 0)
+        if not crypto_sigs:
+            features['has_aes_sbox'] = 1 if advanced.get('has_aes_sbox', False) else 0
+            features['rsa_bigint_detected'] = 1 if advanced.get('bigint_op_count', 0) > 0 else 0
+            features['has_aes_rcon'] = 1 if advanced.get('has_aes_rcon', False) else 0
+            features['has_sha_constants'] = 1 if advanced.get('sha_init_constants_hits', 0) > 0 else 0
+
+        if not data_refs:
+            features['rodata_refs_count'] = advanced.get('rodata_refs_count', 0)
+            features['string_refs_count'] = advanced.get('string_refs_count', 0)
+            features['stack_frame_size'] = advanced.get('stack_frame_size', 64)
+
+        if features['crypto_constant_hits'] == 0:
+            features['crypto_constant_hits'] = advanced.get('aes_sbox_match_score', 0) + advanced.get('sha_k_table_hits', 0)
+
+        if features['table_lookup_presence'] == 0:
+            features['table_lookup_presence'] = 1 if advanced.get('num_large_tables', 0) > 0 else 0
         
         # Calculate remaining features from basic block data
         self._calculate_instruction_features(func_data, features)
@@ -362,107 +396,197 @@ class GhidraFeatureExtractor:
     def _calculate_total_instruction_count(self, func_data):
         """Calculate total instruction count from all basic blocks"""
         total_instructions = 0
-        
-        # Look for basic blocks data
-        basic_blocks = func_data.get('basic_blocks', [])
-        if basic_blocks:
-            for block in basic_blocks:
+
+        # First try node_level data
+        node_level = func_data.get('node_level', [])
+        if node_level:
+            for block in node_level:
                 total_instructions += block.get('instruction_count', 0)
-        else:
-            # Fallback: use graph level average
+
+        # Fall back to basic_blocks
+        if total_instructions == 0:
+            basic_blocks = func_data.get('basic_blocks', [])
+            if basic_blocks:
+                for block in basic_blocks:
+                    total_instructions += block.get('instruction_count', 0)
+
+        # Last fallback: use graph level average
+        if total_instructions == 0:
             graph_level = func_data.get('graph_level', {})
             avg_block_size = graph_level.get('average_block_size', 10)
             num_blocks = graph_level.get('num_basic_blocks', 1)
             total_instructions = int(avg_block_size * num_blocks)
-            
+
         return total_instructions
     
     def _calculate_instruction_features(self, func_data, features):
-        """Calculate instruction-based features from basic block data"""
-        
+        """Calculate instruction-based features from node_level data (basic blocks)"""
+
         # Initialize counters
         total_add = total_logical = total_load_store = total_xor = 0
         total_multiply = total_rotate = total_bitwise = total_arithmetic = 0
+        total_crypto_like = 0
         unique_opcodes = set()
-        immediate_values = []
+        all_immediate_values = []
+        unique_ngrams = set()
+
+        # Get total instruction count
         total_instructions = features['instruction_count']
-        
-        # Process basic blocks to get instruction statistics
-        basic_blocks = func_data.get('basic_blocks', [])
-        if basic_blocks:
-            for block in basic_blocks:
-                # Get opcode histogram if available
+
+        # Process node_level data (basic blocks)
+        node_level = func_data.get('node_level', [])
+
+        if node_level:
+            for block in node_level:
+                # Get opcode histogram
                 opcode_hist = block.get('opcode_histogram', {})
+
                 for opcode, count in opcode_hist.items():
-                    unique_opcodes.add(opcode.lower())
-                    
-                    # Categorize operations
+                    opcode_upper = opcode.upper()
                     opcode_lower = opcode.lower()
-                    if opcode_lower in ['add', 'sub', 'addi', 'subi']:
+                    unique_opcodes.add(opcode_upper)
+
+                    # Categorize operations based on opcode
+                    # Arithmetic operations
+                    if opcode_upper in ['ADD', 'SUB', 'ADDI', 'ADDIU', 'SUBI', 'SUBIU']:
                         total_add += count
                         total_arithmetic += count
-                    elif opcode_lower in ['and', 'or', 'xor', 'nor', 'andi', 'ori', 'xori']:
-                        total_logical += count
-                        if 'xor' in opcode_lower:
-                            total_xor += count
-                        if opcode_lower in ['and', 'or', 'xor', 'andi', 'ori', 'xori']:
-                            total_bitwise += count
-                    elif opcode_lower in ['lw', 'sw', 'lb', 'sb', 'lh', 'sh', 'load', 'store']:
-                        total_load_store += count
-                    elif opcode_lower in ['mul', 'mult', 'div', 'mulo']:
+                    elif opcode_upper in ['MUL', 'MULT', 'MULTU', 'DIV', 'DIVU', 'MULO', 'IMUL']:
                         total_multiply += count
                         total_arithmetic += count
-                    elif opcode_lower in ['sll', 'srl', 'sra', 'rol', 'ror']:
+
+                    # Logical/Bitwise operations
+                    elif opcode_upper in ['AND', 'OR', 'XOR', 'NOT', 'NOR', 'ANDI', 'ORI', 'XORI']:
+                        total_logical += count
+                        total_bitwise += count
+                        if 'XOR' in opcode_upper:
+                            total_xor += count
+
+                    # Shift and rotate operations
+                    elif opcode_upper in ['SLL', 'SRL', 'SRA', 'SLLV', 'SRLV', 'SRAV',
+                                         'ROL', 'ROR', 'RCL', 'RCR', 'ROTL', 'ROTR',
+                                         'SHL', 'SHR', 'SAL', 'SAR']:
                         total_rotate += count
                         total_bitwise += count
-                
-                # Get immediate values if available
-                if 'immediate_values' in block:
-                    immediate_values.extend(block['immediate_values'])
-        
-        # If no basic block data, estimate from advanced features
-        if not basic_blocks:
-            advanced = func_data.get('advanced_features', {})
-            total_bitwise = advanced.get('bitwise_mix_operations', 0)
-            total_rotate = advanced.get('sha_rotation_patterns', 0)
-            
-            # Estimate based on function characteristics
-            if features['has_aes_sbox']:
-                total_xor = max(5, int(total_instructions * 0.1))  # AES uses XOR heavily
-                total_logical = max(10, int(total_instructions * 0.2))
-                total_bitwise = max(8, int(total_instructions * 0.15))
-        
-        # Calculate ratios
-        if total_instructions > 0:
+
+                    # Load/Store operations
+                    elif opcode_upper in ['LOAD', 'STORE', 'LW', 'SW', 'LB', 'SB', 'LH', 'SH',
+                                         'LBU', 'LHU', 'LWU', 'LD', 'SD', 'MOV', 'MOVS', 'MOVB']:
+                        total_load_store += count
+
+                    # Carry operations (crypto relevant)
+                    elif opcode_upper in ['CARRY', 'SCARRY', 'ADC', 'SBB']:
+                        total_crypto_like += count
+
+                # Extract immediate values from block
+                block_immediates = block.get('immediates', [])
+                if block_immediates:
+                    all_immediate_values.extend(block_immediates)
+
+                # Extract opcode ratios directly from block if available
+                block_opcode_ratios = block.get('opcode_ratios', {})
+
+            # Calculate crypto-like operations
+            total_crypto_like = total_bitwise + total_xor + (total_rotate * 2)
+
+        # If node_level didn't provide data, try op_category_counts
+        op_counts = func_data.get('op_category_counts', {})
+        if not node_level and op_counts:
+            # Extract directly from op_category_counts
+            total_bitwise = op_counts.get('bitwise_ops', 0)
+            total_add = int(op_counts.get('add_ratio', 0) * total_instructions)
+            total_logical = int(op_counts.get('logical_ratio', 0) * total_instructions)
+            total_load_store = int(op_counts.get('load_store_ratio', 0) * total_instructions)
+            total_xor = int(op_counts.get('xor_ratio', 0) * total_instructions)
+            total_multiply = int(op_counts.get('multiply_ratio', 0) * total_instructions)
+            total_rotate = int(op_counts.get('rotate_ratio', 0) * total_instructions)
+            total_arithmetic = op_counts.get('arithmetic_ops', 0)
+            total_crypto_like = op_counts.get('crypto_like_ops', 0)
+        elif op_counts and total_instructions > 0:
+            # Use op_category_counts to supplement/verify our calculations
+            # Only override if we didn't calculate from node_level
+            if total_bitwise == 0:
+                total_bitwise = op_counts.get('bitwise_ops', 0)
+            if total_arithmetic == 0:
+                total_arithmetic = op_counts.get('arithmetic_ops', 0)
+            if total_crypto_like == 0:
+                total_crypto_like = op_counts.get('crypto_like_ops', 0)
+
+        # Calculate ratios - prefer op_category_counts if available (already computed correctly)
+        if op_counts and 'add_ratio' in op_counts:
+            # Use pre-computed ratios from op_category_counts
+            features['add_ratio'] = op_counts.get('add_ratio', 0)
+            features['logical_ratio'] = op_counts.get('logical_ratio', 0)
+            features['load_store_ratio'] = op_counts.get('load_store_ratio', 0)
+            features['xor_ratio'] = op_counts.get('xor_ratio', 0)
+            features['multiply_ratio'] = op_counts.get('multiply_ratio', 0)
+            features['rotate_ratio'] = op_counts.get('rotate_ratio', 0)
+            features['mem_ops_ratio'] = op_counts.get('mem_ops_ratio', 0)
+        elif total_instructions > 0:
+            # Calculate ratios from counts
             features['add_ratio'] = total_add / total_instructions
-            features['logical_ratio'] = total_logical / total_instructions  
+            features['logical_ratio'] = total_logical / total_instructions
             features['load_store_ratio'] = total_load_store / total_instructions
             features['xor_ratio'] = total_xor / total_instructions
             features['multiply_ratio'] = total_multiply / total_instructions
             features['rotate_ratio'] = total_rotate / total_instructions
             features['mem_ops_ratio'] = total_load_store / total_instructions
-            features['bitwise_op_density'] = total_bitwise / total_instructions
         else:
             features.update({
                 'add_ratio': 0, 'logical_ratio': 0, 'load_store_ratio': 0, 'xor_ratio': 0,
-                'multiply_ratio': 0, 'rotate_ratio': 0, 'mem_ops_ratio': 0, 'bitwise_op_density': 0
+                'multiply_ratio': 0, 'rotate_ratio': 0, 'mem_ops_ratio': 0
             })
-        
+
+        # Extract or calculate bitwise_op_density
+        # First try from op_category_counts, then from node_level averages, then calculate
+        if op_counts and 'bitwise_op_density' in op_counts:
+            # This doesn't exist in op_category_counts, calculate it
+            pass
+
+        if total_instructions > 0 and 'bitwise_op_density' not in features:
+            features['bitwise_op_density'] = total_bitwise / total_instructions
+        elif 'bitwise_op_density' not in features:
+            features['bitwise_op_density'] = 0
+
         # Operation counts
         features['bitwise_ops'] = total_bitwise
         features['arithmetic_ops'] = total_arithmetic
-        features['crypto_like_ops'] = total_bitwise + total_xor + total_rotate * 2
-        
-        # Entropy calculations
-        if immediate_values:
-            unique_imm = len(set(immediate_values))
-            features['immediate_entropy'] = unique_imm / len(immediate_values) if immediate_values else 0
+        features['crypto_like_ops'] = total_crypto_like
+
+        # Extract immediate_entropy from node_level blocks (already computed in Ghidra)
+        if node_level:
+            # Average immediate entropy across all blocks
+            entropies = [block.get('immediate_entropy', 0) for block in node_level if 'immediate_entropy' in block]
+            if entropies:
+                features['immediate_entropy'] = sum(entropies) / len(entropies)
+            elif all_immediate_values:
+                # Calculate from immediate values
+                unique_imm = len(set(all_immediate_values))
+                features['immediate_entropy'] = unique_imm / len(all_immediate_values) if all_immediate_values else 0
+            else:
+                features['immediate_entropy'] = 0
+        elif all_immediate_values:
+            # Calculate from immediate values
+            unique_imm = len(set(all_immediate_values))
+            features['immediate_entropy'] = unique_imm / len(all_immediate_values) if all_immediate_values else 0
         else:
-            features['immediate_entropy'] = 0.5  # Default estimate
-            
-        # N-gram count (estimate from unique opcodes)
-        features['unique_ngram_count'] = len(unique_opcodes) if unique_opcodes else 5
-        
+            features['immediate_entropy'] = 0
+
+        # Extract bitwise_op_density from node_level blocks (already computed in Ghidra)
+        if node_level:
+            # Average bitwise_op_density across all blocks
+            densities = [block.get('bitwise_op_density', 0) for block in node_level if 'bitwise_op_density' in block]
+            if densities:
+                # Use weighted average by instruction count, or simple average
+                features['bitwise_op_density'] = sum(densities) / len(densities)
+
+        # Extract unique_ngram_count from instruction_sequence
+        instruction_seq = func_data.get('instruction_sequence', {})
+        if instruction_seq:
+            features['unique_ngram_count'] = instruction_seq.get('unique_ngram_count', len(unique_opcodes))
+        else:
+            features['unique_ngram_count'] = len(unique_opcodes) if unique_opcodes else 0
+
         # Branch condition complexity (calculated from edges)
         features['branch_condition_complexity'] = max(0, features['num_edges'] - features['num_basic_blocks'])
     
@@ -838,16 +962,16 @@ class EnhancedCryptoAnalysisPipeline:
             df, function_data = self.feature_extractor.extract_from_ghidra_json(json_file)
             
             if df is None or function_data is None:
-                print("❌ Failed to extract features from Ghidra JSON")
+                print("Failed to extract features from Ghidra JSON")
                 return None
             
             # Save intermediate CSV for reference
             csv_output = str(output_file).replace('.json', '_features.csv')
             df.to_csv(csv_output, index=False)
-            print(f"📊 Features saved to CSV: {csv_output}")
+            print(f"Features saved to CSV: {csv_output}")
             
             # Analyze each function
-            print(f"🔍 Analyzing {len(df)} functions...")
+            print(f"Analyzing {len(df)} functions...")
             function_analyses = []
             
             for idx, row in df.iterrows():
@@ -904,13 +1028,13 @@ class EnhancedCryptoAnalysisPipeline:
             with open(output_file, 'w') as f:
                 f.write(results_str)
             
-            print(f"📄 Comprehensive analysis saved to: {output_file}")
+            print(f"Comprehensive analysis saved to: {output_file}")
             self._print_analysis_summary(file_analysis)
             
             return results
             
         except Exception as e:
-            print(f"❌ Error processing Ghidra JSON: {e}")
+            print(f"Error processing Ghidra JSON: {e}")
             return None
     
     def process_csv_file(self, csv_file, output_file):
@@ -918,7 +1042,7 @@ class EnhancedCryptoAnalysisPipeline:
         
         try:
             df = pd.read_csv(csv_file)
-            print(f"📊 Processing {len(df)} samples from {csv_file}")
+            print(f"Processing {len(df)} samples from {csv_file}")
             
             # Analyze each row as a function
             function_analyses = []
@@ -969,13 +1093,13 @@ class EnhancedCryptoAnalysisPipeline:
             with open(output_file, 'w') as f:
                 f.write(results_str)
             
-            print(f"📄 Analysis saved to: {output_file}")
+            print(f"Analysis saved to: {output_file}")
             self._print_analysis_summary(file_analysis)
             
             return results
             
         except Exception as e:
-            print(f"❌ Error processing CSV file: {e}")
+            print(f"Error processing CSV file: {e}")
             return None
     
     def _generate_file_analysis(self, function_analyses, input_file):
@@ -1205,7 +1329,7 @@ class EnhancedCryptoAnalysisPipeline:
         """Print comprehensive analysis summary"""
         
         print("\\n" + "="*80)
-        print("🔍 COMPREHENSIVE CRYPTOGRAPHIC ANALYSIS SUMMARY")
+        print("COMPREHENSIVE CRYPTOGRAPHIC ANALYSIS SUMMARY")
         print("="*80)
         
         file_info = file_analysis['file_info']
@@ -1213,32 +1337,32 @@ class EnhancedCryptoAnalysisPipeline:
         encryption = file_analysis['encryption_distribution']
         algorithms = file_analysis['algorithm_distribution']
         
-        print(f"📁 File: {file_info['input_file']}")
-        print(f"📊 Total Functions: {file_info['total_functions']}")
-        print(f"✅ Successful Analyses: {file_info['successful_analyses']}")
+        print(f"File: {file_info['input_file']}")
+        print(f"Total Functions: {file_info['total_functions']}")
+        print(f"Successful Analyses: {file_info['successful_analyses']}")
         
-        print(f"\\n🎯 Overall Assessment:")
+        print(f"\\n Overall Assessment:")
         print(f"  Status: {assessment['file_status']}")
         print(f"  {assessment['message']}")
         print(f"  Crypto Percentage: {assessment['crypto_percentage']:.1f}%")
         print(f"  Average Confidence: {assessment['average_confidence']:.1%}")
         
-        print(f"\\n🔐 Encryption Distribution:")
+        print(f"\\n Encryption Distribution:")
         print(f"  Encrypted: {encryption['encrypted_functions']} ({encryption['encrypted_percentage']:.1f}%)")
         print(f"  Possibly Encrypted: {encryption['possibly_encrypted_functions']}")
         print(f"  Not Encrypted: {encryption['not_encrypted_functions']}")
         
-        print(f"\\n🧮 Top Detected Algorithms:")
+        print(f"\\n Top Detected Algorithms:")
         for algorithm, count in algorithms['top_algorithms']:
             percentage = (count / file_info['total_functions']) * 100
             print(f"  {algorithm}: {count} functions ({percentage:.1f}%)")
         
-        print(f"\\n📊 Algorithm Ranking (by total confidence):")
+        print(f"\\n Algorithm Ranking (by total confidence):")
         if 'algorithm_ranking' in algorithms:
             for i, rank in enumerate(algorithms['algorithm_ranking'][:5], 1):
                 print(f"  {i}. {rank['algorithm']}: Total={rank['total_confidence']:.1f}, Avg={rank['avg_confidence']:.1f}%, Functions={rank['function_count']}")
         
-        print(f"\\n📈 Algorithm Diversity: {algorithms['algorithm_diversity']} different algorithms detected")
+        print(f"\\n Algorithm Diversity: {algorithms['algorithm_diversity']} different algorithms detected")
         print("="*80)
 
 def main():
@@ -1262,17 +1386,17 @@ def main():
         
         if args.ghidra:
             # Process Ghidra JSON file
-            print(f"🎯 Processing Ghidra JSON: {args.ghidra}")
+            print(f" Processing Ghidra JSON: {args.ghidra}")
             results = pipeline.process_ghidra_json(args.ghidra, args.output)
             
         elif args.csv:
             # Process CSV file
-            print(f"📊 Processing CSV: {args.csv}")
+            print(f" Processing CSV: {args.csv}")
             results = pipeline.process_csv_file(args.csv, args.output)
         
         elif args.features:
             # Process single JSON file
-            print(f"📁 Loading features from: {args.features}")
+            print(f" Loading features from: {args.features}")
             with open(args.features, 'r') as f:
                 features = json.load(f)
             
@@ -1297,22 +1421,22 @@ def main():
             with open(args.output, 'w') as f:
                 f.write(results_str)
             
-            print(f"📄 Single function analysis saved to: {args.output}")
+            print(f" Single function analysis saved to: {args.output}")
             
             # Print results
             if analysis['encryption_analysis']['is_encrypted']:
-                print(f"\\n🔐 {analysis['encryption_analysis']['message']}")
+                print(f"\\n {analysis['encryption_analysis']['message']}")
                 print(f"Algorithm: {analysis['prediction']['predicted_algorithm']}")
                 print(f"Confidence: {analysis['prediction']['confidence_percent']:.1f}%")
                 
-                print("\\n🎯 Top Algorithm Probabilities:")
+                print("\\n Top Algorithm Probabilities:")
                 for pred in analysis['top_predictions'][:3]:
                     print(f"  {pred['algorithm']}: {pred['confidence_percent']:.1f}%")
             else:
-                print(f"\\n🔓 {analysis['encryption_analysis']['message']}")
+                print(f"\\n {analysis['encryption_analysis']['message']}")
     
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f" Error: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":

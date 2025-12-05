@@ -1,36 +1,30 @@
 """
-Feature Extraction Service for Vestigo Backend (Clean Version)
-Handles real Ghidra analysis and feature extraction for binary files
+Feature Extraction Service for Vestigo Backend
+Orchestrates Ghidra headless analysis by calling extract_features.py script
+This service does NOT implement feature extraction logic - it delegates to Ghidra
 """
 
 import os
-import sys
 import subprocess
 import json
 import tempfile
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from pathlib import Path
 import time
 
 from config.logging_config import logger
 
-# Add lib directory to path for vestigo_features import
-current_dir = Path(__file__).parent
-project_root = current_dir.parent
-lib_path = project_root / "lib"
-if str(lib_path) not in sys.path:
-    sys.path.append(str(lib_path))
-
-try:
-    from vestigo_features import FeatureExtractor, save_features_json
-    VESTIGO_FEATURES_AVAILABLE = True
-    logger.info("vestigo_features library loaded successfully")
-except ImportError as e:
-    logger.warning(f"vestigo_features library not available: {e}")
-    VESTIGO_FEATURES_AVAILABLE = False
-
 class FeatureExtractionService:
-    """Service for extracting features from binary files using Ghidra"""
+    """
+    Service for orchestrating Ghidra-based feature extraction from binary files.
+    
+    This service acts as a wrapper that:
+    1. Sets up Ghidra workspace
+    2. Calls extract_features.py via Ghidra headless
+    3. Reads and processes the resulting JSON output
+    
+    All actual feature extraction logic lives in ghidra_scripts/extract_features.py
+    """
     
     def __init__(self):
         # Path to Ghidra and scripts
@@ -38,20 +32,25 @@ class FeatureExtractionService:
         self.extract_features_script = self.ghidra_scripts_dir / "extract_features.py"
         
         # Ghidra installation path (customize based on your setup)
-        self.ghidra_path = os.environ.get("GHIDRA_INSTALL_DIR", "/opt/ghidra")
+        self.ghidra_path = os.environ.get("GHIDRA_HOME", "/opt/ghidra")
         self.ghidra_headless = os.path.join(self.ghidra_path, "support", "analyzeHeadless")
         
-        # Initialize standalone feature extractor
-        if VESTIGO_FEATURES_AVAILABLE:
-            self.feature_extractor = FeatureExtractor()
-            logger.info("Standalone feature extractor initialized")
-        else:
-            self.feature_extractor = None
-            logger.warning("Standalone feature extractor not available")
+        # Project root for output directory
+        self.project_root = Path(__file__).parent.parent.parent
+        
+        # Path to enhanced crypto pipeline
+        self.enhanced_pipeline_script = self.project_root / "enhanced_crypto_pipeline.py"
+        
+        # Check if pipeline script is available
+        if not os.path.exists(self.enhanced_pipeline_script):
+            logger.warning(f"Enhanced crypto pipeline not found: {self.enhanced_pipeline_script}")
+            logger.warning("ML classification will be skipped")
         
         logger.info(f"FeatureExtractionService initialized")
-        logger.debug(f"Ghidra path: {self.ghidra_path}")
-        logger.debug(f"Extract features script: {self.extract_features_script}")
+        logger.info(f"Ghidra path: {self.ghidra_path}")
+        logger.info(f"Extract features script: {self.extract_features_script}")
+        logger.info(f"Enhanced pipeline script: {self.enhanced_pipeline_script}")
+        logger.info(f"Output directory: {self.project_root / 'ghidra_json'}")
     
     async def extract_features_from_archive_objects(self, job_id: str, extracted_objects: List[str], archive_name: str) -> Dict[str, Any]:
         """
@@ -147,63 +146,13 @@ class FeatureExtractionService:
         except Exception as e:
             logger.error(f"Archive object feature extraction failed - JobID: {job_id}, Error: {str(e)}", exc_info=True)
             raise
-
-    async def extract_features_standalone(self, binary_path: str, job_id: str) -> Dict[str, Any]:
-        """Extract features using standalone vestigo_features library (without Ghidra)"""
-        logger.info(f"Starting standalone feature extraction - JobID: {job_id}, Binary: {binary_path}")
-        
-        if not VESTIGO_FEATURES_AVAILABLE:
-            raise RuntimeError("vestigo_features library not available for standalone analysis")
-        
-        if not os.path.exists(binary_path):
-            logger.error(f"Binary file not found: {binary_path}")
-            raise FileNotFoundError(f"Binary file not found: {binary_path}")
-        
-        try:
-            # Basic binary analysis without Ghidra
-            binary_data = self._prepare_basic_binary_data(binary_path)
-            
-            # Extract features using the modular library
-            features = self.feature_extractor.extract_binary_features(binary_data)
-            
-            # Add metadata
-            features["analysis_type"] = "standalone"
-            features["job_id"] = job_id
-            features["binary_path"] = binary_path
-            
-            logger.info(f"Standalone feature extraction completed - JobID: {job_id}")
-            return features
-            
-        except Exception as e:
-            logger.error(f"Standalone feature extraction failed - JobID: {job_id}, Error: {str(e)}", exc_info=True)
-            raise
-    
-    def _prepare_basic_binary_data(self, binary_path: str) -> Dict[str, Any]:
-        """Prepare basic binary data for standalone analysis"""
-        binary_stat = os.stat(binary_path)
-        binary_name = os.path.basename(binary_path)
-        
-        # Basic metadata (limited without Ghidra)
-        metadata = {
-            "binary_name": binary_name,
-            "file_size": binary_stat.st_size,
-            "architecture": "unknown",  # Would need more analysis
-            "compiler": "unknown",
-            "sections": {}
-        }
-        
-        # For now, create empty functions list
-        # In a real implementation, you might use other tools like objdump, readelf, etc.
-        functions_data = []
-        
-        return {
-            "functions": functions_data,
-            "metadata": metadata
-        }
     
     async def extract_features_from_binary(self, job_id: str, binary_path: str) -> Dict[str, Any]:
         """
-        Extract features from a binary file using Ghidra analysis
+        Extract features from a binary file by calling Ghidra extract_features.py script
+        
+        This method orchestrates the Ghidra analysis but does NOT implement feature extraction.
+        All extraction logic is in ghidra_scripts/extract_features.py
         
         Supports various binary formats:
         - ELF executables and object files (.o)
@@ -215,7 +164,7 @@ class FeatureExtractionService:
             binary_path: Path to the binary file to analyze
             
         Returns:
-            Dict containing extracted features and analysis results
+            Dict containing extracted features and analysis results from Ghidra script
         """
         logger.info(f"Starting feature extraction - JobID: {job_id}, Binary: {binary_path}")
         
@@ -228,12 +177,12 @@ class FeatureExtractionService:
             logger.debug(f"Created temporary Ghidra workspace: {temp_dir}")
             
             try:
-                # Run Ghidra feature extraction
+                # Call Ghidra to run extract_features.py script
                 features_result = await self._run_ghidra_analysis(
                     binary_path, temp_dir, job_id
                 )
                 
-                # Process and structure the results
+                # Process and structure the JSON output from Ghidra script
                 processed_features = self._process_ghidra_output(features_result, job_id)
                 
                 logger.info(f"Feature extraction completed - JobID: {job_id}")
@@ -244,7 +193,12 @@ class FeatureExtractionService:
                 raise
     
     async def _run_ghidra_analysis(self, binary_path: str, workspace_dir: str, job_id: str) -> Dict[str, Any]:
-        """Run Ghidra headless analysis"""
+        """
+        Run Ghidra headless to execute extract_features.py script
+        
+        This method sets up Ghidra workspace and calls analyzeHeadless with -postScript
+        to execute the extract_features.py script. The script handles all analysis logic.
+        """
         logger.info(f"Running Ghidra analysis - JobID: {job_id}")
         
         # Check Ghidra availability
@@ -257,33 +211,50 @@ class FeatureExtractionService:
             logger.error(f"Extract features script not found: {self.extract_features_script}")
             raise FileNotFoundError(f"Extract features script not found: {self.extract_features_script}")
         
-        # Run real Ghidra analysis
+        # Delegate to Ghidra script execution
         return await self._run_real_ghidra_analysis(binary_path, workspace_dir, job_id)
     
     async def _run_real_ghidra_analysis(self, binary_path: str, workspace_dir: str, job_id: str) -> Dict[str, Any]:
-        """Run actual Ghidra analysis using the real extract_features.py script"""
+        """
+        Execute Ghidra analyzeHeadless with extract_features.py script
+        
+        The extract_features.py script:
+        - Analyzes binary structure and functions
+        - Extracts cryptographic signatures and constants
+        - Computes entropy, graph features, and P-code analysis
+        - Outputs results to ghidra_json/BINARY_NAME_features.json
+        
+        This method simply orchestrates the call and reads the output.
+        """
         
         project_name = f"vestigo_analysis_{job_id}"
         binary_name = os.path.basename(binary_path)
         
-        # The script saves to ghidra_json/BINARY_NAME_features.json by default
-        # We need to pass the project root so the script can create the output directory
-        project_root = str(Path(__file__).parent.parent.parent)  # vestigo-data root
+        # extract_features.py script outputs to output_dir/BINARY_NAME_features.json
+        # Pass full output directory path so script knows where to save
+        output_dir = os.path.join(str(self.project_root), "ghidra_final_output")
+        os.makedirs(output_dir, exist_ok=True)
         
-        # Build Ghidra command - the script expects project root as argument
+        # Build Ghidra command
+        # -import: Import binary into Ghidra project
+        # -scriptPath: Add custom script directory
+        # -postScript: Execute Python script after import
+        # -deleteProject: Clean up workspace after analysis
         ghidra_cmd = [
             self.ghidra_headless,
-            workspace_dir,      # Ghidra project directory
-            project_name,       # Project name
-            "-import", binary_path,  # Import the binary
-            "-postScript", str(self.extract_features_script), project_root,  # Run script with project root
-            "-deleteProject"    # Clean up project after analysis
+            workspace_dir,                              # Ghidra workspace directory
+            project_name,                               # Project name
+            "-import", binary_path,                     # Import the binary
+            "-scriptPath", str(self.extract_features_script.parent),  # Add our scripts directory
+            "-postScript", self.extract_features_script.name, output_dir,  # Run extract_features.py
+            "-deleteProject"                            # Clean up after analysis
         ]
         
+        logger.info(f"Executing Ghidra analysis: analyzeHeadless with extract_features.py")
         logger.debug(f"Ghidra command: {' '.join(ghidra_cmd)}")
         
         try:
-            # Run Ghidra analysis
+            # Execute Ghidra with extract_features.py script
             result = subprocess.run(
                 ghidra_cmd,
                 capture_output=True,
@@ -293,66 +264,248 @@ class FeatureExtractionService:
             )
             
             if result.returncode != 0:
-                logger.error(f"Ghidra analysis failed - JobID: {job_id}, Return code: {result.returncode}")
+                logger.error(f"Ghidra script execution failed - JobID: {job_id}, Return code: {result.returncode}")
                 logger.error(f"Ghidra stderr: {result.stderr}")
                 logger.error(f"Ghidra stdout: {result.stdout}")
                 raise RuntimeError(f"Ghidra analysis failed: {result.stderr}")
             
-            logger.info(f"Ghidra execution completed - JobID: {job_id}")
-            logger.debug(f"Ghidra output: {result.stdout}")
+            logger.info(f"Ghidra script execution completed - JobID: {job_id}, Return code: {result.returncode}")
+            if result.stdout:
+                logger.info(f"Ghidra stdout: {result.stdout[:1000]}")  # Log first 1000 chars
+            if result.stderr:
+                logger.warning(f"Ghidra stderr: {result.stderr[:1000]}")  # Log first 1000 chars
             
-            # Calculate expected output file path - script saves to ghidra_json/BINARY_NAME_features.json
-            expected_output = os.path.join(project_root, "ghidra_json", f"{binary_name}_features.json")
+            # Read the JSON output generated by extract_features.py
+            # Script saves to: output_dir/BINARY_NAME_features.json
+            expected_output = os.path.join(output_dir, f"{binary_name}_features.json")
             
-            # Read the output file
             if os.path.exists(expected_output):
                 with open(expected_output, 'r') as f:
                     features = json.load(f)
-                logger.info(f"Successfully loaded Ghidra features - JobID: {job_id}, Functions: {len(features.get('functions', []))}")
+                logger.info(f"Loaded extract_features.py output - JobID: {job_id}, Functions: {len(features.get('functions', []))}")
+                
+                # Run enhanced_crypto_pipeline.py on the Ghidra JSON output
+                pipeline_output = await self._run_enhanced_pipeline(expected_output, binary_name, job_id)
+                
+                # Merge pipeline results into features
+                features["pipeline_analysis"] = pipeline_output
+                
                 return features
             else:
-                logger.error(f"Expected Ghidra output file not found: {expected_output}")
+                logger.error(f"extract_features.py output not found: {expected_output}")
                 # List available files for debugging
                 ghidra_json_dir = os.path.join(project_root, "ghidra_json")
                 if os.path.exists(ghidra_json_dir):
                     available_files = os.listdir(ghidra_json_dir)
                     logger.debug(f"Available files in ghidra_json: {available_files}")
-                raise FileNotFoundError(f"Ghidra analysis output not found: {expected_output}")
+                raise FileNotFoundError(f"Ghidra script output not found: {expected_output}")
                 
         except subprocess.TimeoutExpired:
-            logger.error(f"Ghidra analysis timeout - JobID: {job_id}")
-            raise TimeoutError("Ghidra analysis timed out")
+            logger.error(f"Ghidra script execution timeout - JobID: {job_id}")
+            raise TimeoutError("Ghidra analysis timed out after 10 minutes")
         except Exception as e:
-            logger.error(f"Ghidra execution error - JobID: {job_id}, Error: {str(e)}")
+            logger.error(f"Ghidra script execution error - JobID: {job_id}, Error: {str(e)}")
             raise
     
-    def _process_ghidra_output(self, ghidra_result: Dict[str, Any], job_id: str) -> Dict[str, Any]:
-        """Process and structure real Ghidra analysis output"""
-        logger.debug(f"Processing Ghidra output - JobID: {job_id}")
+    async def _run_enhanced_pipeline(self, ghidra_json_path: str, binary_name: str, job_id: str) -> Dict[str, Any]:
+        """
+        Run enhanced_crypto_pipeline.py on Ghidra JSON output
         
-        # Real Ghidra output format: {"binary": "name", "metadata": {...}, "functions": [...]}
+        This performs ML-based cryptographic algorithm classification on the
+        extracted features from Ghidra analysis.
+        
+        Args:
+            ghidra_json_path: Path to Ghidra JSON output file
+            binary_name: Name of the binary being analyzed
+            job_id: Job ID for tracking
+            
+        Returns:
+            Dict containing pipeline analysis results (predictions, probabilities, etc.)
+        """
+        logger.info(f"Running enhanced crypto pipeline - JobID: {job_id}")
+        
+        if not os.path.exists(self.enhanced_pipeline_script):
+            logger.warning(f"Enhanced pipeline script not found: {self.enhanced_pipeline_script}")
+            logger.warning("Skipping ML classification step")
+            return {
+                "status": "skipped",
+                "reason": "enhanced_crypto_pipeline.py not found"
+            }
+        
+        # Create output path for pipeline results
+        pipeline_output_dir = self.project_root / "pipeline_output"
+        pipeline_output_dir.mkdir(exist_ok=True)
+        
+        pipeline_output_path = pipeline_output_dir / f"{binary_name}_pipeline.json"
+        
+        # Build pipeline command
+        # python3 enhanced_crypto_pipeline.py --ghidra input.json --output output.json
+        pipeline_cmd = [
+            "python3",
+            str(self.enhanced_pipeline_script),
+            "--ghidra", str(ghidra_json_path),
+            "--output", str(pipeline_output_path)
+        ]
+        
+        logger.debug(f"Pipeline command: {' '.join(pipeline_cmd)}")
+        
+        try:
+            # Run enhanced crypto pipeline
+            result = subprocess.run(
+                pipeline_cmd,
+                capture_output=True,
+                text=True,
+                timeout=300,  # 5 minute timeout for ML inference
+                cwd=str(self.project_root)
+            )
+            
+            if result.returncode != 0:
+                logger.error(f"Pipeline execution failed - JobID: {job_id}, Return code: {result.returncode}")
+                logger.error(f"Pipeline stderr: {result.stderr}")
+                logger.error(f"Pipeline stdout: {result.stdout}")
+                return {
+                    "status": "failed",
+                    "error": result.stderr,
+                    "stdout": result.stdout
+                }
+            
+            logger.info(f"Pipeline execution completed - JobID: {job_id}")
+            logger.debug(f"Pipeline output: {result.stdout}")
+            
+            # Read pipeline output
+            if os.path.exists(pipeline_output_path):
+                with open(pipeline_output_path, 'r') as f:
+                    pipeline_result = json.load(f)
+                
+                logger.info(f"Loaded pipeline analysis - JobID: {job_id}")
+                
+                # Parse the enhanced pipeline output format
+                # Structure: {analysis_metadata, file_analysis, function_analyses}
+                result = {
+                    "status": "success",
+                    "pipeline_output_path": str(pipeline_output_path),
+                    "ghidra_input_path": str(ghidra_json_path)
+                }
+                
+                # Extract function-level predictions
+                if "function_analyses" in pipeline_result:
+                    function_analyses = pipeline_result["function_analyses"]
+                    result["function_predictions"] = [
+                        {
+                            "function_name": func.get("function_info", {}).get("function_name"),
+                            "function_address": func.get("function_info", {}).get("function_address"),
+                            "predicted_algorithm": func.get("prediction", {}).get("predicted_algorithm"),
+                            "confidence": func.get("prediction", {}).get("confidence"),
+                            "is_crypto": func.get("encryption_analysis", {}).get("is_encrypted", False),
+                            "encryption_status": func.get("encryption_analysis", {}).get("encryption_status"),
+                            "top_3_predictions": func.get("top_predictions", [])[:3]
+                        }
+                        for func in function_analyses
+                    ]
+                
+                # Extract file-level summary
+                if "file_analysis" in pipeline_result:
+                    file_analysis = pipeline_result["file_analysis"]
+                    overall = file_analysis.get("overall_assessment", {})
+                    algo_dist = file_analysis.get("algorithm_distribution", {})
+                    
+                    result["file_summary"] = {
+                        "file_status": overall.get("file_status"),
+                        "crypto_percentage": overall.get("crypto_percentage", 0),
+                        "average_confidence": overall.get("average_confidence", 0),
+                        "detected_algorithms": list(algo_dist.get("crypto_algorithm_counts", {}).keys()),
+                        "algorithm_counts": algo_dist.get("counts", {}),
+                        "top_algorithms": algo_dist.get("top_algorithms", []),
+                        "confidence_scores": algo_dist.get("crypto_probability_analysis", {})
+                    }
+                
+                # Add metadata
+                if "analysis_metadata" in pipeline_result:
+                    result["metadata"] = pipeline_result["analysis_metadata"]
+                
+                return result
+            else:
+                logger.error(f"Pipeline output not found: {pipeline_output_path}")
+                return {
+                    "status": "failed",
+                    "error": f"Output file not generated: {pipeline_output_path}"
+                }
+                
+        except subprocess.TimeoutExpired:
+            logger.error(f"Pipeline execution timeout - JobID: {job_id}")
+            return {
+                "status": "timeout",
+                "error": "Pipeline timed out after 5 minutes"
+            }
+        except Exception as e:
+            logger.error(f"Pipeline execution error - JobID: {job_id}, Error: {str(e)}")
+            return {
+                "status": "error",
+                "error": str(e)
+            }
+    
+    def _process_ghidra_output(self, ghidra_result: Dict[str, Any], job_id: str) -> Dict[str, Any]:
+        """
+        Process and structure the JSON output from extract_features.py script
+        
+        The Ghidra script (extract_features.py) outputs a comprehensive JSON with:
+        - binary: Binary filename
+        - metadata: Architecture, compiler, sections
+        - functions: List of analyzed functions with features
+        
+        This method adds job tracking info and computes summary statistics.
+        """
+        logger.debug(f"Processing extract_features.py output - JobID: {job_id}")
+        
+        # Parse extract_features.py output format
+        # Expected structure: {"binary": "name", "metadata": {...}, "functions": [...]}
         functions = ghidra_result.get("functions", [])
         metadata = ghidra_result.get("metadata", {})
         binary_name = ghidra_result.get("binary", "unknown")
         
-        # Analyze function labels (crypto vs non-crypto)
+        # Extract pipeline analysis if present
+        pipeline_analysis = ghidra_result.get("pipeline_analysis", {})
+        pipeline_status = pipeline_analysis.get("status", "not_run")
+        
+        # Compute summary statistics from extract_features.py output
+        # Analyze function labels (crypto vs non-crypto) assigned by the script
         total_functions = len(functions)
         crypto_functions = len([f for f in functions if f.get("label", "Non-Crypto") != "Non-Crypto"])
         non_crypto_functions = total_functions - crypto_functions
         
-        # Count crypto signatures found across all functions
+        # If pipeline ran successfully, use its predictions for enhanced statistics
+        if pipeline_status in ["success", "completed"]:
+            logger.info(f"Pipeline analysis available - incorporating ML predictions")
+            
+            # Extract predictions from pipeline results
+            if "function_predictions" in pipeline_analysis:
+                ml_predictions = pipeline_analysis["function_predictions"]
+                crypto_functions_ml = sum(1 for pred in ml_predictions if pred.get("is_crypto", False))
+                
+                logger.info(f"ML Classification: {crypto_functions_ml} crypto functions detected")
+                
+                # Store both static and ML-based counts
+                crypto_functions_static = crypto_functions
+                crypto_functions = crypto_functions_ml  # Use ML predictions
+            
+            # Extract file-level summary
+            if "file_summary" in pipeline_analysis:
+                file_summary = pipeline_analysis["file_summary"]
+                logger.info(f"Detected algorithms: {', '.join(file_summary.get('detected_algorithms', []))}")
+        
+        # Count crypto constants detected by the script
         total_crypto_constants = sum(
             len(f.get("crypto_signatures", {}).get("detected_constants", []))
             for f in functions
         )
         
-        # Extract entropy metrics
+        # Calculate average entropy from script's entropy metrics
         avg_entropy = 0.0
         if functions:
             entropies = [f.get("entropy_metrics", {}).get("opcode_entropy", 0.0) for f in functions]
             avg_entropy = sum(entropies) / len(entropies) if entropies else 0.0
         
-        # Process advanced features
+        # Extract advanced features computed by the script
         advanced_features = {
             "total_tables_detected": metadata.get("total_tables_detected", 0),
             "text_size": metadata.get("text_size", 0),
@@ -360,6 +513,7 @@ class FeatureExtractionService:
             "data_size": metadata.get("data_size", 0)
         }
         
+        # Structure final result with job metadata
         processed_result = {
             "job_id": job_id,
             "extraction_timestamp": time.time(),
@@ -377,14 +531,41 @@ class FeatureExtractionService:
                     "data_size": advanced_features["data_size"]
                 }
             },
-            "functions": functions,  # Include full function analysis
-            "metadata": metadata,
-            "analysis_tool": "ghidra",
+            "functions": functions,  # Full function analysis from extract_features.py
+            "metadata": metadata,    # Binary metadata from extract_features.py
+            "analysis_tool": "ghidra_extract_features",
             "next_step": "classification_ready"
         }
         
-        logger.info(f"Real Ghidra analysis processed - JobID: {job_id}, Binary: {binary_name}")
+        # Add pipeline analysis results if available
+        if pipeline_status in ["success", "completed"]:
+            processed_result["ml_classification"] = {
+                "status": "completed",
+                "function_predictions": pipeline_analysis.get("function_predictions", []),
+                "file_summary": pipeline_analysis.get("file_summary", {}),
+                "detected_algorithms": pipeline_analysis.get("file_summary", {}).get("detected_algorithms", []),
+                "confidence_scores": pipeline_analysis.get("file_summary", {}).get("confidence_scores", {}),
+                "pipeline_output_path": pipeline_analysis.get("pipeline_output_path")
+            }
+            processed_result["next_step"] = "ml_classification_complete"
+        elif pipeline_status == "skipped":
+            processed_result["ml_classification"] = {
+                "status": "skipped",
+                "reason": pipeline_analysis.get("reason", "Pipeline not available")
+            }
+        elif pipeline_status in ["failed", "timeout", "error"]:
+            processed_result["ml_classification"] = {
+                "status": "failed",
+                "error": pipeline_analysis.get("error", "Unknown error"),
+                "details": pipeline_analysis
+            }
+        
+        logger.info(f"extract_features.py output processed - JobID: {job_id}, Binary: {binary_name}")
         logger.info(f"Functions: {total_functions}, Crypto: {crypto_functions}, "
                    f"Constants: {total_crypto_constants}, Avg Entropy: {avg_entropy:.4f}")
+        
+        if pipeline_status in ["success", "completed"]:
+            detected_algos = processed_result["ml_classification"]["detected_algorithms"]
+            logger.info(f"ML Classification: Detected algorithms: {', '.join(detected_algos) if detected_algos else 'None'}")
         
         return processed_result

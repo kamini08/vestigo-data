@@ -95,6 +95,10 @@ class IngestService:
             }
         }
         
+        # Add bootloader information if found
+        if "bootloaders_found" in ingest_result["extraction"]:
+            response["analysis"]["bootloaders"] = ingest_result["extraction"]["bootloaders_found"]
+        
         # Add routing-specific information
         if routing_decision == "PATH_A_BARE_METAL":
             self._add_bare_metal_info(response, ingest_result)

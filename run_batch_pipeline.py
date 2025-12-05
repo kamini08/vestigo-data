@@ -27,7 +27,7 @@ if not GHIDRA_HOME:
         print("Please set GHIDRA_HOME environment variable or install Ghidra.")
         exit(1)
 
-BINARY_DIRS = ["builds", "builds_x86"]  # Process both directories
+BINARY_DIRS = ["dataset_binaries", "builds_x86"]  # Process both directories
 OUTPUT_DIR = "ghidra_json"  # Combined output directory
 PROJECT_DIR = "/tmp/ghidra_batch_project"
 PROJECT_NAME = f"batch_extraction_{int(time.time())}"
@@ -56,6 +56,7 @@ def run_ghidra_on_binary(binary_path):
         PROJECT_NAME,
         "-import", binary_path,
         "-postScript", os.path.abspath(SCRIPT_PATH),
+        os.path.abspath(OUTPUT_DIR),  # Pass output directory as argument
         "-deleteProject"
     ]
     
@@ -162,10 +163,10 @@ def main():
             
             # Check if already processed
             output_file = os.path.join(OUTPUT_DIR, binary_name + "_features.json")
-            if os.path.exists(output_file):
-                print(f"  [{i+1}/{len(binaries)}] {binary_name[:40]:40s} ⊙ SKIP (exists)")
-                results['success'] += 1
-                continue
+            # if os.path.exists(output_file):
+            #     print(f"  [{i+1}/{len(binaries)}] {binary_name[:40]:40s} ⊙ SKIP (exists)")
+            #     results['success'] += 1
+            #     continue
             
             print(f"  [{i+1}/{len(binaries)}] {binary_name[:40]:40s} ", end='', flush=True)
             
