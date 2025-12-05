@@ -27,6 +27,7 @@ from services.feature_extraction_service import FeatureExtractionService
 from services.filesystem_scan_service import FilesystemScanService
 from services.secure_boot_analysis_service import SecureBootAnalysisService
 from services.crypto_library_service import CryptoLibraryService
+from services.qiling_dynamic_analysis_service import QilingDynamicAnalysisService
 from services.job_manager import job_manager, JobStatus
 
 # ==========================================================
@@ -41,6 +42,7 @@ feature_service = FeatureExtractionService()
 filesystem_service = FilesystemScanService()
 secureboot_service = SecureBootAnalysisService()
 cryptolib_service = CryptoLibraryService()
+qiling_service = QilingDynamicAnalysisService()
 
 logger.info("Vestigo Backend starting up...")
 
@@ -205,6 +207,11 @@ async def upload_and_analyze(background_tasks: BackgroundTasks, file: UploadFile
         # If it's PATH_A_BARE_METAL, add background task for feature extraction
         if analysis_result["analysis"]["routing_decision"] == "PATH_A_BARE_METAL":
             background_tasks.add_task(process_bare_metal_features, job_id, analysis_result)
+            
+            # If it's an ELF binary, also run Qiling dynamic analysis in parallel
+            if analysis_result["analysis"].get("binary_info", {}).get("is_elf", False):
+                logger.info(f"ELF binary detected - adding Qiling dynamic analysis - JobID: {job_id}")
+                background_tasks.add_task(process_qiling_dynamic_analysis, job_id, analysis_result)
         
         # If it's PATH_B_LINUX_FS, add background task for filesystem scanning
         elif analysis_result["analysis"]["routing_decision"] == "PATH_B_LINUX_FS":
@@ -267,6 +274,45 @@ async def process_bare_metal_features(job_id: str, analysis_result: dict):
     except Exception as e:
         logger.error(f"Background feature extraction failed - JobID: {job_id}, Error: {str(e)}", exc_info=True)
         job_manager.mark_job_failed(job_id, f"Feature extraction failed: {str(e)}")
+
+
+async def process_qiling_dynamic_analysis(job_id: str, analysis_result: dict):
+    """Background task to process Qiling dynamic crypto detection for ELF binaries"""
+    try:
+        logger.info(f"Starting background Qiling dynamic analysis - JobID: {job_id}")
+        
+        # Get binary file path from analysis results
+        binary_info = analysis_result["analysis"].get("binary_info", {})
+        workspace_path = analysis_result["analysis"]["workspace_path"]
+        
+        # For PATH_A_BARE_METAL, the binary file should be in the workspace
+        if workspace_path:
+            # Look for the binary file in workspace
+            import glob
+            workspace_files = glob.glob(os.path.join(workspace_path, "*"))
+            binary_files = [f for f in workspace_files if os.path.isfile(f) and not f.endswith('.json')]
+            
+            if binary_files:
+                binary_path = binary_files[0]  # Use first binary file found
+                logger.info(f"Found ELF binary for Qiling analysis - JobID: {job_id}, Path: {binary_path}")
+                
+                # Run Qiling dynamic analysis
+                qiling_results = await qiling_service.analyze_elf_binary(job_id, binary_path)
+                
+                # Update job with Qiling results (store in a separate field)
+                job_manager.update_job_qiling_results(job_id, qiling_results)
+                
+                logger.info(f"Background Qiling analysis completed - JobID: {job_id}")
+                logger.info(f"Qiling verdict: {qiling_results.get('verdict', {}).get('crypto_detected', 'unknown')} "
+                          f"(confidence: {qiling_results.get('verdict', {}).get('confidence', 'N/A')})")
+            else:
+                logger.error(f"No binary files found in workspace - JobID: {job_id}")
+        else:
+            logger.error(f"No workspace path available - JobID: {job_id}")
+            
+    except Exception as e:
+        logger.error(f"Background Qiling analysis failed - JobID: {job_id}, Error: {str(e)}", exc_info=True)
+        # Don't fail the entire job - Qiling is supplementary analysis
 
 
 async def process_filesystem_scan(job_id: str, analysis_result: dict):

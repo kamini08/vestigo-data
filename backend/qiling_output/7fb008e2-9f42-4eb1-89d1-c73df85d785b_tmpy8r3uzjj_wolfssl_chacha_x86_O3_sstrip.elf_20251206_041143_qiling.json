@@ -1,0 +1,55 @@
+{
+  "job_id": "7fb008e2-9f42-4eb1-89d1-c73df85d785b",
+  "binary_path": "/home/spy-d/My Files/sih/vestigo-data/backend/analysis_workspace/tmpy8r3uzjj_wolfssl_chacha_x86_O3_sstrip.elf_analysis/tmpy8r3uzjj_wolfssl_chacha_x86_O3_sstrip.elf",
+  "binary_name": "tmpy8r3uzjj_wolfssl_chacha_x86_O3_sstrip.elf",
+  "analysis_timestamp": 1764974503.9568183,
+  "execution_time": 1.8255903720855713,
+  "status": "completed",
+  "analysis_tool": "qiling_dynamic_analysis",
+  "phases": {
+    "packer_detection": {
+      "packed": false
+    },
+    "yara_analysis": {
+      "detected": [
+        "COMPRESSION",
+        "ChaCha20",
+        "RC4/ARC4",
+        "RSA",
+        "Salsa20"
+      ],
+      "total_matches": 390,
+      "scan_time": 0.002
+    },
+    "constant_detection": {
+      "algorithms_detected": [
+        "ChaCha20"
+      ],
+      "count": 1
+    },
+    "function_symbols": {
+      "detected": false,
+      "stripped": true
+    },
+    "dynamic_analysis": {
+      "crypto_loops": 89,
+      "total_basic_blocks": 1213,
+      "total_instructions": 180314,
+      "crypto_operations": 31233,
+      "crypto_op_ratio": 17.32,
+      "crypto_heavy_blocks": 227
+    }
+  },
+  "verdict": {
+    "crypto_detected": true,
+    "confidence": "HIGH",
+    "confidence_score": 80,
+    "reasons": [
+      "Crypto constants detected (ChaCha20)",
+      "89 crypto loops (round functions)",
+      "Medium crypto-op ratio (17.3%)"
+    ]
+  },
+  "raw_output": "[*] Starting WolfSSL ChaCha Test...\n[+] Encryption successful!\n    Plaintext:  Hello WolfSSL ChaCha Test Message!\n    Ciphertext: c1ab5df3311f2d2f9cd29b3572b2277d...\n[+] Decryption check: Hello WolfSSL ChaCha Test Message!\n\n============================================================\n[*] PHASE -1: Checking for packed binary...\n[-] No packer detected\n[+] Detected architecture: x86\n[*] Target: tmpy8r3uzjj_wolfssl_chacha_x86_O3_sstrip.elf\n[*] Rootfs: /home/spy-d/My Files/sih/vestigo-data/qiling_analysis/rootfs/x86_linux\n\n============================================================\n[*] PHASE 0: YARA static analysis\n[\u2713] YARA detected: COMPRESSION, ChaCha20, RC4/ARC4, RSA, Salsa20\n    Total matches: 390\n    Scan time: 0.002s\n    High-confidence rules:\n      - ChaCha20_Constants (ChaCha20, 100%)\n      - Salsa20_Constants (Salsa20, 100%)\n\n============================================================\n[*] PHASE 1: Scanning for crypto constants...\n[\u2713] Found constants for 1 algorithm(s)\n    - ChaCha20\n\n============================================================\n[*] PHASE 2: Checking for function symbols...\n[-] No crypto function names detected (stripped/obfuscated binary)\n[*] Switching to enhanced behavioral analysis...\n\n============================================================\n[*] PHASE 3: Dynamic behavioral analysis...\n[*] Executing binary with basic block profiling...\n    (Using basic block hooks for 10-100x better performance)\n\n============================================================\n   ENHANCED ANALYSIS RESULTS (v2.0)\n============================================================\n\n[\u2713] Binary executed\n\n[*] Constant Detection (FindCrypt):\n    [\u2713] Detected 1 algorithm(s), 1 constant(s)\n      ChaCha20: CHACHA20\n\n[*] Memory Entropy Analysis:\n    [-] No high-entropy memory writes detected\n\n[*] Crypto Loop Detection (Round Functions):\n    [\u2713] Found 89 crypto loop(s):\n      @ 0x80ae630: 987 iterations, 33.3% crypto-ops (1/3 ops)\n      @ 0x80ae54e: 987 iterations, 42.9% crypto-ops (3/7 ops)\n      @ 0x804a950: 68 iterations, 33.3% crypto-ops (2/6 ops)\n      @ 0x804e4f0: 32 iterations, 33.3% crypto-ops (3/9 ops)\n      @ 0x805c487: 29 iterations, 33.3% crypto-ops (1/3 ops)\n\n[*] Basic Block Analysis:\n    Total Basic Blocks: 1213\n    Total Instructions Executed: 180314\n    Crypto Operations: 31233\n    Crypto-Op Ratio: 17.32%\n    Crypto-Heavy Blocks: 227\n[*] Logs saved to: /home/spy-d/My Files/sih/vestigo-data/qiling_analysis/tests/../logs/tmpy8r3uzjj_wolfssl_chacha_x86_O3_sstrip.elf_20251206_041142\n\n============================================================\n[*] VERDICT: Crypto behavior detected (Confidence: HIGH)\n    Confidence Score: 80/100\n    Reasons:\n      - Crypto constants detected (ChaCha20)\n      - 89 crypto loops (round functions)\n      - Medium crypto-op ratio (17.3%)\n============================================================\n",
+  "errors": "/home/spy-d/My Files/sih/vestigo-data/qiling_analysis/qiling_env/lib64/python3.13/site-packages/capstone/__init__.py:267: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.\n  import pkg_resources\n[!] \t0x8065122: syscall ql_syscall_rseq number = 0x182(386) not implemented\n"
+}

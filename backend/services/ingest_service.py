@@ -114,32 +114,68 @@ class IngestService:
         """Add PATH_A_BARE_METAL specific information"""
         binary_analysis = ingest_result.get("binary_analysis", {})
         
+        # For PATH_A_BARE_METAL, the binary file is in the workspace directory
+        # Find the binary file in the workspace
+        workspace_path = ingest_result.get("analysis_workspace")
+        file_path = None
+        is_elf = False
+        
+        if workspace_path and os.path.exists(workspace_path):
+            # Look for binary files in workspace (not .json files)
+            import glob
+            workspace_files = glob.glob(os.path.join(workspace_path, "*"))
+            binary_files = [f for f in workspace_files if os.path.isfile(f) and not f.endswith('.json')]
+            
+            if binary_files:
+                file_path = binary_files[0]  # Use first binary file found
+                is_elf = self._is_elf_file(file_path)
+                logger.info(f"Found binary in workspace: {file_path}, is_elf: {is_elf}")
+            else:
+                logger.warning(f"No binary files found in workspace: {workspace_path}")
+        else:
+            logger.warning(f"Workspace path not available or doesn't exist: {workspace_path}")
+        
         response["analysis"]["binary_info"] = {
             "is_binary": True,
+            "is_elf": is_elf,
             "analysis_ready": binary_analysis.get("processed", False),
             "features_extracted": binary_analysis.get("features_extracted", False),
             "classification_complete": binary_analysis.get("classification_complete", False),
             "analysis_type": binary_analysis.get("analysis_type", "unknown"),
-            "file_path": binary_analysis.get("file_path")
+            "file_path": binary_analysis.get("file_path"),
+            "qiling_analysis_available": is_elf
         }
         
-        response["next_actions"] = [
+        next_actions = [
             {
                 "action": "extract_features",
                 "endpoint": f"/job/{response['jobId']}/extract-features",
                 "description": "Extract binary features using Ghidra analysis",
                 "ready": True
-            },
-            {
-                "action": "classify_crypto", 
-                "endpoint": f"/job/{response['jobId']}/classify",
-                "description": "Classify cryptographic functions",
-                "ready": False,  # Available after feature extraction
-                "depends_on": "extract_features"
             }
         ]
         
-        logger.info(f"Added PATH_A_BARE_METAL info for JobID: {response['jobId']}")
+        # Add Qiling dynamic analysis if it's an ELF binary
+        if is_elf:
+            next_actions.append({
+                "action": "qiling_dynamic_analysis",
+                "endpoint": f"/job/{response['jobId']}/qiling-analysis",
+                "description": "Run Qiling dynamic crypto detection (for ELF binaries)",
+                "ready": True,
+                "parallel": True  # Can run in parallel with feature extraction
+            })
+        
+        next_actions.append({
+            "action": "classify_crypto", 
+            "endpoint": f"/job/{response['jobId']}/classify",
+            "description": "Classify cryptographic functions",
+            "ready": False,  # Available after feature extraction
+            "depends_on": "extract_features"
+        })
+        
+        response["next_actions"] = next_actions
+        
+        logger.info(f"Added PATH_A_BARE_METAL info for JobID: {response['jobId']}, ELF: {is_elf}")
     
     def _add_linux_fs_info(self, response: Dict[str, Any], ingest_result: Dict[str, Any]):
         """Add PATH_B_LINUX_FS specific information"""
@@ -190,6 +226,19 @@ class IngestService:
                 return f"{bytes_size:.2f} {unit}"
             bytes_size /= 1024.0
         return f"{bytes_size:.2f} TB"
+    
+    def _is_elf_file(self, file_path: str) -> bool:
+        """Check if file is an ELF binary"""
+        if not file_path or not os.path.exists(file_path):
+            return False
+        
+        try:
+            with open(file_path, 'rb') as f:
+                magic = f.read(4)
+                return magic == b'\x7fELF'
+        except Exception as e:
+            logger.error(f"Error checking ELF magic for {file_path}: {e}")
+            return False
     
     def get_job_status(self, job_id: str) -> Optional[Dict[str, Any]]:
         """Get status of a specific job (placeholder for database integration)"""

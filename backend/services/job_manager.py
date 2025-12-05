@@ -36,6 +36,7 @@ class JobData:
     bootloaders: Optional[List[Dict[str, Any]]] = None
     analysis_results: Optional[Dict[str, Any]] = None
     feature_extraction_results: Optional[Dict[str, Any]] = None
+    qiling_dynamic_results: Optional[Dict[str, Any]] = None
     classification_results: Optional[Dict[str, Any]] = None
     created_at: float = None
     updated_at: float = None
@@ -118,6 +119,22 @@ class JobManager:
             JobStatus.FEATURES_COMPLETE,
             feature_extraction_results=feature_results
         )
+    
+    def update_job_qiling_results(self, job_id: str, qiling_results: Dict[str, Any]) -> Optional[JobData]:
+        """Update job with Qiling dynamic analysis results"""
+        job = self.get_job(job_id)
+        if not job:
+            logger.warning(f"Attempted to update non-existent job: {job_id}")
+            return None
+        
+        job.qiling_dynamic_results = qiling_results
+        job.updated_at = time.time()
+        
+        self._save_job(job)
+        self._jobs_cache[job_id] = job
+        
+        logger.info(f"Updated job with Qiling results - JobID: {job_id}")
+        return job
     
     def update_job_classification_results(self, job_id: str, classification_results: Dict[str, Any]) -> Optional[JobData]:
         """Update job with classification results"""
