@@ -679,10 +679,14 @@ def extract_function_data(func, current_program):
     # Get Architecture
     arch = current_program.getLanguage().getProcessor().toString()
 
+    # Determine Label
+    label = LABEL_MAP.get(func_name, "Other")
+
     func_data = {
         "name": func_name,
         "address": func.getEntryPoint().toString(),
-        "arch": arch, 
+        "arch": arch,
+        "label": label,
         "graph_level": {},
         "node_level": [],
         "edge_level": []
