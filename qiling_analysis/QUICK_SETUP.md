@@ -7,10 +7,26 @@ Fast installation guide for the Qiling Crypto Detection Framework.
 - Python 3.8+
 - Git
 - Linux or macOS
+- strace (for system call tracing)
 
 ## Installation Steps
 
-### 1. Create Virtual Environment
+### 1. Install System Dependencies
+
+```bash
+# Debian/Ubuntu
+sudo apt update
+sudo apt install -y python3 python3-pip python3-venv git strace
+
+# RHEL/CentOS/Fedora
+sudo yum install -y python3 python3-pip git strace
+
+# macOS (via Homebrew)
+brew install python git
+# Note: strace is not available on macOS, but the tool will skip it gracefully
+```
+
+### 2. Create Virtual Environment
 
 ```bash
 cd qiling_analysis
@@ -18,7 +34,7 @@ python3 -m venv qiling_env
 source qiling_env/bin/activate
 ```
 
-### 2. Install Core Dependencies
+### 3. Install Core Dependencies
 
 ```bash
 pip install --upgrade pip setuptools wheel
@@ -37,7 +53,7 @@ pip install 'capstone>=4' \
             'termcolor'
 ```
 
-### 3. Install Analysis Tools
+### 4. Install Analysis Tools
 
 ```bash
 pip install 'yara-python' \
@@ -45,7 +61,7 @@ pip install 'yara-python' \
             'z3-solver'
 ```
 
-### 4. Install Development Tools (Optional)
+### 5. Install Development Tools (Optional)
 
 ```bash
 pip install 'pytest' \
@@ -55,14 +71,14 @@ pip install 'pytest' \
             'mypy'
 ```
 
-### 5. Install Qiling Framework
+### 6. Install Qiling Framework
 
 ```bash
 git clone https://github.com/qilingframework/qiling.git
 pip install -e ./qiling
 ```
 
-### 6. Setup Rootfs
+### 7. Setup Rootfs
 
 ```bash
 git clone https://github.com/qilingframework/rootfs.git
@@ -74,6 +90,7 @@ git clone https://github.com/qilingframework/rootfs.git
 source qiling_env/bin/activate
 python3 -c "import qiling; print('Qiling installed successfully')"
 ls rootfs/
+strace --version  # Should show strace version
 ```
 
 ## Usage
@@ -83,6 +100,25 @@ source qiling_env/bin/activate
 python3 tests/verify_crypto.py /path/to/binary.elf
 ```
 
+**Note:** The script will automatically:
+- Run strace to capture native system calls (if strace is installed)
+- Store strace logs in `tests/strace_logs/` directory
+- Fall back to Qiling emulation if strace fails or is unavailable
+
+### Strace Logs
+
+Strace logs are saved with timestamps:
+```
+tests/strace_logs/strace_<binary_name>_<timestamp>.log
+```
+
+These logs capture:
+- All system calls made by the binary
+- `getrandom()` calls with sizes
+- Random device reads (`/dev/random`, `/dev/urandom`)
+- File operations related to crypto
+- Memory operations (mmap, mprotect)
+
 ## Directory Structure
 
 After installation, you should have:
@@ -90,7 +126,8 @@ After installation, you should have:
 ```
 qiling_analysis/
 ├── tests/
-│   └── verify_crypto.py
+│   ├── verify_crypto.py
+│   └── strace_logs/         # Auto-generated strace logs
 |── qiling               # Cloned from Github
 ├── rootfs/              # Cloned from GitHub
 │   ├── arm64_linux/
@@ -103,6 +140,17 @@ qiling_analysis/
 ```
 
 ## Troubleshooting
+
+### strace Not Installed
+```bash
+# Debian/Ubuntu
+sudo apt install strace
+
+# RHEL/CentOS
+sudo yum install strace
+
+# macOS - strace not available, script will skip it automatically
+```
 
 ### Rootfs Not Found
 ```bash
@@ -126,6 +174,14 @@ Save this as `quick_install.sh`:
 
 ```bash
 #!/bin/bash
+# Install system dependencies first (requires sudo)
+if command -v apt &> /dev/null; then
+    sudo apt update && sudo apt install -y python3 python3-pip python3-venv git strace
+elif command -v yum &> /dev/null; then
+    sudo yum install -y python3 python3-pip git strace
+fi
+
+# Setup Python environment
 python3 -m venv qiling_env && \
 source qiling_env/bin/activate && \
 pip install --upgrade pip setuptools wheel && \

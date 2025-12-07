@@ -55,6 +55,139 @@ algo_evidence = {
     'ruled_out': [],  # Algorithms we can eliminate
 }
 
+# Strace logging
+strace_log_path = None
+
+def run_with_strace(binary_path, rootfs_path, timeout=10):
+    """
+    Run binary natively with strace to capture system calls.
+    Returns: (strace_log_path, success)
+    """
+    global strace_log_path
+    
+    # Check if strace is available
+    try:
+        subprocess.run(["which", "strace"], capture_output=True, check=True)
+    except subprocess.CalledProcessError:
+        print("[!] strace not installed - skipping native syscall trace")
+        print("    Install: sudo apt install strace (Debian/Ubuntu)")
+        print("             sudo yum install strace (RHEL/CentOS)")
+        return None, False
+    
+    # Create logs directory
+    log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "strace_logs")
+    os.makedirs(log_dir, exist_ok=True)
+    
+    # Generate timestamped log filename
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    binary_name = os.path.basename(binary_path).replace('.', '_')
+    strace_log = os.path.join(log_dir, f"strace_{binary_name}_{timestamp}.log")
+    
+    print(f"[*] Running native strace on binary...")
+    print(f"    Log: {strace_log}")
+    
+    # Run strace with comprehensive syscall tracking
+    # -f: follow forks
+    # -e trace=all: trace all syscalls
+    # -s 256: capture up to 256 bytes of string arguments
+    # -v: verbose mode (no abbreviations)
+    # -tt: timestamps with microseconds
+    # -o: output file
+    strace_cmd = [
+        "strace",
+        "-f",              # Follow child processes
+        "-e", "trace=all", # Trace all syscalls
+        "-s", "256",       # String length
+        "-v",              # Verbose
+        "-tt",             # Timestamps
+        "-o", strace_log,  # Output file
+        binary_path
+    ]
+    
+    try:
+        # Run with timeout
+        result = subprocess.run(
+            strace_cmd,
+            timeout=timeout,
+            capture_output=True,
+            text=True
+        )
+        
+        # Check if log was created and has content
+        if os.path.exists(strace_log) and os.path.getsize(strace_log) > 0:
+            print(f"[✓] strace log captured: {os.path.getsize(strace_log)} bytes")
+            strace_log_path = strace_log
+            return strace_log, True
+        else:
+            print(f"[-] strace log empty or not created")
+            return None, False
+            
+    except subprocess.TimeoutExpired:
+        print(f"[*] strace timed out after {timeout}s (normal for servers)")
+        # Log might still be useful even if timed out
+        if os.path.exists(strace_log) and os.path.getsize(strace_log) > 0:
+            print(f"[✓] Partial strace log captured: {os.path.getsize(strace_log)} bytes")
+            strace_log_path = strace_log
+            return strace_log, True
+        return None, False
+        
+    except Exception as e:
+        print(f"[!] strace failed: {e}")
+        return None, False
+
+def analyze_strace_log(strace_log_path):
+    """
+    Parse strace log and extract crypto-relevant syscalls.
+    Returns: dict with syscall statistics
+    """
+    if not strace_log_path or not os.path.exists(strace_log_path):
+        return None
+    
+    stats = {
+        'getrandom_calls': [],
+        'read_random': [],
+        'open_files': [],
+        'crypto_relevant': [],
+        'total_syscalls': 0
+    }
+    
+    crypto_files = ['/dev/random', '/dev/urandom', 'key', 'cert', 'crypt']
+    
+    try:
+        with open(strace_log_path, 'r') as f:
+            for line in f:
+                stats['total_syscalls'] += 1
+                
+                # Extract getrandom calls
+                if 'getrandom(' in line:
+                    # Parse: getrandom(0x7ffd..., 8, GRND_NONBLOCK) = 8
+                    match = re.search(r'getrandom\([^,]+,\s*(\d+),', line)
+                    if match:
+                        size = int(match.group(1))
+                        stats['getrandom_calls'].append({'size': size, 'line': line.strip()})
+                
+                # Extract read from random devices
+                elif 'read(' in line and any(dev in line for dev in ['/dev/random', '/dev/urandom']):
+                    stats['read_random'].append(line.strip())
+                
+                # Extract file opens related to crypto
+                elif 'open(' in line or 'openat(' in line:
+                    if any(keyword in line.lower() for keyword in crypto_files):
+                        stats['open_files'].append(line.strip())
+                        stats['crypto_relevant'].append(line.strip())
+                
+                # Other crypto-relevant syscalls
+                elif any(call in line for call in ['mmap(', 'mprotect(', 'madvise(']):
+                    if 'PROT_EXEC' in line or 'PROT_WRITE' in line:
+                        # Might indicate JIT or dynamic code generation
+                        stats['crypto_relevant'].append(line.strip())
+        
+        return stats
+        
+    except Exception as e:
+        print(f"[!] Failed to parse strace log: {e}")
+        return None
+
 def get_entropy(data):
     """Calculate Shannon entropy (Max 4.0 for byte-level entropy of 16 bytes)."""
     if not data: return 0
@@ -692,7 +825,7 @@ def detect_crypto_functions(binary_path):
 
 def run_stripped_binary_analysis(binary_path, rootfs_path, filename, constant_results):
     """Analyze stripped/obfuscated binaries through behavioral monitoring + constant detection."""
-    global stats_total_blocks, stats_crypto_heavy_blocks, basic_blocks, logger, syscall_events
+    global stats_total_blocks, stats_crypto_heavy_blocks, basic_blocks, logger, syscall_events, strace_log_path
     
     # Reset stats
     stats_total_blocks = 0
@@ -703,6 +836,40 @@ def run_stripped_binary_analysis(binary_path, rootfs_path, filename, constant_re
         'random_reads': [],
         'memory_operations': [],
     }
+    
+    # ===== STRACE: Native syscall tracing (NEW!) =====
+    print("\n" + "="*70)
+    print("   NATIVE STRACE ANALYSIS (Optional)")
+    print("="*70)
+    
+    strace_log, strace_success = run_with_strace(binary_path, rootfs_path, timeout=5)
+    strace_stats = None
+    
+    if strace_success and strace_log:
+        print(f"[*] Analyzing strace log...")
+        strace_stats = analyze_strace_log(strace_log)
+        
+        if strace_stats:
+            print(f"[*] Strace Statistics:")
+            print(f"    Total syscalls: {strace_stats['total_syscalls']}")
+            
+            if strace_stats['getrandom_calls']:
+                print(f"    getrandom() calls: {len(strace_stats['getrandom_calls'])}")
+                for call in strace_stats['getrandom_calls'][:3]:
+                    print(f"      - {call['size']} bytes: {call['line'][:80]}...")
+            
+            if strace_stats['read_random']:
+                print(f"    Random device reads: {len(strace_stats['read_random'])}")
+            
+            if strace_stats['crypto_relevant']:
+                print(f"    Crypto-relevant calls: {len(strace_stats['crypto_relevant'])}")
+        
+        # Log strace path
+        if logger:
+            logger.data['metadata']['strace_log'] = strace_log
+            logger.data['metadata']['strace_syscalls'] = strace_stats['total_syscalls'] if strace_stats else 0
+    else:
+        print("[*] Strace skipped or failed - continuing with Qiling emulation")
     
     # Check GLIBC requirements
     glibc_versions = check_glibc_requirements(binary_path)
@@ -947,6 +1114,10 @@ def run_stripped_binary_analysis(binary_path, rootfs_path, filename, constant_re
             # Finalize and save logs
             log_dir = logger.finalize()
             print(f"\n[*] Logs saved to: {log_dir}")
+            
+            # Report strace log location
+            if strace_log_path:
+                print(f"[*] Strace log saved to: {strace_log_path}")
         
     finally:
         try:
@@ -1093,25 +1264,9 @@ def analyze_binary():
     print("\n" + "="*60)
     print("[*] PHASE 3: Running binary to test crypto functions...")
     run_binary_with_hooks(analysis_target, crypto_funcs, rootfs_path, filename, constant_results)
-    
-    if not crypto_funcs:
-        print("[-] No crypto function names detected (stripped/obfuscated binary)")
-        print("[*] Switching to enhanced behavioral analysis...")
-        print("\n" + "="*60)
-        print("[*] PHASE 3: Dynamic behavioral analysis...")
-        run_stripped_binary_analysis(BINARY_PATH, rootfs_path, filename, constant_results)
-        return
-    
-    print(f"[*] Found {len(crypto_funcs)} crypto candidate(s):")
-    for name, addr in crypto_funcs[:10]:
-        print(f"    - {name} @ {hex(addr)}")
-    
-    print("\n" + "="*60)
-    print("[*] PHASE 3: Running binary to test crypto functions...")
-    run_binary_with_hooks(BINARY_PATH, crypto_funcs, rootfs_path, filename, constant_results)
 
 def run_binary_with_hooks(binary_path, crypto_funcs, rootfs_path, filename, constant_results):
-    global stats_total_blocks, stats_crypto_heavy_blocks, basic_blocks, syscall_events
+    global stats_total_blocks, stats_crypto_heavy_blocks, basic_blocks, syscall_events, strace_log_path
     
     # Reset stats
     stats_total_blocks = 0
@@ -1122,6 +1277,40 @@ def run_binary_with_hooks(binary_path, crypto_funcs, rootfs_path, filename, cons
         'random_reads': [],
         'memory_operations': [],
     }
+    
+    # ===== STRACE: Native syscall tracing (NEW!) =====
+    print("\n" + "="*70)
+    print("   NATIVE STRACE ANALYSIS (Optional)")
+    print("="*70)
+    
+    strace_log, strace_success = run_with_strace(binary_path, rootfs_path, timeout=5)
+    strace_stats = None
+    
+    if strace_success and strace_log:
+        print(f"[*] Analyzing strace log...")
+        strace_stats = analyze_strace_log(strace_log)
+        
+        if strace_stats:
+            print(f"[*] Strace Statistics:")
+            print(f"    Total syscalls: {strace_stats['total_syscalls']}")
+            
+            if strace_stats['getrandom_calls']:
+                print(f"    getrandom() calls: {len(strace_stats['getrandom_calls'])}")
+                for call in strace_stats['getrandom_calls'][:3]:
+                    print(f"      - {call['size']} bytes")
+            
+            if strace_stats['read_random']:
+                print(f"    Random device reads: {len(strace_stats['read_random'])}")
+            
+            if strace_stats['crypto_relevant']:
+                print(f"    Crypto-relevant calls: {len(strace_stats['crypto_relevant'])}")
+        
+        # Log strace path
+        if logger:
+            logger.data['metadata']['strace_log'] = strace_log
+            logger.data['metadata']['strace_syscalls'] = strace_stats['total_syscalls'] if strace_stats else 0
+    else:
+        print("[*] Strace skipped or failed - continuing with Qiling emulation")
     
     # Check GLIBC requirements
     glibc_versions = check_glibc_requirements(binary_path)
@@ -1407,64 +1596,70 @@ def run_binary_with_hooks(binary_path, crypto_funcs, rootfs_path, filename, cons
             print(f"    Crypto Operations: {total_crypto_ops}")
             print(f"    Crypto-Op Ratio: {ratio:.2%}")
             
-        # IMPROVED Confidence Scoring (0-100 scale)
-        confidence_score = 0
+        # IMPROVED Confidence Scoring (0-100 scale) with explicit breakdown
         reasons = []
-        
+
+        # Prepare per-factor points so we can print a transparent breakdown
+        f1_points = 0  # constants (0-40)
+        f2_points = 0  # function name matches (0-30)
+        f3_points = 0  # crypto loops (0-20)
+        f4_points = 0  # crypto-op ratio (0-15)
+        f5_points = 0  # avalanche (0-15)
+
         # Factor 1: Crypto constants detected (up to 40 points)
         # IMPORTANT: Only count STRONG constants (not RSA exponents)
         strong_constants = {k: v for k, v in constant_results.items() 
                            if k not in ['RSA']}
-        
+
         if strong_constants:
             num_algos = len(strong_constants)
             if num_algos >= 2:
-                confidence_score += 40
+                f1_points = 40
                 reasons.append(f"{num_algos} crypto algorithms detected (constants)")
             elif num_algos == 1:
-                confidence_score += 30
+                f1_points = 30
                 reasons.append(f"Crypto constants detected ({list(strong_constants.keys())[0]})")
-        
+
         # Factor 2: Strong crypto function names (up to 30 points)
         strong_crypto_names = ['aes', 'des', 'rsa', 'sha', 'md5', 'encrypt', 'decrypt', 
                                'cipher', 'keyexpansion', 'subbytes', 'mixcolumns', 'shiftrows']
         strong_matches = sum(1 for name, _ in crypto_funcs 
                             if any(pattern in name.lower() for pattern in strong_crypto_names))
-        
+
         if strong_matches >= 3:
-            confidence_score += 30
+            f2_points = 30
             reasons.append(f"{strong_matches} strong crypto function names")
         elif strong_matches >= 1:
-            confidence_score += 20
+            f2_points = 20
             reasons.append(f"{strong_matches} crypto function name(s)")
-        
+
         # Factor 3: Crypto loops (up to 20 points)
         if len(crypto_loops) >= 3:
-            confidence_score += 20
+            f3_points = 20
             reasons.append(f"{len(crypto_loops)} crypto loops (round functions)")
         elif len(crypto_loops) >= 1:
-            confidence_score += 10
+            f3_points = 10
             reasons.append(f"{len(crypto_loops)} crypto loop(s)")
-        
+
         # Factor 4: Crypto-operation ratio (up to 15 points)
         if ratio > 0.10:
-            confidence_score += 15
+            f4_points = 15
             reasons.append(f"High crypto-op ratio ({ratio:.1%})")
         elif ratio > 0.05:
-            confidence_score += 10
+            f4_points = 10
             reasons.append(f"Medium crypto-op ratio ({ratio:.1%})")
         elif ratio > 0.01:
-            confidence_score += 5
+            f4_points = 5
             reasons.append(f"Low crypto-op ratio ({ratio:.1%})")
-        
+
         # Factor 5: Avalanche effect (up to 15 points)
         if avalanche_detected:
-            confidence_score += 15
+            f5_points = 15
             reasons.append("Avalanche effect confirmed")
-        
-        # Cap at 100
-        confidence_score = min(confidence_score, 100)
-        
+
+        # Sum up and cap
+        confidence_score = min(f1_points + f2_points + f3_points + f4_points + f5_points, 100)
+
         # Determine confidence level
         if confidence_score >= 70:
             confidence = "HIGH"
@@ -1472,6 +1667,15 @@ def run_binary_with_hooks(binary_path, crypto_funcs, rootfs_path, filename, cons
             confidence = "MEDIUM"
         else:
             confidence = "LOW"
+
+        # Print transparent breakdown so the user sees why the numeric score was low
+        print("\n[*] Confidence scoring breakdown (0-100):")
+        print(f"    - Constants evidence : {f1_points} pts (0-40)")
+        print(f"    - Function names     : {f2_points} pts (0-30)")
+        print(f"    - Crypto loops       : {f3_points} pts (0-20)")
+        print(f"    - Crypto-op ratio    : {f4_points} pts (0-15)")
+        print(f"    - Avalanche effect   : {f5_points} pts (0-15)")
+        print(f"    -> TOTAL: {confidence_score}/100  => {confidence}\n")
         
         # ===== ALGORITHM CLASSIFICATION =====
         classification = analyze_algorithm_evidence(
@@ -1482,6 +1686,10 @@ def run_binary_with_hooks(binary_path, crypto_funcs, rootfs_path, filename, cons
         )
         
         print_classification_report(classification, syscall_events)
+        
+        # Report strace log location if available
+        if strace_log_path:
+            print(f"\n[*] Strace log saved to: {strace_log_path}")
         
     finally:
         try: shutil.rmtree(temp_dir)
