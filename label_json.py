@@ -122,49 +122,94 @@ def check_yara_match(immediates, rules):
 def infer_algo_from_name(filename, func_name):
     """
     Infers algorithm name from filename or function name.
+    More specific patterns are checked first to avoid misclassification.
     """
-    # Common crypto names to look for
-    # We can use the keys from the original LABEL_MAP or just common strings
-    common_algos = {
-        "aes": "AES",
-        "sha1": "SHA-1",
-        "sha256": "SHA-256",
-        "sha512": "SHA-512",
-        "md5": "MD5",
-        "des": "DES",
-        "chacha": "ChaCha20",
-        "salsa": "Salsa20",
-        "rc4": "RC4",
-        "blowfish": "Blowfish",
-        "camellia": "Camellia",
-        "rsa": "RSA",
-        "ecc": "ECC",
-        "hmac": "HMAC",
-        "crc32": "CRC32"
-    }
+    # Order matters! Check more specific patterns first
+    crypto_patterns = [
+        # SHA variants (check specific versions first)
+        ("sha3", "SHA-3"),
+        ("sha512", "SHA-512"),
+        ("sha384", "SHA-384"),
+        ("sha256", "SHA-256"),
+        ("sha224", "SHA-224"),
+        ("sha1", "SHA-1"),
+        ("sha", "SHA-256"),  # Generic SHA defaults to SHA-256
+        
+        # AES and variants
+        ("aes", "AES"),
+        ("rijndael", "AES"),
+        
+        # ChaCha/Salsa
+        ("chacha20", "ChaCha20"),
+        ("chacha", "ChaCha20"),
+        ("salsa20", "Salsa20"),
+        ("salsa", "Salsa20"),
+        ("poly1305", "ChaCha20"),  # Often used with ChaCha20
+        
+        # DES family
+        ("3des", "DES"),
+        ("tdes", "DES"),
+        ("des3", "DES"),
+        ("des", "DES"),
+        
+        # Hash functions
+        ("md5", "MD5"),
+        ("md4", "MD5"),
+        ("md2", "MD5"),
+        
+        # Stream ciphers
+        ("rc4", "RC4"),
+        ("arc4", "RC4"),
+        
+        # Block ciphers
+        ("blowfish", "Blowfish"),
+        ("twofish", "Blowfish"),
+        ("camellia", "Camellia"),
+        ("aria", "ARIA"),
+        ("seed", "SEED"),
+        ("cast", "CAST"),
+        
+        # Public key crypto
+        ("rsa", "RSA"),
+        ("ecdsa", "ECC"),
+        ("ecdh", "ECC"),
+        ("ecc", "ECC"),
+        ("dsa", "DSA"),
+        ("dh", "DH"),
+        ("ec_", "ECC"),
+        ("curve25519", "ECC"),
+        ("ed25519", "ECC"),
+        
+        # MACs and KDFs
+        ("hmac", "HMAC"),
+        ("cmac", "CMAC"),
+        ("gmac", "GMAC"),
+        ("pbkdf", "PBKDF2"),
+        ("hkdf", "HKDF"),
+        
+        # Modes and constructions
+        ("gcm", "AES"),  # GCM usually with AES
+        ("ccm", "AES"),  # CCM usually with AES
+        ("ctr", "AES"),  # CTR mode usually with AES
+        ("cbc", "AES"),  # CBC mode usually with AES
+        
+        # Other
+        ("crc32", "CRC32"),
+        ("crc", "CRC32"),
+    ]
 
     name_lower = func_name.lower()
     file_lower = filename.lower()
 
-    # Check function name first
-    for key, val in common_algos.items():
-        if key in name_lower:
-            return val
+    # Check function name first (higher priority)
+    for pattern, algo in crypto_patterns:
+        if pattern in name_lower:
+            return algo
             
     # Check filename
-    for key, val in common_algos.items():
-        if key in file_lower:
-            return val
-            
-    # If filename starts with something that looks like a crypto name
-    # e.g. "mycrypto.o" -> "mycrypto"
-    # Extract the first part of the filename
-    base_name = os.path.basename(filename)
-    # Remove extensions and common suffixes
-    clean_name = base_name.split('.')[0].split('_')[0]
-    
-    if len(clean_name) > 2: # Avoid short generic names
-        return clean_name.capitalize() # Treat as "Unknown Crypto" with a name
+    for pattern, algo in crypto_patterns:
+        if pattern in file_lower:
+            return algo
 
     return None
 
@@ -335,26 +380,37 @@ def process_files():
                         if is_negative:
                             new_label = "non-crypto"
                         else:
-                            # 1. YARA Match
-                            immediates = func.get("node_level", [])
-                            # Flatten immediates from all nodes
+                            func_name = func.get("name", "")
+                            
+                            # Priority-based classification:
+                            # 1. Check function name first (most specific)
+                            inferred_from_func = infer_algo_from_name("", func_name)
+                            
+                            # 2. Check filename
+                            inferred_from_file = infer_algo_from_name(file, "")
+                            
+                            # 3. Check YARA signatures
                             all_immediates = []
                             for node in func.get("node_level", []):
                                 all_immediates.extend(node.get("immediates", []))
-                            
                             yara_label = check_yara_match(all_immediates, yara_rules)
                             
-                            if yara_label:
-                                new_label = yara_label
-                            else:
-                                # 2. Name / Filename Inference
-                                func_name = func.get("name", "")
-                                inferred = infer_algo_from_name(file, func_name)
-                                if inferred:
-                                    new_label = inferred
-                                else:
-                                    # 3. Default for positive samples that don't match
+                            # Decision logic:
+                            # Function name has highest priority (most specific)
+                            if inferred_from_func:
+                                new_label = inferred_from_func
+                            # Then filename (file-level context)
+                            elif inferred_from_file:
+                                new_label = inferred_from_file
+                            # Then YARA (may catch constants from multiple algos)
+                            elif yara_label:
+                                if yara_label == "COMPRESSION":
                                     new_label = "non-crypto"
+                                else:
+                                    new_label = yara_label
+                            # Last resort: mark as unknown crypto for re-classification
+                            else:
+                                new_label = "crypto-unknown"
 
                         if new_label != original_label:
                             func["label"] = new_label
