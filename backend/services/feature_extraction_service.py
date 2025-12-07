@@ -13,6 +13,7 @@ from pathlib import Path
 import time
 
 from config.logging_config import logger
+from services.gnn_pipeline_service import GNNPipelineService
 
 class FeatureExtractionService:
     """
@@ -40,6 +41,9 @@ class FeatureExtractionService:
         
         # Path to enhanced crypto pipeline
         self.enhanced_pipeline_script = self.project_root / "enhanced_crypto_pipeline.py"
+        
+        # Initialize GNN pipeline service
+        self.gnn_service = GNNPipelineService()
         
         # Check if pipeline script is available
         if not os.path.exists(self.enhanced_pipeline_script):
@@ -228,7 +232,15 @@ class FeatureExtractionService:
         """
         
         project_name = f"vestigo_analysis_{job_id}"
-        binary_name = os.path.basename(binary_path)
+        
+        # Resolve symlinks to get the actual binary name
+        # Ghidra follows symlinks, so output file will be named after the target
+        resolved_path = os.path.realpath(binary_path)
+        binary_name = os.path.basename(resolved_path)
+        original_name = os.path.basename(binary_path)
+        
+        if resolved_path != binary_path:
+            logger.info(f"Resolved symlink: {original_name} -> {binary_name}")
         
         # extract_features.py script outputs to output_dir/BINARY_NAME_features.json
         # Pass full output directory path so script knows where to save
@@ -284,17 +296,30 @@ class FeatureExtractionService:
                     features = json.load(f)
                 logger.info(f"Loaded extract_features.py output - JobID: {job_id}, Functions: {len(features.get('functions', []))}")
                 
-                # Run enhanced_crypto_pipeline.py on the Ghidra JSON output
-                pipeline_output = await self._run_enhanced_pipeline(expected_output, binary_name, job_id)
+                # Run both ML pipelines on the Ghidra JSON output in parallel
+                # Both pipelines use the same Ghidra features as input
                 
-                # Merge pipeline results into features
-                features["pipeline_analysis"] = pipeline_output
+                # 1. Run Enhanced Crypto Pipeline (traditional ML model)
+                logger.info(f"Running Enhanced Crypto Pipeline - JobID: {job_id}")
+                enhanced_pipeline_output = await self._run_enhanced_pipeline(expected_output, binary_name, job_id)
+                
+                # 2. Run GNN Pipeline (graph neural network model)
+                logger.info(f"Running GNN Pipeline - JobID: {job_id}")
+                gnn_pipeline_output = await self.gnn_service.run_gnn_inference(expected_output, binary_name, job_id)
+                
+                # Merge both pipeline results into features
+                features["pipeline_analysis"] = enhanced_pipeline_output
+                features["gnn_analysis"] = gnn_pipeline_output
+                
+                logger.info(f"All ML pipelines completed - JobID: {job_id}")
+                logger.info(f"Enhanced Pipeline Status: {enhanced_pipeline_output.get('status', 'unknown')}")
+                logger.info(f"GNN Pipeline Status: {gnn_pipeline_output.get('status', 'unknown')}")
                 
                 return features
             else:
                 logger.error(f"extract_features.py output not found: {expected_output}")
                 # List available files for debugging
-                ghidra_json_dir = os.path.join(project_root, "ghidra_json")
+                ghidra_json_dir = os.path.join(str(self.project_root), "ghidra_json")
                 if os.path.exists(ghidra_json_dir):
                     available_files = os.listdir(ghidra_json_dir)
                     logger.debug(f"Available files in ghidra_json: {available_files}")
@@ -467,6 +492,10 @@ class FeatureExtractionService:
         pipeline_analysis = ghidra_result.get("pipeline_analysis", {})
         pipeline_status = pipeline_analysis.get("status", "not_run")
         
+        # Extract GNN analysis if present
+        gnn_analysis = ghidra_result.get("gnn_analysis", {})
+        gnn_status = gnn_analysis.get("status", "not_run")
+        
         # Compute summary statistics from extract_features.py output
         # Analyze function labels (crypto vs non-crypto) assigned by the script
         total_functions = len(functions)
@@ -475,14 +504,14 @@ class FeatureExtractionService:
         
         # If pipeline ran successfully, use its predictions for enhanced statistics
         if pipeline_status in ["success", "completed"]:
-            logger.info(f"Pipeline analysis available - incorporating ML predictions")
+            logger.info(f"Enhanced Pipeline analysis available - incorporating ML predictions")
             
             # Extract predictions from pipeline results
             if "function_predictions" in pipeline_analysis:
                 ml_predictions = pipeline_analysis["function_predictions"]
                 crypto_functions_ml = sum(1 for pred in ml_predictions if pred.get("is_crypto", False))
                 
-                logger.info(f"ML Classification: {crypto_functions_ml} crypto functions detected")
+                logger.info(f"Enhanced ML Classification: {crypto_functions_ml} crypto functions detected")
                 
                 # Store both static and ML-based counts
                 crypto_functions_static = crypto_functions
@@ -491,7 +520,21 @@ class FeatureExtractionService:
             # Extract file-level summary
             if "file_summary" in pipeline_analysis:
                 file_summary = pipeline_analysis["file_summary"]
-                logger.info(f"Detected algorithms: {', '.join(file_summary.get('detected_algorithms', []))}")
+                logger.info(f"Detected algorithms (Enhanced): {', '.join(file_summary.get('detected_algorithms', []))}")
+        
+        # If GNN analysis ran successfully, add GNN predictions
+        if gnn_status in ["success", "completed"]:
+            logger.info(f"GNN Pipeline analysis available - incorporating GNN predictions")
+            
+            if "function_predictions" in gnn_analysis:
+                gnn_predictions = gnn_analysis["function_predictions"]
+                crypto_functions_gnn = sum(1 for pred in gnn_predictions if pred.get("is_crypto", False))
+                
+                logger.info(f"GNN Classification: {crypto_functions_gnn} crypto functions detected")
+            
+            if "algorithm_distribution" in gnn_analysis:
+                gnn_algorithms = list(gnn_analysis["algorithm_distribution"].keys())
+                logger.info(f"Detected algorithms (GNN): {', '.join(gnn_algorithms)}")
         
         # Count crypto constants detected by the script
         total_crypto_constants = sum(
@@ -541,6 +584,7 @@ class FeatureExtractionService:
         if pipeline_status in ["success", "completed"]:
             processed_result["ml_classification"] = {
                 "status": "completed",
+                "model_type": "enhanced_crypto_pipeline",
                 "function_predictions": pipeline_analysis.get("function_predictions", []),
                 "file_summary": pipeline_analysis.get("file_summary", {}),
                 "detected_algorithms": pipeline_analysis.get("file_summary", {}).get("detected_algorithms", []),
@@ -551,13 +595,40 @@ class FeatureExtractionService:
         elif pipeline_status == "skipped":
             processed_result["ml_classification"] = {
                 "status": "skipped",
+                "model_type": "enhanced_crypto_pipeline",
                 "reason": pipeline_analysis.get("reason", "Pipeline not available")
             }
         elif pipeline_status in ["failed", "timeout", "error"]:
             processed_result["ml_classification"] = {
                 "status": "failed",
+                "model_type": "enhanced_crypto_pipeline",
                 "error": pipeline_analysis.get("error", "Unknown error"),
                 "details": pipeline_analysis
+            }
+        
+        # Add GNN analysis results if available
+        if gnn_status in ["success", "completed"]:
+            processed_result["gnn_classification"] = {
+                "status": "completed",
+                "model_type": "graph_neural_network",
+                "function_predictions": gnn_analysis.get("function_predictions", []),
+                "summary": gnn_analysis.get("summary", {}),
+                "algorithm_distribution": gnn_analysis.get("algorithm_distribution", {}),
+                "binary_info": gnn_analysis.get("binary_info", {}),
+                "gnn_output_path": gnn_analysis.get("gnn_output_path")
+            }
+        elif gnn_status == "skipped":
+            processed_result["gnn_classification"] = {
+                "status": "skipped",
+                "model_type": "graph_neural_network",
+                "reason": gnn_analysis.get("reason", "GNN not available")
+            }
+        elif gnn_status in ["failed", "timeout", "error"]:
+            processed_result["gnn_classification"] = {
+                "status": "failed",
+                "model_type": "graph_neural_network",
+                "error": gnn_analysis.get("error", "Unknown error"),
+                "details": gnn_analysis
             }
         
         logger.info(f"extract_features.py output processed - JobID: {job_id}, Binary: {binary_name}")
@@ -566,6 +637,10 @@ class FeatureExtractionService:
         
         if pipeline_status in ["success", "completed"]:
             detected_algos = processed_result["ml_classification"]["detected_algorithms"]
-            logger.info(f"ML Classification: Detected algorithms: {', '.join(detected_algos) if detected_algos else 'None'}")
+            logger.info(f"Enhanced ML Classification: Detected algorithms: {', '.join(detected_algos) if detected_algos else 'None'}")
+        
+        if gnn_status in ["success", "completed"]:
+            gnn_algos = list(processed_result["gnn_classification"]["algorithm_distribution"].keys())
+            logger.info(f"GNN Classification: Detected algorithms: {', '.join(gnn_algos) if gnn_algos else 'None'}")
         
         return processed_result

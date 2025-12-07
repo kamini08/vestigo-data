@@ -5,8 +5,11 @@ import traceback
 import sys
 import os
 import glob
+import json
+import time
 from pathlib import Path
 from dotenv import load_dotenv
+from typing import Dict, Any
 
 # Load environment variables from .env file
 load_dotenv()
@@ -146,6 +149,139 @@ def severity_level(count: int):
     return "critical"
 
 
+def collect_job_analysis_data(job_id: str) -> Dict[str, Any]:
+    """
+    Collect all analysis data for a job including job storage, qiling output, 
+    pipeline output, and any related child jobs.
+    """
+    analysis_data = {
+        "job_id": job_id,
+        "job_storage_data": None,
+        "qiling_output": None,
+        "pipeline_output": None,
+        "child_jobs": [],
+        "related_files": []
+    }
+    
+    # Paths for different output locations
+    job_storage_dir = Path("job_storage")
+    qiling_output_dir = Path("qiling_output") 
+    pipeline_output_dir = Path("pipeline_output")
+    
+    try:
+        # Load job storage data
+        job_storage_file = job_storage_dir / f"{job_id}.json"
+        if job_storage_file.exists():
+            with open(job_storage_file, 'r') as f:
+                analysis_data["job_storage_data"] = json.load(f)
+        
+        # Find qiling output files
+        qiling_files = list(qiling_output_dir.glob(f"{job_id}_*.json"))
+        if qiling_files:
+            qiling_data = []
+            for qiling_file in qiling_files:
+                try:
+                    with open(qiling_file, 'r') as f:
+                        qiling_content = json.load(f)
+                        qiling_data.append({
+                            "filename": qiling_file.name,
+                            "data": qiling_content
+                        })
+                except Exception as e:
+                    logger.warning(f"Failed to load qiling file {qiling_file}: {e}")
+            
+            analysis_data["qiling_output"] = qiling_data
+        
+        # Find pipeline output files  
+        if analysis_data["job_storage_data"]:
+            filename = analysis_data["job_storage_data"].get("filename", "")
+            binary_name = filename.split('.')[0] if filename else ""
+            
+            # Look for pipeline files matching this binary
+            pipeline_files = []
+            for pattern in [f"*{binary_name}*_pipeline.json", f"*{binary_name}*_pipeline_features.csv"]:
+                pipeline_files.extend(list(pipeline_output_dir.glob(pattern)))
+            
+            if pipeline_files:
+                pipeline_data = []
+                for pipeline_file in pipeline_files:
+                    try:
+                        if pipeline_file.suffix == '.json':
+                            with open(pipeline_file, 'r') as f:
+                                content = json.load(f)
+                        else:  # CSV files
+                            with open(pipeline_file, 'r') as f:
+                                content = f.read()
+                        
+                        pipeline_data.append({
+                            "filename": pipeline_file.name,
+                            "type": "json" if pipeline_file.suffix == '.json' else "csv", 
+                            "data": content
+                        })
+                    except Exception as e:
+                        logger.warning(f"Failed to load pipeline file {pipeline_file}: {e}")
+                
+                analysis_data["pipeline_output"] = pipeline_data
+        
+        # Look for child jobs (bootloader analysis jobs, crypto library jobs, etc.)
+        # These would have references to the parent job in their job storage
+        all_job_files = list(job_storage_dir.glob("*.json"))
+        for job_file in all_job_files:
+            if job_file.stem == job_id:  # Skip the main job
+                continue
+                
+            try:
+                with open(job_file, 'r') as f:
+                    job_data = json.load(f)
+                    
+                # Check if this job references our parent job
+                analysis_results = job_data.get("analysis_results")
+                if analysis_results and isinstance(analysis_results, dict) and analysis_results.get("parent_job_id") == job_id:
+                    analysis_data["child_jobs"].append({
+                        "job_id": job_file.stem,
+                        "job_data": job_data
+                    })
+            except Exception as e:
+                # Only log if it's an unexpected error, not None analysis_results
+                if "NoneType" not in str(e):
+                    logger.warning(f"Failed to check job file {job_file} for parent reference: {e}")
+        
+        # Collect information about all related files
+        analysis_data["related_files"] = {
+            "job_storage_files": len([f for f in job_storage_dir.glob(f"{job_id}*")]),
+            "qiling_output_files": len(qiling_files) if qiling_files else 0,
+            "pipeline_output_files": len(pipeline_files) if 'pipeline_files' in locals() else 0,
+            "child_job_count": len(analysis_data["child_jobs"])
+        }
+        
+        logger.info(f"Collected analysis data for job {job_id}: {analysis_data['related_files']}")
+        
+    except Exception as e:
+        logger.error(f"Error collecting analysis data for job {job_id}: {e}", exc_info=True)
+    
+    return analysis_data
+
+
+def wait_for_job_completion(job_id: str, max_wait_seconds: int = 30) -> Dict[str, Any]:
+    """
+    Wait for background job completion and return updated analysis data.
+    This allows the API to return more complete data when possible.
+    """
+    import time
+    
+    start_time = time.time()
+    while (time.time() - start_time) < max_wait_seconds:
+        job = job_manager.get_job(job_id)
+        if job and job.status in [JobStatus.COMPLETE, JobStatus.FAILED, JobStatus.FEATURES_COMPLETE]:
+            logger.info(f"Job {job_id} completed after {time.time() - start_time:.2f}s with status: {job.status}")
+            return collect_job_analysis_data(job_id)
+        
+        time.sleep(0.5)  # Check every 500ms
+    
+    logger.info(f"Job {job_id} still processing after {max_wait_seconds}s, returning current data")
+    return collect_job_analysis_data(job_id)
+
+
 # ==========================================================
 # ROUTES
 # ==========================================================
@@ -232,7 +368,25 @@ async def upload_and_analyze(background_tasks: BackgroundTasks, file: UploadFile
                     background_tasks.add_task(process_bootloader_analyses, job_id, bootloaders)
 
         logger.info(f"Analysis initiated successfully - JobID: {job_id}")
-        return analysis_result
+        
+        # Wait for some processing to complete and collect comprehensive analysis data
+        # This gives the frontend immediate access to job storage data and any completed analysis
+        complete_analysis_data = wait_for_job_completion(job_id, max_wait_seconds=15)
+        
+        # Enhance the original response with comprehensive data
+        enhanced_response = {
+            **analysis_result,
+            "comprehensive_data": complete_analysis_data,
+            "data_collection": {
+                "job_storage_available": complete_analysis_data["job_storage_data"] is not None,
+                "qiling_results_available": complete_analysis_data["qiling_output"] is not None,
+                "pipeline_results_available": complete_analysis_data["pipeline_output"] is not None,
+                "child_jobs_count": len(complete_analysis_data.get("child_jobs", [])),
+                "collection_timestamp": time.time()
+            }
+        }
+        
+        return enhanced_response
 
     except HTTPException:
         raise
@@ -249,9 +403,15 @@ async def process_bare_metal_features(job_id: str, analysis_result: dict):
         # Update job status
         job_manager.update_job_status(job_id, JobStatus.EXTRACTING_FEATURES)
         
-        # Get binary file path from analysis results
-        binary_info = analysis_result["analysis"].get("binary_info", {})
-        workspace_path = analysis_result["analysis"]["workspace_path"]
+        # Handle both analysis result formats (from /analyze endpoint vs manual trigger)
+        if "analysis" in analysis_result:
+            # Full analysis result from /analyze endpoint
+            binary_info = analysis_result["analysis"].get("binary_info", {})
+            workspace_path = analysis_result["analysis"]["workspace_path"]
+        else:
+            # Job analysis results from manual trigger
+            binary_info = {}
+            workspace_path = analysis_result.get("analysis_workspace")
         
         # For PATH_A_BARE_METAL, the binary file should be in the workspace
         if workspace_path:
@@ -288,9 +448,15 @@ async def process_qiling_dynamic_analysis(job_id: str, analysis_result: dict):
     try:
         logger.info(f"Starting background Qiling dynamic analysis - JobID: {job_id}")
         
-        # Get binary file path from analysis results
-        binary_info = analysis_result["analysis"].get("binary_info", {})
-        workspace_path = analysis_result["analysis"]["workspace_path"]
+        # Handle both analysis result formats (from /analyze endpoint vs manual trigger)
+        if "analysis" in analysis_result:
+            # Full analysis result from /analyze endpoint
+            binary_info = analysis_result["analysis"].get("binary_info", {})
+            workspace_path = analysis_result["analysis"]["workspace_path"]
+        else:
+            # Job analysis results from manual trigger
+            binary_info = {}
+            workspace_path = analysis_result.get("analysis_workspace")
         
         # For PATH_A_BARE_METAL, the binary file should be in the workspace
         if workspace_path:
@@ -594,6 +760,58 @@ async def process_crypto_libraries(parent_job_id: str, crypto_libs: dict):
 # JOB MANAGEMENT ENDPOINTS
 # ==========================================================
 
+@app.get("/job/{job_id}/complete-analysis")
+async def get_complete_analysis_data(job_id: str):
+    """Get comprehensive analysis data including all generated files for a job"""
+    try:
+        logger.info(f"Fetching complete analysis data for job: {job_id}")
+        
+        # Collect all analysis data
+        complete_data = collect_job_analysis_data(job_id)
+        
+        if not complete_data["job_storage_data"]:
+            raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+        
+        # Add current job status
+        job = job_manager.get_job(job_id)
+        if job:
+            complete_data["current_status"] = {
+                "status": job.status.value,
+                "created_at": job.created_at,
+                "updated_at": job.updated_at,
+                "error_message": job.error_message
+            }
+        
+        # Add summary statistics
+        complete_data["summary"] = {
+            "total_analysis_files": (
+                (1 if complete_data["job_storage_data"] else 0) +
+                len(complete_data.get("qiling_output") or []) +
+                len(complete_data.get("pipeline_output") or []) +
+                len(complete_data.get("child_jobs") or [])
+            ),
+            "has_feature_extraction": bool(
+                complete_data["job_storage_data"] and 
+                complete_data["job_storage_data"].get("feature_extraction_results")
+            ),
+            "has_ml_classification": bool(
+                complete_data["job_storage_data"] and 
+                complete_data["job_storage_data"].get("feature_extraction_results", {}).get("ml_classification")
+            ),
+            "has_qiling_analysis": bool(complete_data.get("qiling_output")),
+            "analysis_complete": job and job.status in [JobStatus.COMPLETE, JobStatus.FEATURES_COMPLETE] if job else False
+        }
+        
+        logger.info(f"Complete analysis data collected for job {job_id}: {complete_data['summary']}")
+        return complete_data
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to get complete analysis data for job {job_id}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to get complete analysis data: {str(e)}")
+
+
 @app.get("/job/{job_id}")
 async def get_job_details(job_id: str):
     """Get detailed information about a specific job"""
@@ -721,6 +939,65 @@ async def list_jobs(limit: int = 50):
     except Exception as e:
         logger.error(f"Error listing jobs: {str(e)}")
         raise HTTPException(status_code=500, detail="Error retrieving jobs")
+
+
+@app.get("/jobs/comprehensive")
+async def list_jobs_comprehensive(limit: int = 20, include_child_jobs: bool = False):
+    """List all jobs with comprehensive analysis data for frontend display"""
+    try:
+        logger.info(f"Fetching comprehensive job list (limit: {limit}, include_child_jobs: {include_child_jobs})")
+        
+        jobs = job_manager.get_all_jobs(limit=limit)
+        comprehensive_jobs = []
+        
+        for job in jobs:
+            # Skip child jobs unless explicitly requested
+            if not include_child_jobs:
+                # Check if this is a child job by looking for parent_job_id
+                if (job.analysis_results and 
+                    isinstance(job.analysis_results, dict) and 
+                    job.analysis_results.get("parent_job_id")):
+                    continue
+            
+            # Get comprehensive data for this job
+            job_data = collect_job_analysis_data(job.job_id)
+            
+            # Add job manager data
+            job_data["job_manager_data"] = {
+                "status": job.status.value,
+                "filename": job.filename,
+                "file_size": job.file_size,
+                "routing_decision": job.routing_decision,
+                "routing_reason": job.routing_reason,
+                "created_at": job.created_at,
+                "updated_at": job.updated_at,
+                "error_message": job.error_message
+            }
+            
+            # Add analysis summary
+            job_data["analysis_summary"] = {
+                "has_features": bool(job.feature_extraction_results),
+                "has_qiling": bool(job.qiling_dynamic_results),
+                "has_classification": bool(job.classification_results),
+                "child_jobs_count": len(job_data.get("child_jobs", [])),
+                "is_complete": job.status in [JobStatus.COMPLETE, JobStatus.FEATURES_COMPLETE]
+            }
+            
+            comprehensive_jobs.append(job_data)
+        
+        return {
+            "jobs": comprehensive_jobs,
+            "total": len(comprehensive_jobs),
+            "metadata": {
+                "limit": limit,
+                "include_child_jobs": include_child_jobs,
+                "collection_timestamp": time.time()
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Error listing comprehensive jobs: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error retrieving comprehensive jobs data")
 
 
 # ==========================================================

@@ -1,0 +1,40 @@
+{
+  "job_id": "1ddefdf3-1347-484d-bd44-ad92c53b073a",
+  "binary_path": "/home/spy-d/My Files/sih/vestigo-data/backend/analysis_workspace/tmpqzu9gd13_openwrt-24.10.2-bmips-bcm6368-actiontec_r1000h-squashfs-cfe.bin_analysis/_firmware.bin.extracted/squashfs-root-0/lib/libustream-ssl.so",
+  "binary_name": "libustream-ssl.so",
+  "analysis_timestamp": 1765033407.127957,
+  "execution_time": 0.35897302627563477,
+  "status": "completed",
+  "analysis_tool": "qiling_dynamic_analysis",
+  "phases": {
+    "packer_detection": {
+      "packed": false
+    },
+    "yara_analysis": {
+      "detected": [
+        "RSA"
+      ],
+      "total_matches": 146,
+      "scan_time": 0.0
+    },
+    "constant_detection": {
+      "algorithms_detected": [],
+      "count": 0
+    },
+    "function_symbols": {
+      "detected": false,
+      "stripped": true
+    },
+    "dynamic_analysis": {}
+  },
+  "verdict": {
+    "crypto_detected": true,
+    "confidence": "MEDIUM",
+    "confidence_score": 50,
+    "reasons": [
+      "Algorithms: Custom/Proprietary cipher"
+    ]
+  },
+  "raw_output": "\n============================================================\n[*] PHASE -1: Checking for packed binary...\n[-] No packer detected\n[+] Detected architecture: mips\n[*] Target: libustream-ssl.so\n[*] Rootfs: /home/spy-d/My Files/sih/vestigo-data/qiling_analysis/rootfs/mips32_linux\n\n============================================================\n[*] PHASE 0: YARA static analysis\n[\u2713] YARA detected: RSA\n    Total matches: 146\n    Scan time: 0.000s\n\n============================================================\n[*] PHASE 1: Scanning for crypto constants...\n[-] No crypto constants detected\n\n============================================================\n[*] PHASE 2: Checking for function symbols...\n[-] No crypto function names detected (stripped/obfuscated binary)\n[*] Switching to enhanced behavioral analysis...\n\n============================================================\n[*] PHASE 3: Dynamic behavioral analysis...\n[*] Binary requires GLIBC: 2.0 (max: 2.0)\n[*] Installing syscall hooks (getrandom, read)...\n[!] Warning: Could not hook syscalls: 'QlOsLinux' object has no attribute 'syscall_table'\n[*] Executing binary with syscall + basic block monitoring...\n    (Tracking: getrandom, memory writes, crypto operations)\n\n======================================================================\n   PHASE 1: SYSCALL ANALYSIS\n======================================================================\n\n[!] Binary execution failed or crashed early\n[*] Falling back to static analysis results only\n\n\n[-] No getrandom() calls detected\n    Note: Binary may use /dev/random or hardcoded keys\n\n======================================================================\n   PHASE 2: CONSTANT DETECTION\n======================================================================\n\n[-] No known crypto constants found\n    \u2192 Likely proprietary or obfuscated algorithm\n\n======================================================================\n   PHASE 3: MEMORY & PATTERN ANALYSIS\n======================================================================\n\n[*] Memory Entropy Analysis:\n    [-] No high-entropy memory writes detected\n\n[*] Crypto Loop Detection (Round Functions):\n    [-] No crypto loops detected\n\n======================================================================\n   PHASE 4: ALGORITHM CLASSIFICATION\n======================================================================\n\n======================================================================\n   ALGORITHM CLASSIFICATION REPORT\n======================================================================\n\n[*] PRIMARY CLASSIFICATION: PROPRIETARY: Unknown custom algorithm\n    Confidence: MEDIUM\n\n[*] Proprietary/Custom Cipher Indicators:\n      \u26a0 No known crypto constants detected\n      \u26a0 Few crypto loops (simple cipher)\n\n[*] Analysis Summary:\n      \u2192 Binary uses CUSTOM/PROPRIETARY cipher\n      \u2192 Detected 2 weakness indicator(s):\n         \u2022 No known crypto constants detected\n         \u2022 Few crypto loops (simple cipher)\n      \u2192 \u26a0 URGENT: Replace with standard algorithms\n      \u2192 Recommended alternatives:\n         \u2022 AES-256-GCM (block cipher, hardware accelerated)\n         \u2022 ChaCha20-Poly1305 (stream cipher, software optimized)\n======================================================================\n\n[*] Logs saved to: /home/spy-d/My Files/sih/vestigo-data/qiling_analysis/tests/../logs/libustream-ssl.so_20251206_203326\n",
+  "errors": "/home/spy-d/My Files/sih/vestigo-data/qiling_analysis/qiling_env/lib64/python3.13/site-packages/capstone/__init__.py:267: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.\n  import pkg_resources\n"
+}

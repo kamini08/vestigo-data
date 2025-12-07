@@ -1,0 +1,53 @@
+{
+  "job_id": "575e8343-4ff6-48f7-b7ad-ed3c7b1d38f3",
+  "binary_path": "/home/spy-d/My Files/sih/vestigo-data/backend/analysis_workspace/tmpqzu9gd13_openwrt-24.10.2-bmips-bcm6368-actiontec_r1000h-squashfs-cfe.bin_analysis/_firmware.bin.extracted/squashfs-root/usr/lib/libmbedcrypto.so.3.6.3",
+  "binary_name": "libmbedcrypto.so.3.6.3",
+  "analysis_timestamp": 1765033282.442859,
+  "execution_time": 0.5563900470733643,
+  "status": "completed",
+  "analysis_tool": "qiling_dynamic_analysis",
+  "phases": {
+    "packer_detection": {
+      "packed": false
+    },
+    "yara_analysis": {
+      "detected": [
+        "RSA",
+        "SHA-256"
+      ],
+      "total_matches": 1697,
+      "scan_time": 0.002
+    },
+    "constant_detection": {
+      "algorithms_detected": [
+        "SHA256",
+        "mbedtls_aes_cmac_prf_128 @ 0x18f08",
+        "mbedtls_aes_crypt_cbc @ 0xcaf0",
+        "mbedtls_aes_crypt_cfb128 @ 0xcd38",
+        "mbedtls_aes_crypt_cfb8 @ 0xcef4",
+        "mbedtls_aes_crypt_ctr @ 0xd078",
+        "mbedtls_aes_crypt_ecb @ 0xcaac",
+        "mbedtls_aes_free @ 0xb470",
+        "mbedtls_aes_init @ 0xb454"
+      ],
+      "count": 9
+    },
+    "function_symbols": {
+      "detected": true,
+      "count": 10
+    },
+    "dynamic_analysis": {}
+  },
+  "verdict": {
+    "crypto_detected": true,
+    "confidence": "MEDIUM",
+    "confidence_score": 50,
+    "reasons": [
+      "10 crypto function candidates detected",
+      "9 crypto constants found",
+      "Algorithms: Custom/Proprietary cipher, Custom/Proprietary cipher"
+    ]
+  },
+  "raw_output": "\n============================================================\n[*] PHASE -1: Checking for packed binary...\n[-] No packer detected\n[+] Detected architecture: mips\n[*] Target: libmbedcrypto.so.3.6.3\n[*] Rootfs: /home/spy-d/My Files/sih/vestigo-data/qiling_analysis/rootfs/mips32_linux\n\n============================================================\n[*] PHASE 0: YARA static analysis\n[\u2713] YARA detected: RSA, SHA-256\n    Total matches: 1697\n    Scan time: 0.002s\n    High-confidence rules:\n      - SHA256_Constants (SHA-256, 95%)\n\n============================================================\n[*] PHASE 1: Scanning for crypto constants...\n[\u2713] Found constants for 1 algorithm(s)\n    - SHA256\n\n============================================================\n[*] PHASE 2: Checking for function symbols...\n[*] Found 91 crypto candidate(s):\n    - mbedtls_aes_cmac_prf_128 @ 0x18f08\n    - mbedtls_aes_crypt_cbc @ 0xcaf0\n    - mbedtls_aes_crypt_cfb128 @ 0xcd38\n    - mbedtls_aes_crypt_cfb8 @ 0xcef4\n    - mbedtls_aes_crypt_ctr @ 0xd078\n    - mbedtls_aes_crypt_ecb @ 0xcaac\n    - mbedtls_aes_free @ 0xb470\n    - mbedtls_aes_init @ 0xb454\n    - mbedtls_aes_setkey_dec @ 0xb8a8\n    - mbedtls_aes_setkey_enc @ 0xb494\n\n============================================================\n[*] PHASE 3: Running binary to test crypto functions...\n[*] Binary requires GLIBC: 2.0 (max: 2.0)\n[*] Installing syscall hooks (getrandom, read)...\n[!] Warning: Could not hook syscalls: 'QlOsLinux' object has no attribute 'syscall_table'\n[*] Executing binary with basic block profiling...\n\n============================================================\n   ENHANCED ANALYSIS RESULTS (v2.0)\n============================================================\n\n[!] Binary execution failed or crashed early\n[*] Falling back to static analysis results only\n\n\n[*] Constant Detection (FindCrypt):\n    [\u2713] Detected 1 algorithm(s), 1 constant(s)\n      SHA256: SHA256_K\n\n[*] Avalanche Effect Analysis:\n    [-] Note: Functions may be inlined or not called during this execution\n    [-] Unable to capture I/O through function hooks\n    [-] Note: Binary executed and produced output (check console above)\n    [*] Avalanche testing requires multiple runs with different inputs\n    [*] Alternative: Test manually by running binary multiple times\n\n======================================================================\n   ALGORITHM CLASSIFICATION REPORT\n======================================================================\n\n[*] PRIMARY CLASSIFICATION: PROPRIETARY: Unknown custom algorithm\n    Confidence: MEDIUM\n\n[*] Standard Algorithms Detected:\n\n    SHA256 (Score: 40/100)\n      \u2713 Known constants detected (1 matches)\n\n[*] Proprietary/Custom Cipher Indicators:\n      \u26a0 Few crypto loops (simple cipher)\n\n[*] Analysis Summary:\n      \u2192 Binary uses CUSTOM/PROPRIETARY cipher\n      \u2192 Detected 1 weakness indicator(s):\n         \u2022 Few crypto loops (simple cipher)\n      \u2192 \u26a0 URGENT: Replace with standard algorithms\n      \u2192 Recommended alternatives:\n         \u2022 AES-256-GCM (block cipher, hardware accelerated)\n         \u2022 ChaCha20-Poly1305 (stream cipher, software optimized)\n======================================================================\n[*] Found 91 crypto candidate(s):\n    - mbedtls_aes_cmac_prf_128 @ 0x18f08\n    - mbedtls_aes_crypt_cbc @ 0xcaf0\n    - mbedtls_aes_crypt_cfb128 @ 0xcd38\n    - mbedtls_aes_crypt_cfb8 @ 0xcef4\n    - mbedtls_aes_crypt_ctr @ 0xd078\n    - mbedtls_aes_crypt_ecb @ 0xcaac\n    - mbedtls_aes_free @ 0xb470\n    - mbedtls_aes_init @ 0xb454\n    - mbedtls_aes_setkey_dec @ 0xb8a8\n    - mbedtls_aes_setkey_enc @ 0xb494\n\n============================================================\n[*] PHASE 3: Running binary to test crypto functions...\n[*] Binary requires GLIBC: 2.0 (max: 2.0)\n[*] Installing syscall hooks (getrandom, read)...\n[!] Warning: Could not hook syscalls: 'QlOsLinux' object has no attribute 'syscall_table'\n[*] Executing binary with basic block profiling...\n\n============================================================\n   ENHANCED ANALYSIS RESULTS (v2.0)\n============================================================\n\n[!] Binary execution failed or crashed early\n[*] Falling back to static analysis results only\n\n\n[*] Constant Detection (FindCrypt):\n    [\u2713] Detected 1 algorithm(s), 1 constant(s)\n      SHA256: SHA256_K\n\n[*] Avalanche Effect Analysis:\n    [-] Note: Functions may be inlined or not called during this execution\n    [-] Unable to capture I/O through function hooks\n    [-] Note: Binary executed and produced output (check console above)\n    [*] Avalanche testing requires multiple runs with different inputs\n    [*] Alternative: Test manually by running binary multiple times\n\n======================================================================\n   ALGORITHM CLASSIFICATION REPORT\n======================================================================\n\n[*] PRIMARY CLASSIFICATION: PROPRIETARY: Unknown custom algorithm\n    Confidence: MEDIUM\n\n[*] Standard Algorithms Detected:\n\n    SHA256 (Score: 40/100)\n      \u2713 Known constants detected (1 matches)\n\n[*] Proprietary/Custom Cipher Indicators:\n      \u26a0 Few crypto loops (simple cipher)\n\n[*] Analysis Summary:\n      \u2192 Binary uses CUSTOM/PROPRIETARY cipher\n      \u2192 Detected 1 weakness indicator(s):\n         \u2022 Few crypto loops (simple cipher)\n      \u2192 \u26a0 URGENT: Replace with standard algorithms\n      \u2192 Recommended alternatives:\n         \u2022 AES-256-GCM (block cipher, hardware accelerated)\n         \u2022 ChaCha20-Poly1305 (stream cipher, software optimized)\n======================================================================\n",
+  "errors": "/home/spy-d/My Files/sih/vestigo-data/qiling_analysis/qiling_env/lib64/python3.13/site-packages/capstone/__init__.py:267: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.\n  import pkg_resources\n"
+}

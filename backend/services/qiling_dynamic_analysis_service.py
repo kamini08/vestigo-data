@@ -308,16 +308,24 @@ class QilingDynamicAnalysisService:
                 parsed["phases"]["dynamic_analysis"] = dynamic_results
                 break
         
-        # Parse Verdict
+        # Parse Verdict - handle multiple output formats
+        verdict_found = False
+        
+        # Format 1: Look for explicit "VERDICT:" line
         for i, line in enumerate(lines):
             if "VERDICT:" in line:
-                if "Crypto behavior detected" in line:
+                verdict_found = True
+                # Check for any crypto detection patterns
+                if ("Crypto behavior detected" in line or 
+                    "Crypto functions detected" in line or
+                    "Crypto detected" in line):
                     parsed["verdict"]["crypto_detected"] = True
                     # Extract confidence
                     if "Confidence:" in line:
                         conf_match = line.split("Confidence:")[1].strip().rstrip(')')
                         parsed["verdict"]["confidence"] = conf_match
-                elif "No strong crypto indicators" in line:
+                else:
+                    # Any other verdict means no crypto detected
                     parsed["verdict"]["crypto_detected"] = False
                     if "Confidence:" in line:
                         conf_match = line.split("Confidence:")[1].strip().rstrip(')')
@@ -340,6 +348,80 @@ class QilingDynamicAnalysisService:
                                 break
                         parsed["verdict"]["reasons"] = reasons
                 break
+        
+        # Format 2: If no explicit verdict, infer from detection results
+        if not verdict_found:
+            # Check if crypto functions or algorithms were detected
+            has_crypto_functions = False
+            has_crypto_constants = False
+            detected_algorithms = []
+            function_count = 0
+            constant_count = 0
+            
+            for line in lines:
+                # Check for crypto function candidates
+                if "Found" in line and "crypto candidate" in line:
+                    try:
+                        import re
+                        match = re.search(r'Found (\d+) crypto candidate', line)
+                        if match:
+                            count = int(match.group(1))
+                            if count > 0:
+                                has_crypto_functions = True
+                                function_count = count
+                    except: pass
+                
+                # Check for algorithm classification - only accept standard algorithms
+                if "PRIMARY CLASSIFICATION:" in line:
+                    # Only treat as crypto if it's a KNOWN standard algorithm
+                    if ("AES" in line and "PROPRIETARY" not in line) or \
+                       ("RSA" in line and "PROPRIETARY" not in line) or \
+                       ("SHA" in line and "PROPRIETARY" not in line) or \
+                       ("DES" in line and "PROPRIETARY" not in line) or \
+                       ("ChaCha" in line and "PROPRIETARY" not in line) or \
+                       ("Blowfish" in line and "PROPRIETARY" not in line) or \
+                       ("Twofish" in line and "PROPRIETARY" not in line):
+                        detected_algorithms.append(line.split("PRIMARY CLASSIFICATION:")[1].strip())
+                    # Ignore PROPRIETARY/custom algorithm classifications unless there's other evidence
+                
+                # Check for constant detection with actual count
+                if "Found constants for" in line and "algorithm(s)" in line:
+                    try:
+                        import re
+                        match = re.search(r'Found constants for (\d+) algorithm', line)
+                        if match:
+                            count = int(match.group(1))
+                            if count > 0:
+                                has_crypto_constants = True
+                                constant_count = count
+                    except: pass
+            
+            # More strict criteria: require actual evidence, not just proprietary classification
+            # Crypto detected ONLY if:
+            # 1. Has crypto functions (named functions with crypto signatures), OR
+            # 2. Has crypto constants (known algorithm constants), OR
+            # 3. Has KNOWN standard algorithm detected (not just proprietary)
+            if has_crypto_functions or has_crypto_constants or detected_algorithms:
+                parsed["verdict"]["crypto_detected"] = True
+                parsed["verdict"]["confidence"] = "MEDIUM" if (has_crypto_functions and has_crypto_constants) else "LOW"
+                
+                # Build reasons list
+                reasons = []
+                if has_crypto_functions:
+                    reasons.append(f"{function_count} crypto function candidates detected")
+                if has_crypto_constants:
+                    reasons.append(f"{constant_count} crypto constants found")
+                if detected_algorithms:
+                    reasons.append(f"Algorithms: {', '.join(detected_algorithms)}")
+                
+                parsed["verdict"]["reasons"] = reasons
+                parsed["verdict"]["confidence_score"] = 60 if (has_crypto_functions and has_crypto_constants) else 30
+            else:
+                # No concrete evidence - mark as no crypto detected
+                parsed["verdict"]["crypto_detected"] = False
+                parsed["verdict"]["confidence"] = "HIGH"  # High confidence it's NOT crypto
+                parsed["verdict"]["confidence_score"] = 10
+                parsed["verdict"]["reasons"] = ["No crypto functions, constants, or known algorithms detected"]
         
         return parsed
     

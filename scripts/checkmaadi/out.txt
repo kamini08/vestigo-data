@@ -1,0 +1,172 @@
+analysis_results - {
+    routing - decision, reason
+    file_info - detected_type
+    extraction - was_extracted
+}
+feature_extraction_results - {
+    summary - {
+        binary_sections - text_size, rodata_size, data_size
+    }
+    functions - {
+        [0] - {
+            graph_level - strongly_connected_components, avg_edge_branch_condition_complexity, average_block_size, num_edges, branch_density, num_basic_blocks, num_entry_exit_paths, loop_count, num_conditional_edges, num_unconditional_edges, loop_depth, num_loop_edges, cyclomatic_complexity
+            edge_level - { 72 blocks }
+            node_level - {
+                [0] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, CALL, LOAD, OTHER, RETURN, AND, STORE, XOR
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+            }
+            crypto_signatures - has_aes_sbox, rsa_bigint_detected, has_aes_rcon, has_sha_constants
+            data_references - rodata_refs_count, string_refs_count, stack_frame_size
+            op_category_counts - bitwise_ops, multiply_ratio, crypto_like_ops, xor_ratio, add_ratio, rotate_ratio, arithmetic_ops, load_store_ratio, mem_ops_ratio, logical_ratio
+            instruction_sequence - {
+                top_5_bigrams - {
+                }
+            }
+            entropy_metrics - function_byte_entropy, opcode_entropy, cyclomatic_complexity_density
+            advanced_features - key_expansion_detection, modexp_op_density, montgomery_op_count, has_aes_rcon, approx_rounds, stack_frame_size, pagerank_score, num_large_tables, sha_init_constants_hits, betweenness_centrality, aes_sbox_match_score, bitwise_mix_operations, bigint_op_count, bignum_limb_count, curve25519_constant_detection, ladder_step_count, quarterround_score, gf256_mul_ratio, rodata_refs_count, lcg_increment, has_aes_sbox, string_density, sha_k_table_hits, mixcolumns_pattern_score, cswap_patterns, schedule_size_detection, lcg_multiplier, mt19937_constants, feedback_polynomial, string_refs_count, call_out_degree, bigint_width, data_refs_count, projective_affine_ops_count, sha_rotation_patterns, table_entropy_score, exponent_bit_length, modulus_bit_length, lcg_mod, call_in_degree, mixed_coordinate_ratio, tbox_detected
+        }
+        [1] - {
+            graph_level - strongly_connected_components, avg_edge_branch_condition_complexity, average_block_size, num_edges, branch_density, num_basic_blocks, num_entry_exit_paths, loop_count, num_conditional_edges, num_unconditional_edges, loop_depth, num_loop_edges, cyclomatic_complexity
+            edge_level - { 21 blocks }
+            node_level - {
+                [0] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, CBRANCH, OTHER, AND, STORE
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [1] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, LOAD, OTHER, RETURN
+                    constant_flags - 
+                }
+                [2] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, CALL, LOAD, OTHER, CARRY, STORE, SCARRY, XOR, SHR
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [3] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, CALL, LOAD, OTHER, STORE
+                    constant_flags - P256_PRIME
+                }
+                [4] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, SHL, STORE
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [5] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, CALL, LOAD, CBRANCH, OTHER, STORE, XOR, SHR
+                    constant_flags - P256_PRIME
+                }
+                [6] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, CALL, LOAD, OTHER, CARRY, STORE, SCARRY
+                    constant_flags - P256_PRIME
+                }
+                [7] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, SHL, STORE
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [8] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, CALL, LOAD, OTHER, RETURN, STORE, XOR, SHR
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+            }
+            crypto_signatures - has_aes_sbox, rsa_bigint_detected, has_aes_rcon, has_sha_constants
+            data_references - rodata_refs_count, string_refs_count, stack_frame_size
+            op_category_counts - bitwise_ops, multiply_ratio, crypto_like_ops, xor_ratio, add_ratio, rotate_ratio, arithmetic_ops, load_store_ratio, mem_ops_ratio, logical_ratio
+            instruction_sequence - {
+                top_5_bigrams - {
+                }
+            }
+            entropy_metrics - function_byte_entropy, opcode_entropy, cyclomatic_complexity_density
+            advanced_features - key_expansion_detection, modexp_op_density, montgomery_op_count, has_aes_rcon, approx_rounds, stack_frame_size, pagerank_score, num_large_tables, sha_init_constants_hits, betweenness_centrality, aes_sbox_match_score, bitwise_mix_operations, bigint_op_count, bignum_limb_count, curve25519_constant_detection, ladder_step_count, quarterround_score, gf256_mul_ratio, rodata_refs_count, lcg_increment, has_aes_sbox, string_density, sha_k_table_hits, mixcolumns_pattern_score, cswap_patterns, schedule_size_detection, lcg_multiplier, mt19937_constants, feedback_polynomial, string_refs_count, call_out_degree, bigint_width, data_refs_count, projective_affine_ops_count, sha_rotation_patterns, table_entropy_score, exponent_bit_length, modulus_bit_length, lcg_mod, call_in_degree, mixed_coordinate_ratio, tbox_detected
+        }
+    }
+    metadata - data_size, total_tables_detected, text_size, rodata_size, num_functions
+    ml_classification - {
+        function_predictions - {
+            [0] - {
+                top_3_predictions - {
+                    [0] - {
+                    }
+                    [1] - {
+                    }
+                    [2] - {
+                    }
+                }
+            }
+            [1] - {
+                top_3_predictions - {
+                    [0] - {
+                    }
+                    [1] - {
+                    }
+                    [2] - {
+                    }
+                }
+            }
+        }
+        file_summary - {
+            detected_algorithms - {
+            }
+            algorithm_counts - Non-Crypto, AES-128
+            top_algorithms - {
+            }
+            confidence_scores - {
+                AES-128 - avg_probability, max_probability, functions_with_significant_probability
+                AES-192 - avg_probability, max_probability, functions_with_significant_probability
+                AES-256 - avg_probability, max_probability, functions_with_significant_probability
+                ECC - avg_probability, max_probability, functions_with_significant_probability
+                PRNG - avg_probability, max_probability, functions_with_significant_probability
+                RSA-1024 - avg_probability, max_probability, functions_with_significant_probability
+                RSA-4096 - avg_probability, max_probability, functions_with_significant_probability
+                SHA-1 - avg_probability, max_probability, functions_with_significant_probability
+                SHA-224 - avg_probability, max_probability, functions_with_significant_probability
+                SHA-256 - avg_probability, max_probability, functions_with_significant_probability
+                XOR-CIPHER - avg_probability, max_probability, functions_with_significant_probability
+            }
+        }
+        detected_algorithms - {
+        }
+        confidence_scores - {
+            AES-128 - avg_probability, max_probability, functions_with_significant_probability
+            AES-192 - avg_probability, max_probability, functions_with_significant_probability
+            AES-256 - avg_probability, max_probability, functions_with_significant_probability
+            ECC - avg_probability, max_probability, functions_with_significant_probability
+            PRNG - avg_probability, max_probability, functions_with_significant_probability
+            RSA-1024 - avg_probability, max_probability, functions_with_significant_probability
+            RSA-4096 - avg_probability, max_probability, functions_with_significant_probability
+            SHA-1 - avg_probability, max_probability, functions_with_significant_probability
+            SHA-224 - avg_probability, max_probability, functions_with_significant_probability
+            SHA-256 - avg_probability, max_probability, functions_with_significant_probability
+            XOR-CIPHER - avg_probability, max_probability, functions_with_significant_probability
+        }
+    }
+}

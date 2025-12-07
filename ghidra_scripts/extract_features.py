@@ -679,10 +679,14 @@ def extract_function_data(func, current_program):
     # Get Architecture
     arch = current_program.getLanguage().getProcessor().toString()
 
+    # Determine Label
+    label = LABEL_MAP.get(func_name, "Other")
+
     func_data = {
         "name": func_name,
         "address": func.getEntryPoint().toString(),
-        "arch": arch, 
+        "arch": arch,
+        "label": label,
         "graph_level": {},
         "node_level": [],
         "edge_level": []
@@ -884,7 +888,7 @@ def run_analysis():
     if len(args) > 0:
         output_dir = args[0]
     else:
-        output_dir = os.path.join(".", "test_dataset_json")
+        output_dir = os.path.join(".", "L_O_Json")
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

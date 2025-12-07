@@ -9,7 +9,8 @@ import json
 import glob
 import time
 from datetime import datetime
-
+from dotenv import load_dotenv
+load_dotenv()
 # Configuration
 GHIDRA_HOME = os.getenv("GHIDRA_HOME")
 
@@ -27,8 +28,8 @@ if not GHIDRA_HOME:
         print("Please set GHIDRA_HOME environment variable or install Ghidra.")
         exit(1)
 
-BINARY_DIRS = ["dataset_binaries", "builds_x86"]  # Process both directories
-OUTPUT_DIR = "ghidra_json"  # Combined output directory
+BINARY_DIRS = ["builds_new"]  # Process both directories
+OUTPUT_DIR = "ghidra_json_new"  # Combined output directory
 PROJECT_DIR = "/tmp/ghidra_batch_project"
 PROJECT_NAME = f"batch_extraction_{int(time.time())}"
 SCRIPT_PATH = "ghidra_scripts/extract_features.py"
@@ -163,10 +164,10 @@ def main():
             
             # Check if already processed
             output_file = os.path.join(OUTPUT_DIR, binary_name + "_features.json")
-            # if os.path.exists(output_file):
-            #     print(f"  [{i+1}/{len(binaries)}] {binary_name[:40]:40s} ⊙ SKIP (exists)")
-            #     results['success'] += 1
-            #     continue
+            if os.path.exists(output_file):
+                print(f"  [{i+1}/{len(binaries)}] {binary_name[:40]:40s} ⊙ SKIP (exists)")
+                results['success'] += 1
+                continue
             
             print(f"  [{i+1}/{len(binaries)}] {binary_name[:40]:40s} ", end='', flush=True)
             

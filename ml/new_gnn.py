@@ -361,10 +361,13 @@ class GraphDataset(Dataset):
             # Extract graph-level features
             graph_features = self._extract_graph_features(func, addresses)
 
+            # Determine edge feature dimension (9 address features + 4 edge type features = 13)
+            edge_feature_dim = 13
+
             return {
                 'node_features': np.array(node_features, dtype=np.float32),
                 'edge_index': np.array(edge_index, dtype=np.int64).T if edge_index else np.zeros((2, 0), dtype=np.int64),
-                'edge_features': np.array(edge_features, dtype=np.float32) if edge_features else np.zeros((0, 1), dtype=np.float32),
+                'edge_features': np.array(edge_features, dtype=np.float32) if edge_features else np.zeros((0, edge_feature_dim), dtype=np.float32),
                 'graph_features': np.array(graph_features, dtype=np.float32),
                 'num_nodes': len(node_level)
             }
@@ -690,6 +693,12 @@ class AddressAwareGNN(nn.Module):
         x, edge_index, edge_attr, batch = data.x, data.edge_index, data.edge_attr, data.batch
         graph_features = data.graph_features
 
+        # Reshape graph_features to [num_graphs, num_features]
+        # When batched, it's concatenated into 1D: [g1_feat1, g1_feat2, ..., g2_feat1, g2_feat2, ...]
+        num_graphs = batch.max().item() + 1
+        num_graph_features = graph_features.shape[0] // num_graphs
+        graph_features = graph_features.view(num_graphs, num_graph_features)
+
         # Encode node features
         x = self.node_encoder(x)
 
@@ -777,6 +786,11 @@ class HierarchicalGNN(nn.Module):
         x, edge_index, batch = data.x, data.edge_index, data.batch
         graph_features = data.graph_features
 
+        # Reshape graph_features to [num_graphs, num_features]
+        num_graphs = batch.max().item() + 1
+        num_graph_features = graph_features.shape[0] // num_graphs
+        graph_features = graph_features.view(num_graphs, num_graph_features)
+
         x = self.node_encoder(x)
 
         # GAT layers
@@ -840,8 +854,7 @@ class GNNTrainer:
             self.optimizer,
             mode='max',
             factor=0.5,
-            patience=10,
-            verbose=True
+            patience=10
         )
 
         # Training history
@@ -1506,8 +1519,8 @@ if __name__ == '__main__':
     parser.add_argument('--inference', action='store_true', help='Run inference mode')
     parser.add_argument('--input', type=str, help='Input JSON file for inference')
     parser.add_argument('--output', type=str, help='Output JSON file for inference results')
-    parser.add_argument('--model', type=str, default='./gnn_models/best_model.pth', help='Model path')
-    parser.add_argument('--metadata', type=str, default='./gnn_models/metadata.pkl', help='Metadata path')
+    parser.add_argument('--model', type=str, default='./ml/gnn_models/best_model.pth', help='Model path')
+    parser.add_argument('--metadata', type=str, default='./ml/gnn_models/metadata.pkl', help='Metadata path')
 
     args = parser.parse_args()
 
