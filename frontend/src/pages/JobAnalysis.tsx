@@ -866,7 +866,7 @@ const FeatureExtractionCard = ({ jobData }: { jobData: unknown }) => {
       </CardContent>
     </Card>
   );
-};
+};  
 
 // Component for GNN Classification Results
 const GNNClassificationCard = ({ jobData }: { jobData: unknown }) => {
@@ -1210,7 +1210,7 @@ const QilingAnalysisCard = ({ qilingData }: { qilingData: unknown }) => {
 
           {/* Verdict Reasons */}
           {verdict?.reasons && Array.isArray(verdict.reasons) && (verdict.reasons as string[]).length > 0 && (
-            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="mt-4 p-4 text-black bg-blue-50 border border-blue-200 rounded-lg">
               <h4 className="font-semibold mb-2 flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4" />
                 Detection Reasons:

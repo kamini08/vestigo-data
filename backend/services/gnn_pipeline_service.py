@@ -36,6 +36,16 @@ class GNNPipelineService:
         self.model_path = self.project_root / "ml" / "gnn_models" / "best_model.pth"
         self.metadata_path = self.project_root / "ml" / "gnn_models" / "metadata.pkl"
         
+        # Python executable - use Qiling venv if available (has torch-geometric and dependencies)
+        self.qiling_venv = self.project_root / "qiling_analysis" / "qiling_env"
+        self.python_executable = self.qiling_venv / "bin" / "python3"
+        
+        # Fallback to system python3 if venv doesn't exist
+        if not os.path.exists(self.python_executable):
+            logger.warning(f"Qiling venv Python not found at {self.python_executable}")
+            logger.warning("Using system python3 instead")
+            self.python_executable = "python3"
+        
         # Check if GNN script and models exist
         if not os.path.exists(self.gnn_script):
             logger.warning(f"GNN script not found: {self.gnn_script}")
@@ -46,6 +56,7 @@ class GNNPipelineService:
             logger.warning("GNN inference will be skipped")
         
         logger.info(f"GNNPipelineService initialized")
+        logger.info(f"Python executable: {self.python_executable}")
         logger.info(f"GNN script: {self.gnn_script}")
         logger.info(f"Model path: {self.model_path}")
         logger.info(f"Metadata path: {self.metadata_path}")
@@ -87,7 +98,7 @@ class GNNPipelineService:
         # Build GNN command
         # python ml/new_gnn.py --inference --input <json> --output <output> --model <model> --metadata <metadata>
         gnn_cmd = [
-            "python3",
+            str(self.python_executable),
             str(self.gnn_script),
             "--inference",
             "--input", str(ghidra_json_path),

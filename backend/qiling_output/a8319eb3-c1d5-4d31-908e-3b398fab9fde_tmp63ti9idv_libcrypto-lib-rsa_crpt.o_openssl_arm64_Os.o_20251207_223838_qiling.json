@@ -1,0 +1,46 @@
+{
+  "job_id": "a8319eb3-c1d5-4d31-908e-3b398fab9fde",
+  "binary_path": "/home/shinichi/Documents/VSC/vestigo-data/backend/analysis_workspace/tmp63ti9idv_libcrypto-lib-rsa_crpt.o_openssl_arm64_Os.o_analysis/tmp63ti9idv_libcrypto-lib-rsa_crpt.o_openssl_arm64_Os.o",
+  "binary_name": "tmp63ti9idv_libcrypto-lib-rsa_crpt.o_openssl_arm64_Os.o",
+  "analysis_timestamp": 1765127318.9011924,
+  "execution_time": 0.48407530784606934,
+  "status": "failed",
+  "analysis_tool": "qiling_dynamic_analysis",
+  "phases": {
+    "packer_detection": {
+      "packed": false
+    },
+    "yara_analysis": {
+      "detected": [
+        "COMPRESSION",
+        "RSA"
+      ],
+      "total_matches": 142,
+      "scan_time": 0.0
+    },
+    "constant_detection": {
+      "algorithms_detected": [
+        "RSA_private_decrypt @ 0x4c",
+        "RSA_private_encrypt @ 0x3c",
+        "RSA_public_decrypt @ 0x5c",
+        "RSA_public_encrypt @ 0x2c"
+      ],
+      "count": 4
+    },
+    "function_symbols": {
+      "detected": true,
+      "count": 4
+    },
+    "dynamic_analysis": {}
+  },
+  "verdict": {
+    "crypto_detected": true,
+    "confidence": "LOW",
+    "confidence_score": 30,
+    "reasons": [
+      "4 crypto function candidates detected"
+    ]
+  },
+  "raw_output": "\n============================================================\n[*] PHASE -1: Checking for packed binary...\n[-] No packer detected\n[+] Detected architecture: arm64\n[*] Target: tmp63ti9idv_libcrypto-lib-rsa_crpt.o_openssl_arm64_Os.o\n[*] Rootfs: /home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/rootfs/arm64_linux\n\n============================================================\n[*] PHASE 0: YARA static analysis\n[\u2713] YARA detected: COMPRESSION, RSA\n    Total matches: 142\n    Scan time: 0.000s\n\n============================================================\n[*] PHASE 1: Scanning for crypto constants...\n[-] No crypto constants detected\n\n============================================================\n[*] PHASE 2: Checking for function symbols...\n[*] Found 4 crypto candidate(s):\n    - RSA_private_decrypt @ 0x4c\n    - RSA_private_encrypt @ 0x3c\n    - RSA_public_decrypt @ 0x5c\n    - RSA_public_encrypt @ 0x2c\n\n============================================================\n[*] PHASE 3: Running binary to test crypto functions...\n\n======================================================================\n   NATIVE STRACE ANALYSIS (Optional)\n======================================================================\n[*] Running native strace on binary...\n    Log: /home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/tests/strace_logs/strace_tmp63ti9idv_libcrypto-lib-rsa_crpt_o_openssl_arm64_Os_o_20251207_223838.log\n[\u2713] strace log captured: 4842 bytes\n[*] Analyzing strace log...\n[*] Strace Statistics:\n    Total syscalls: 2\n",
+  "errors": "/home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/qiling_env/lib/python3.12/site-packages/capstone/__init__.py:267: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.\n  import pkg_resources\nTraceback (most recent call last):\n  File \"/home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/tests/verify_crypto.py\", line 1699, in <module>\n    analyze_binary()\n  File \"/home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/tests/verify_crypto.py\", line 1266, in analyze_binary\n    run_binary_with_hooks(analysis_target, crypto_funcs, rootfs_path, filename, constant_results)\n  File \"/home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/tests/verify_crypto.py\", line 1334, in run_binary_with_hooks\n    ql = Qiling([temp_binary], rootfs_path, verbose=QL_VERBOSE.OFF, console=False)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/qiling/qiling/core.py\", line 195, in __init__\n    self.loader.run()\n  File \"/home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/qiling/qiling/loader/elf.py\", line 103, in run\n    self.load_driver(elffile, top_of_stack, loadbase=0x8000000)\n  File \"/home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/qiling/qiling/loader/elf.py\", line 613, in load_driver\n    init_module = loadbase + self.lkm_get_init(elffile)\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/qiling/qiling/loader/elf.py\", line 438, in lkm_get_init\n    raise QlErrorELFFormat('invalid module: symbol init_module not found')\nqiling.exception.QlErrorELFFormat: invalid module: symbol init_module not found\n"
+}

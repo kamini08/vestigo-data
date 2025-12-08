@@ -184,6 +184,7 @@ class BinaryConverterService:
         
         if not linker:
             logger.error(f"No linker available for architecture: {arch_info['arch']}")
+            logger.info(f"Skipping .o to .elf conversion. Qiling will attempt to analyze the .o file directly.")
             return False
         
         try:
@@ -193,7 +194,8 @@ class BinaryConverterService:
                 linker,
                 '-o', output_path,
                 object_path,
-                '--entry=0'  # Use address 0 as entry (will be adjusted by dynamic analysis)
+                '--entry=0',  # Use address 0 as entry (will be adjusted by dynamic analysis)
+                '-nostdlib'   # Don't link with standard libraries
             ]
             
             logger.debug(f"Linking command: {' '.join(cmd)}")
@@ -210,55 +212,50 @@ class BinaryConverterService:
                 return True
             else:
                 # Try alternative approach: create minimal ELF wrapper
-                logger.warning(f"Standard linking failed: {result.stderr}")
+                logger.warning(f"Standard linking failed: {result.stderr.strip()[:200]}")
                 logger.info("Attempting alternative conversion method...")
-                return self._create_minimal_elf_wrapper(object_path, output_path, arch_info)
+                return self._create_minimal_elf_wrapper(object_path, output_path, arch_info, linker)
                 
         except subprocess.TimeoutExpired:
             logger.error("Linking timed out")
             return False
         except FileNotFoundError:
             logger.error(f"Linker not found: {linker}")
-            # Try alternative method
-            return self._create_minimal_elf_wrapper(object_path, output_path, arch_info)
+            return False
         except Exception as e:
             logger.error(f"Linking failed: {e}")
             return False
     
-    def _create_minimal_elf_wrapper(self, object_path: str, output_path: str, arch_info: dict) -> bool:
+    def _create_minimal_elf_wrapper(self, object_path: str, output_path: str, arch_info: dict, linker: str) -> bool:
         """
         Create a minimal ELF executable by copying the object file with ELF header adjustments
         
         For Qiling analysis, we just need a loadable ELF format
         """
         try:
-            # Use objcopy to convert object to binary and back to ELF
-            # This preserves the code but makes it executable
-            linker = self._get_linker_command(arch_info['arch'])
-            
-            if not linker:
-                # Fallback: just copy and try to use as-is
-                import shutil
-                shutil.copy(object_path, output_path)
-                logger.warning(f"Copied object file directly (no linking available)")
-                return True
-            
-            # Try using ld with relaxed options
+            # Try using ld with relaxed options for relocatable output
             cmd = [
                 linker,
-                '-r',  # Relocatable output
+                '-r',  # Relocatable output (keeps all symbols and relocation info)
                 '-o', output_path,
                 object_path
             ]
             
+            logger.debug(f"Attempting relocatable link: {' '.join(cmd)}")
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
             
             if result.returncode == 0:
                 logger.info(f"Created relocatable ELF: {output_path}")
                 return True
             else:
-                logger.error(f"Minimal ELF creation failed: {result.stderr}")
-                return False
+                logger.error(f"Minimal ELF creation failed: {result.stderr.strip()[:200]}")
+                
+                # Final fallback: Just copy the .o file as-is
+                # Qiling can sometimes work with bare object files
+                logger.info("Copying object file as-is for Qiling analysis")
+                import shutil
+                shutil.copy(object_path, output_path)
+                return True
                 
         except Exception as e:
             logger.error(f"Minimal ELF wrapper creation failed: {e}")
@@ -268,34 +265,34 @@ class BinaryConverterService:
         """
         Get the appropriate linker command for the architecture
         """
-        # Map architecture to linker
-        linker_map = {
-            'x86_64': 'ld',
-            'x86': 'ld',
-            'arm': 'arm-linux-gnueabi-ld',
-            'aarch64': 'aarch64-linux-gnu-ld',
-            'mips': 'mips-linux-gnu-ld',
-            'mipsel': 'mipsel-linux-gnu-ld'
+        # Map architecture to linker (prioritize cross-compiler toolchains)
+        linker_candidates = {
+            'x86_64': ['ld', 'x86_64-linux-gnu-ld'],
+            'x86': ['ld', 'i686-linux-gnu-ld'],
+            'arm': ['arm-linux-gnueabi-ld', 'arm-linux-gnueabihf-ld', 'arm-none-eabi-ld'],
+            'aarch64': ['aarch64-linux-gnu-ld', 'aarch64-none-elf-ld', 'aarch64-elf-ld'],
+            'mips': ['mips-linux-gnu-ld', 'mips-elf-ld'],
+            'mipsel': ['mipsel-linux-gnu-ld', 'mipsel-elf-ld']
         }
         
-        # Try to get arch-specific linker first
-        linker = linker_map.get(arch, 'ld')
+        # Get candidates for this architecture
+        candidates = linker_candidates.get(arch, ['ld'])
         
-        # Check if linker exists
-        try:
-            result = subprocess.run(['which', linker], capture_output=True, timeout=5)
-            if result.returncode == 0:
-                return linker
-        except:
-            pass
+        # Try each candidate linker
+        for linker in candidates:
+            try:
+                result = subprocess.run(['which', linker], capture_output=True, timeout=5)
+                if result.returncode == 0:
+                    logger.info(f"Found linker for {arch}: {linker}")
+                    return linker
+            except:
+                continue
         
-        # Fallback to generic ld
-        try:
-            result = subprocess.run(['which', 'ld'], capture_output=True, timeout=5)
-            if result.returncode == 0:
-                return 'ld'
-        except:
-            pass
+        # If no arch-specific linker found, warn and return None
+        logger.warning(f"No suitable linker found for {arch}. Consider installing cross-compiler toolchain.")
+        logger.warning(f"  For ARM64: sudo apt install binutils-aarch64-linux-gnu")
+        logger.warning(f"  For ARM32: sudo apt install binutils-arm-linux-gnueabi")
+        logger.warning(f"  For MIPS: sudo apt install binutils-mips-linux-gnu")
         
         return None
     
