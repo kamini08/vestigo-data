@@ -1,0 +1,714 @@
+analysis_results - {
+    routing - decision, reason
+    file_info - detected_type
+    extraction - was_extracted
+}
+feature_extraction_results - {
+    summary - {
+        binary_sections - text_size, rodata_size, data_size
+    }
+    functions - {
+        [0] - {
+            graph_level - strongly_connected_components, avg_edge_branch_condition_complexity, average_block_size, num_edges, branch_density, num_basic_blocks, num_entry_exit_paths, loop_count, num_conditional_edges, num_unconditional_edges, loop_depth, num_loop_edges, cyclomatic_complexity
+            edge_level - { 9 blocks }
+            node_level - {
+                [0] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, ADD, OTHER, CARRY, STORE, SCARRY
+                    constant_flags - P256_PRIME
+                }
+                [1] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, CARRY, STORE, SCARRY
+                    constant_flags - P256_PRIME
+                }
+                [2] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, LOAD, OTHER, STORE
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [3] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, OR, LOAD, CBRANCH, OTHER, CARRY, SHL, STORE, SCARRY, XOR, SHR
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [4] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, OTHER, CARRY, STORE, SCARRY
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [5] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, STORE
+                    constant_flags - P256_PRIME
+                }
+                [6] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, LOAD, OTHER, RETURN, AND
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+            }
+            crypto_signatures - has_aes_sbox, rsa_bigint_detected, has_aes_rcon, has_sha_constants
+            data_references - rodata_refs_count, string_refs_count, stack_frame_size
+            op_category_counts - bitwise_ops, multiply_ratio, crypto_like_ops, xor_ratio, add_ratio, rotate_ratio, arithmetic_ops, load_store_ratio, mem_ops_ratio, logical_ratio
+            instruction_sequence - {
+                top_5_bigrams - {
+                }
+            }
+            entropy_metrics - function_byte_entropy, opcode_entropy, cyclomatic_complexity_density
+            advanced_features - key_expansion_detection, modexp_op_density, montgomery_op_count, has_aes_rcon, approx_rounds, stack_frame_size, pagerank_score, num_large_tables, sha_init_constants_hits, betweenness_centrality, aes_sbox_match_score, bitwise_mix_operations, bigint_op_count, bignum_limb_count, curve25519_constant_detection, ladder_step_count, quarterround_score, gf256_mul_ratio, rodata_refs_count, lcg_increment, has_aes_sbox, string_density, sha_k_table_hits, mixcolumns_pattern_score, cswap_patterns, schedule_size_detection, lcg_multiplier, mt19937_constants, feedback_polynomial, string_refs_count, call_out_degree, bigint_width, data_refs_count, projective_affine_ops_count, sha_rotation_patterns, table_entropy_score, exponent_bit_length, modulus_bit_length, lcg_mod, call_in_degree, mixed_coordinate_ratio, tbox_detected
+        }
+        [1] - {
+            graph_level - strongly_connected_components, avg_edge_branch_condition_complexity, average_block_size, num_edges, branch_density, num_basic_blocks, num_entry_exit_paths, loop_count, num_conditional_edges, num_unconditional_edges, loop_depth, num_loop_edges, cyclomatic_complexity
+            edge_level - { 27 blocks }
+            node_level - {
+                [0] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, ADD, OR, CBRANCH, OTHER, AND, STORE
+                    constant_flags - P256_PRIME
+                }
+                [1] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - OR, CBRANCH, OTHER, AND, XOR
+                    constant_flags - P256_PRIME
+                }
+                [2] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - CBRANCH, OTHER
+                    constant_flags - P256_PRIME
+                }
+                [3] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD
+                    constant_flags - 
+                }
+                [4] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, STORE, XOR
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [5] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, LOAD, OTHER, RETURN, AND
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [6] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, CBRANCH, OTHER, CARRY, AND, SCARRY
+                    constant_flags - P256_PRIME
+                }
+                [7] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - OTHER
+                    constant_flags - 
+                }
+                [8] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, STORE, XOR
+                    constant_flags - P256_PRIME
+                }
+                [9] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD
+                    constant_flags - 
+                }
+                [10] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH, OTHER, AND
+                    constant_flags - P256_PRIME
+                }
+                [11] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, CBRANCH, OTHER, AND
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [12] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, AND, STORE, XOR
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [13] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, CBRANCH, OTHER, CARRY, AND, SCARRY
+                    constant_flags - P256_PRIME
+                }
+                [14] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - OTHER
+                    constant_flags - 
+                }
+                [15] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, STORE, XOR
+                    constant_flags - P256_PRIME
+                }
+                [16] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD
+                    constant_flags - 
+                }
+                [17] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH, OTHER, AND
+                    constant_flags - P256_PRIME
+                }
+            }
+            crypto_signatures - has_aes_sbox, rsa_bigint_detected, has_aes_rcon, has_sha_constants
+            data_references - rodata_refs_count, string_refs_count, stack_frame_size
+            op_category_counts - bitwise_ops, multiply_ratio, crypto_like_ops, xor_ratio, add_ratio, rotate_ratio, arithmetic_ops, load_store_ratio, mem_ops_ratio, logical_ratio
+            instruction_sequence - {
+                top_5_bigrams - {
+                }
+            }
+            entropy_metrics - function_byte_entropy, opcode_entropy, cyclomatic_complexity_density
+            advanced_features - key_expansion_detection, modexp_op_density, montgomery_op_count, has_aes_rcon, approx_rounds, stack_frame_size, pagerank_score, num_large_tables, sha_init_constants_hits, betweenness_centrality, aes_sbox_match_score, bitwise_mix_operations, bigint_op_count, bignum_limb_count, curve25519_constant_detection, ladder_step_count, quarterround_score, gf256_mul_ratio, rodata_refs_count, lcg_increment, has_aes_sbox, string_density, sha_k_table_hits, mixcolumns_pattern_score, cswap_patterns, schedule_size_detection, lcg_multiplier, mt19937_constants, feedback_polynomial, string_refs_count, call_out_degree, bigint_width, data_refs_count, projective_affine_ops_count, sha_rotation_patterns, table_entropy_score, exponent_bit_length, modulus_bit_length, lcg_mod, call_in_degree, mixed_coordinate_ratio, tbox_detected
+        }
+        [2] - {
+            graph_level - strongly_connected_components, avg_edge_branch_condition_complexity, average_block_size, num_edges, branch_density, num_basic_blocks, num_entry_exit_paths, loop_count, num_conditional_edges, num_unconditional_edges, loop_depth, num_loop_edges, cyclomatic_complexity
+            edge_level - { 2 blocks }
+            node_level - {
+                [0] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, CBRANCH, OTHER
+                    constant_flags - P256_PRIME
+                }
+                [1] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, ADD, LOAD, OTHER, RETURN, CARRY, AND, STORE, SCARRY
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [2] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - OTHER, RETURN, AND
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+            }
+            crypto_signatures - has_aes_sbox, rsa_bigint_detected, has_aes_rcon, has_sha_constants
+            data_references - rodata_refs_count, string_refs_count, stack_frame_size
+            op_category_counts - bitwise_ops, multiply_ratio, crypto_like_ops, xor_ratio, add_ratio, rotate_ratio, arithmetic_ops, load_store_ratio, mem_ops_ratio, logical_ratio
+            instruction_sequence - {
+                top_5_bigrams - {
+                }
+            }
+            entropy_metrics - function_byte_entropy, opcode_entropy, cyclomatic_complexity_density
+            advanced_features - key_expansion_detection, modexp_op_density, montgomery_op_count, has_aes_rcon, approx_rounds, stack_frame_size, pagerank_score, num_large_tables, sha_init_constants_hits, betweenness_centrality, aes_sbox_match_score, bitwise_mix_operations, bigint_op_count, bignum_limb_count, curve25519_constant_detection, ladder_step_count, quarterround_score, gf256_mul_ratio, rodata_refs_count, lcg_increment, has_aes_sbox, string_density, sha_k_table_hits, mixcolumns_pattern_score, cswap_patterns, schedule_size_detection, lcg_multiplier, mt19937_constants, feedback_polynomial, string_refs_count, call_out_degree, bigint_width, data_refs_count, projective_affine_ops_count, sha_rotation_patterns, table_entropy_score, exponent_bit_length, modulus_bit_length, lcg_mod, call_in_degree, mixed_coordinate_ratio, tbox_detected
+        }
+        [3] - {
+            graph_level - strongly_connected_components, avg_edge_branch_condition_complexity, average_block_size, num_edges, branch_density, num_basic_blocks, num_entry_exit_paths, loop_count, num_conditional_edges, num_unconditional_edges, loop_depth, num_loop_edges, cyclomatic_complexity
+            edge_level - { 14 blocks }
+            node_level - {
+                [0] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, CBRANCH, OTHER
+                    constant_flags - P256_PRIME
+                }
+                [1] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, CBRANCH, OTHER, AND, STORE
+                    constant_flags - P256_PRIME
+                }
+                [2] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - CBRANCH, OTHER, AND
+                    constant_flags - P256_PRIME
+                }
+                [3] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, STORE
+                    constant_flags - P256_PRIME
+                }
+                [4] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, OTHER, CARRY, SCARRY
+                    constant_flags - P256_PRIME
+                }
+                [5] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, LOAD, OTHER, STORE
+                    constant_flags - P256_PRIME
+                }
+                [6] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, LOAD, OTHER, RETURN, AND
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [7] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH, CALL, OR, OTHER
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [8] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH, ADD, OTHER, CARRY, SCARRY
+                    constant_flags - P256_PRIME
+                }
+                [9] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - OTHER, RETURN, AND
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [10] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH, OTHER
+                    constant_flags - P256_PRIME
+                }
+            }
+            crypto_signatures - has_aes_sbox, rsa_bigint_detected, has_aes_rcon, has_sha_constants
+            data_references - rodata_refs_count, string_refs_count, stack_frame_size
+            op_category_counts - bitwise_ops, multiply_ratio, crypto_like_ops, xor_ratio, add_ratio, rotate_ratio, arithmetic_ops, load_store_ratio, mem_ops_ratio, logical_ratio
+            instruction_sequence - {
+                top_5_bigrams - {
+                }
+            }
+            entropy_metrics - function_byte_entropy, opcode_entropy, cyclomatic_complexity_density
+            advanced_features - key_expansion_detection, modexp_op_density, montgomery_op_count, has_aes_rcon, approx_rounds, stack_frame_size, pagerank_score, num_large_tables, sha_init_constants_hits, betweenness_centrality, aes_sbox_match_score, bitwise_mix_operations, bigint_op_count, bignum_limb_count, curve25519_constant_detection, ladder_step_count, quarterround_score, gf256_mul_ratio, rodata_refs_count, lcg_increment, has_aes_sbox, string_density, sha_k_table_hits, mixcolumns_pattern_score, cswap_patterns, schedule_size_detection, lcg_multiplier, mt19937_constants, feedback_polynomial, string_refs_count, call_out_degree, bigint_width, data_refs_count, projective_affine_ops_count, sha_rotation_patterns, table_entropy_score, exponent_bit_length, modulus_bit_length, lcg_mod, call_in_degree, mixed_coordinate_ratio, tbox_detected
+        }
+        [4] - {
+            graph_level - strongly_connected_components, avg_edge_branch_condition_complexity, average_block_size, num_edges, branch_density, num_basic_blocks, num_entry_exit_paths, loop_count, num_conditional_edges, num_unconditional_edges, loop_depth, num_loop_edges, cyclomatic_complexity
+            edge_level - { 56 blocks }
+            node_level - {
+                [0] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, ADD, OR, CBRANCH, OTHER, STORE
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [1] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, CBRANCH, OTHER
+                    constant_flags - P256_PRIME
+                }
+                [2] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, LOAD, CBRANCH, OTHER
+                    constant_flags - P256_PRIME
+                }
+                [3] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, CBRANCH, OTHER
+                    constant_flags - P256_PRIME
+                }
+                [4] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH
+                    constant_flags - 
+                }
+                [5] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, ADD, CALL, OR, LOAD, CBRANCH, OTHER, CARRY, AND, STORE, SCARRY
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [6] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, LOAD, OTHER, CARRY, STORE, SCARRY
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [7] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, ADD, CBRANCH, OTHER
+                    constant_flags - P256_PRIME
+                }
+                [8] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH, SUB, ADD, OTHER, CARRY, AND, STORE, SCARRY
+                    constant_flags - P256_PRIME
+                }
+                [9] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, OTHER, CARRY, SCARRY
+                    constant_flags - P256_PRIME
+                }
+                [10] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, STORE, XOR
+                    constant_flags - P256_PRIME
+                }
+                [11] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH, OTHER
+                    constant_flags - 
+                }
+                [12] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - CBRANCH, OTHER, AND
+                    constant_flags - P256_PRIME
+                }
+                [13] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, OTHER
+                    constant_flags - P256_PRIME
+                }
+                [14] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, AND, STORE, XOR
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [15] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - OTHER
+                    constant_flags - 
+                }
+                [16] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, CBRANCH, OTHER, CARRY, AND, SCARRY
+                    constant_flags - P256_PRIME
+                }
+                [17] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, OTHER, STORE
+                    constant_flags - 
+                }
+                [18] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, STORE, XOR
+                    constant_flags - P256_PRIME
+                }
+                [19] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, LOAD
+                    constant_flags - 
+                }
+                [20] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - CBRANCH, OTHER, AND
+                    constant_flags - P256_PRIME
+                }
+                [21] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD
+                    constant_flags - 
+                }
+                [22] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, LOAD, CBRANCH, OTHER, STORE, XOR
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [23] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, SUB, CBRANCH, OTHER, CARRY, SCARRY
+                    constant_flags - P256_PRIME
+                }
+                [24] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - CALL, ADD, OR, LOAD, CBRANCH, OTHER, CARRY, AND, STORE, SCARRY
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [25] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - OR, CBRANCH, OTHER, AND, XOR
+                    constant_flags - P256_PRIME
+                }
+                [26] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH, ADD, OTHER
+                    constant_flags - P256_PRIME
+                }
+                [27] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH, ADD, OTHER
+                    constant_flags - P256_PRIME
+                }
+                [28] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, LOAD, OTHER, AND
+                    constant_flags - P256_PRIME
+                }
+                [29] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - SUB, CBRANCH, OTHER
+                    constant_flags - P256_PRIME
+                }
+                [30] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, CALL, SUB, OR, OTHER, STORE
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [31] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - OTHER
+                    constant_flags - P256_PRIME
+                }
+                [32] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - ADD, LOAD, OTHER, RETURN, AND
+                    constant_flags - AES_SBOX_BYTES, P256_PRIME
+                }
+                [33] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH, OTHER
+                    constant_flags - 
+                }
+                [34] - {
+                    opcode_ratios - add, rotate, logical, load_store, xor, multiply
+                    immediates - {
+                    }
+                    opcode_histogram - BRANCH, OTHER
+                    constant_flags - P256_PRIME
+                }
+            }
+            crypto_signatures - has_aes_sbox, rsa_bigint_detected, has_aes_rcon, has_sha_constants
+            data_references - rodata_refs_count, string_refs_count, stack_frame_size
+            op_category_counts - bitwise_ops, multiply_ratio, crypto_like_ops, xor_ratio, add_ratio, rotate_ratio, arithmetic_ops, load_store_ratio, mem_ops_ratio, logical_ratio
+            instruction_sequence - {
+                top_5_bigrams - {
+                }
+            }
+            entropy_metrics - function_byte_entropy, opcode_entropy, cyclomatic_complexity_density
+            advanced_features - key_expansion_detection, modexp_op_density, montgomery_op_count, has_aes_rcon, approx_rounds, stack_frame_size, pagerank_score, num_large_tables, sha_init_constants_hits, betweenness_centrality, aes_sbox_match_score, bitwise_mix_operations, bigint_op_count, bignum_limb_count, curve25519_constant_detection, ladder_step_count, quarterround_score, gf256_mul_ratio, rodata_refs_count, lcg_increment, has_aes_sbox, string_density, sha_k_table_hits, mixcolumns_pattern_score, cswap_patterns, schedule_size_detection, lcg_multiplier, mt19937_constants, feedback_polynomial, string_refs_count, call_out_degree, bigint_width, data_refs_count, projective_affine_ops_count, sha_rotation_patterns, table_entropy_score, exponent_bit_length, modulus_bit_length, lcg_mod, call_in_degree, mixed_coordinate_ratio, tbox_detected
+        }
+    }
+    metadata - data_size, total_tables_detected, text_size, rodata_size, num_functions
+    ml_classification - {
+        function_predictions - {
+            [0] - {
+                top_3_predictions - {
+                    [0] - {
+                    }
+                    [1] - {
+                    }
+                    [2] - {
+                    }
+                }
+            }
+            [1] - {
+                top_3_predictions - {
+                    [0] - {
+                    }
+                    [1] - {
+                    }
+                    [2] - {
+                    }
+                }
+            }
+            [2] - {
+                top_3_predictions - {
+                    [0] - {
+                    }
+                    [1] - {
+                    }
+                    [2] - {
+                    }
+                }
+            }
+            [3] - {
+                top_3_predictions - {
+                    [0] - {
+                    }
+                    [1] - {
+                    }
+                    [2] - {
+                    }
+                }
+            }
+            [4] - {
+                top_3_predictions - {
+                    [0] - {
+                    }
+                    [1] - {
+                    }
+                    [2] - {
+                    }
+                }
+            }
+        }
+        file_summary - {
+            detected_algorithms - {
+            }
+            algorithm_counts - AES-128, Non-Crypto, XOR-CIPHER
+            top_algorithms - {
+            }
+            confidence_scores - {
+                AES-128 - avg_probability, max_probability, functions_with_significant_probability
+                AES-192 - avg_probability, max_probability, functions_with_significant_probability
+                AES-256 - avg_probability, max_probability, functions_with_significant_probability
+                ECC - avg_probability, max_probability, functions_with_significant_probability
+                PRNG - avg_probability, max_probability, functions_with_significant_probability
+                RSA-1024 - avg_probability, max_probability, functions_with_significant_probability
+                RSA-4096 - avg_probability, max_probability, functions_with_significant_probability
+                SHA-1 - avg_probability, max_probability, functions_with_significant_probability
+                SHA-224 - avg_probability, max_probability, functions_with_significant_probability
+                SHA-256 - avg_probability, max_probability, functions_with_significant_probability
+                XOR-CIPHER - avg_probability, max_probability, functions_with_significant_probability
+            }
+        }
+        detected_algorithms - {
+        }
+        confidence_scores - {
+            AES-128 - avg_probability, max_probability, functions_with_significant_probability
+            AES-192 - avg_probability, max_probability, functions_with_significant_probability
+            AES-256 - avg_probability, max_probability, functions_with_significant_probability
+            ECC - avg_probability, max_probability, functions_with_significant_probability
+            PRNG - avg_probability, max_probability, functions_with_significant_probability
+            RSA-1024 - avg_probability, max_probability, functions_with_significant_probability
+            RSA-4096 - avg_probability, max_probability, functions_with_significant_probability
+            SHA-1 - avg_probability, max_probability, functions_with_significant_probability
+            SHA-224 - avg_probability, max_probability, functions_with_significant_probability
+            SHA-256 - avg_probability, max_probability, functions_with_significant_probability
+            XOR-CIPHER - avg_probability, max_probability, functions_with_significant_probability
+        }
+    }
+}
+qiling_dynamic_results - {
+    phases - {
+        packer_detection - packed
+        yara_analysis - {
+            detected - {
+            }
+        }
+        constant_detection - {
+            algorithms_detected - {
+            }
+        }
+        function_symbols - detected, stripped
+        dynamic_analysis - 
+    }
+    verdict - {
+        reasons - {
+        }
+    }
+}

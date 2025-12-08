@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Optimized batch Ghidra extraction pipeline with progress tracking
-Processes binaries in batches to handle large datasets efficiently
+Processes binaries in parallel to handle large datasets efficiently
 """
 import os
 import subprocess
@@ -10,6 +10,9 @@ import glob
 import time
 from datetime import datetime
 from dotenv import load_dotenv
+import concurrent.futures
+import threading
+
 load_dotenv()
 # Configuration
 GHIDRA_HOME = os.getenv("GHIDRA_HOME")
@@ -30,31 +33,43 @@ if not GHIDRA_HOME:
 
 BINARY_DIRS = ["builds_new"]  # Process both directories
 OUTPUT_DIR = "ghidra_json_new"  # Combined output directory
-PROJECT_DIR = "/tmp/ghidra_batch_project"
-PROJECT_NAME = f"batch_extraction_{int(time.time())}"
+PROJECT_BASE_DIR = "/tmp/ghidra_batch_project"
+PROJECT_NAME_PREFIX = f"batch_extraction_{int(time.time())}"
 SCRIPT_PATH = "ghidra_scripts/extract_features.py"
 BATCH_SIZE = 10  # Process in batches to show progress
 TIMEOUT_PER_BINARY = 180  # 3 minutes per binary
+MAX_WORKERS = 4  # Number of parallel threads
 
 import shutil
+
+# Thread-safe print lock
+print_lock = threading.Lock()
+
+def safe_print(*args, **kwargs):
+    with print_lock:
+        print(*args, **kwargs)
 
 def run_ghidra_on_binary(binary_path):
     """Run Ghidra analysis on a single binary"""
     analyzer_bin = os.path.join(GHIDRA_HOME, "support", "analyzeHeadless")
-    # analyzer_bin = os.path.join(GHIDRA_HOME, "support", "analyzeHeadless.bat")
-
+    
     binary_name = os.path.basename(binary_path)
     
+    # Create a unique project directory for this thread/process
+    # Using thread ID to ensure uniqueness in parallel execution
+    thread_id = threading.get_ident()
+    project_dir = f"{PROJECT_BASE_DIR}_{thread_id}"
+    project_name = f"{PROJECT_NAME_PREFIX}_{thread_id}"
+    
     # Ensure a clean temporary project directory
-    if os.path.isdir(PROJECT_DIR):
-        shutil.rmtree(PROJECT_DIR)
-    os.makedirs(PROJECT_DIR, exist_ok=True)
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    if os.path.isdir(project_dir):
+        shutil.rmtree(project_dir)
+    os.makedirs(project_dir, exist_ok=True)
     
     cmd = [
         analyzer_bin,
-        PROJECT_DIR,
-        PROJECT_NAME,
+        project_dir,
+        project_name,
         "-import", binary_path,
         "-postScript", os.path.abspath(SCRIPT_PATH),
         os.path.abspath(OUTPUT_DIR),  # Pass output directory as argument
@@ -74,26 +89,35 @@ def run_ghidra_on_binary(binary_path):
         # Note: extract_features.py appends "_features.json"
         output_file = os.path.join(OUTPUT_DIR, binary_name + "_features.json")
         
+        # Clean up project directory
+        if os.path.isdir(project_dir):
+            shutil.rmtree(project_dir)
+
         if os.path.exists(output_file):
             # Validate JSON
             with open(output_file, 'r') as f:
                 data = json.load(f)
             
-            return True, len(data.get('functions', []))
+            return True, len(data.get('functions', [])), binary_name
         else:
-            return False, 0
+            return False, 0, binary_name
             
     except subprocess.TimeoutExpired:
-        return False, 0
+        if os.path.isdir(project_dir):
+            shutil.rmtree(project_dir)
+        return False, 0, binary_name
     except Exception as e:
-        return False, 0
+        if os.path.isdir(project_dir):
+            shutil.rmtree(project_dir)
+        return False, 0, binary_name
 
 def main():
     start_time = time.time()
     
     print("=" * 80)
-    print("ENHANCED GHIDRA EXTRACTION PIPELINE")
+    print("PARALLEL GHIDRA EXTRACTION PIPELINE")
     print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Max Workers: {MAX_WORKERS}")
     print("=" * 80)
     print()
     
@@ -110,7 +134,7 @@ def main():
             
         print(f"Scanning directory: {binary_dir}/")
         
-        # 1) Collect all .o, .a, and .elf files recursively
+        # 1) Collect all .o, .a, and .elf files recursively (starting with 'l')
         for root, dirs, files in os.walk(binary_dir):
             for fname in files:
                 if fname.endswith(".o") or fname.endswith(".a") or fname.endswith(".elf"):
@@ -138,7 +162,7 @@ def main():
         return
 
     print(f"\nFound {len(binaries)} total binaries across all directories")
-    print(f"Processing in batches of {BATCH_SIZE}")
+    print(f"Processing in batches of {BATCH_SIZE} with {MAX_WORKERS} threads")
     print()
     
     # Track results
@@ -158,30 +182,54 @@ def main():
         print(f"Batch {batch_num}/{total_batches} (binaries {batch_start+1}-{batch_end})")
         print("-" * 80)
         
-        for i in range(batch_start, batch_end):
-            binary_path = binaries[i]
-            binary_name = os.path.basename(binary_path)
-            
-            # Check if already processed
-            output_file = os.path.join(OUTPUT_DIR, binary_name + "_features.json")
-            if os.path.exists(output_file):
-                print(f"  [{i+1}/{len(binaries)}] {binary_name[:40]:40s} ⊙ SKIP (exists)")
-                results['success'] += 1
-                continue
-            
-            print(f"  [{i+1}/{len(binaries)}] {binary_name[:40]:40s} ", end='', flush=True)
-            
-            success, num_funcs = run_ghidra_on_binary(binary_path)
-            
-            if success:
-                results['success'] += 1
-                results['total_functions'] += num_funcs
-                print(f"✓ ({num_funcs} funcs)")
-            else:
-                results['failed'] += 1
-                results['failed_binaries'].append(binary_name)
-                print(f"✗ FAILED")
+        current_batch_binaries = binaries[batch_start:batch_end]
         
+        # Filter out binaries that already exist
+        binaries_to_process = []
+        for idx, binary_path in enumerate(current_batch_binaries):
+            binary_name = os.path.basename(binary_path)
+            output_file = os.path.join(OUTPUT_DIR, binary_name + "_features.json")
+            
+            if os.path.exists(output_file):
+                try:
+                    with open(output_file, 'r') as f:
+                        data = json.load(f)
+                    num_funcs = len(data.get('functions', []))
+                    safe_print(f"  [{batch_start+idx+1}/{len(binaries)}] {binary_name[:40]:40s} ⊙ SKIP (exists, {num_funcs} funcs)")
+                    results['success'] += 1
+                    results['total_functions'] += num_funcs
+                except:
+                    safe_print(f"  [{batch_start+idx+1}/{len(binaries)}] {binary_name[:40]:40s} ⊙ SKIP (exists)")
+                    results['success'] += 1
+            else:
+                binaries_to_process.append((idx, binary_path))
+        
+        if not binaries_to_process:
+            continue
+        
+        with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+            future_to_info = {executor.submit(run_ghidra_on_binary, binary): (idx, binary) for idx, binary in binaries_to_process}
+            
+            for future in concurrent.futures.as_completed(future_to_info):
+                idx, binary_path = future_to_info[future]
+                binary_name = os.path.basename(binary_path)
+                try:
+                    success, num_funcs, _ = future.result()
+                    
+                    if success:
+                        results['success'] += 1
+                        results['total_functions'] += num_funcs
+                        safe_print(f"  [{batch_start+idx+1}/{len(binaries)}] {binary_name[:40]:40s} ✓ ({num_funcs} funcs)")
+                    else:
+                        results['failed'] += 1
+                        results['failed_binaries'].append(binary_name)
+                        safe_print(f"  [{batch_start+idx+1}/{len(binaries)}] {binary_name[:40]:40s} ✗ FAILED")
+                        
+                except Exception as exc:
+                    results['failed'] += 1
+                    results['failed_binaries'].append(binary_name)
+                    safe_print(f"  [{batch_start+idx+1}/{len(binaries)}] {binary_name[:40]:40s} ✗ EXCEPTION: {exc}")
+
         # Batch summary
         elapsed = time.time() - start_time
         rate = (batch_end / elapsed) * 60 if elapsed > 0 else 0

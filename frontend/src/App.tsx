@@ -9,7 +9,9 @@ import HowItWorks from "./pages/HowItWorks";
 import Upload from "./pages/Upload";
 import Jobs from "./pages/Jobs";
 import JobDetail from "./pages/JobDetail";
+import JobAnalysis from "./pages/JobAnalysis";
 import NotFound from "./pages/NotFound";
+import { AnalysisDemo } from "./components/AnalysisDemo";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => (
             <Route path="/upload" element={<Upload />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/job/:jobId" element={<JobDetail />} />
+            <Route path="/job/:jobId/analysis" element={<JobAnalysis />} />
+            <Route path="/demo" element={<AnalysisDemo />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

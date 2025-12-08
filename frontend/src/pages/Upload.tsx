@@ -19,8 +19,7 @@ import { Progress } from "@/components/ui/progress";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
-const API_URL = "http://127.0.0.1:8000";
+import { API_CONFIG } from "@/config/api";
 
 interface UploadFile {
   id: string;
@@ -111,7 +110,7 @@ const Upload = () => {
       formData.append("file", uploadFile.file);
 
       try {
-        const res = await fetch(`${API_URL}/analyze`, {
+        const res = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANALYZE}`, {
           method: "POST",
           body: formData,
         });
@@ -127,10 +126,19 @@ const Upload = () => {
           )
         );
 
-        toast.success(`Uploaded → Job ID: ${data.jobId}`);
+        // Handle response structure from backend
+        const jobId = data.jobId;
+        const analysisInfo = data.analysis || {};
+        
+        toast.success(`Upload successful! Analysis started for Job: ${jobId}`);
+        
+        // Show routing decision info
+        if (analysisInfo.routing_decision) {
+          toast.info(`Analysis Path: ${analysisInfo.routing_decision}`);
+        }
 
-        // Redirect to job details page
-        navigate(`/job/${data.jobId}`);
+        // Redirect to comprehensive analysis page
+        navigate(`/job/${jobId}/analysis`);
         return;
       } catch (err) {
         console.error(err);
