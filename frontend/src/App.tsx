@@ -10,6 +10,7 @@ import Upload from "./pages/Upload";
 import Jobs from "./pages/Jobs";
 import JobDetail from "./pages/JobDetail";
 import JobAnalysis from "./pages/JobAnalysis";
+import CFGView from "./pages/CFGView";
 import NotFound from "./pages/NotFound";
 import { AnalysisDemo } from "./components/AnalysisDemo";
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/job/:jobId" element={<JobDetail />} />
             <Route path="/job/:jobId/analysis" element={<JobAnalysis />} />
+            <Route path="/job/:jobId/cfg" element={<CFGView />} />
             <Route path="/demo" element={<AnalysisDemo />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

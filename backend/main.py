@@ -17,6 +17,7 @@ load_dotenv()
 
 from fastapi import FastAPI, File, UploadFile, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from prisma import Prisma
 from datetime import datetime
 
@@ -955,6 +956,170 @@ async def get_job_features(job_id: str):
     except Exception as e:
         logger.error(f"Error retrieving features for job {job_id}: {str(e)}")
         raise HTTPException(status_code=500, detail="Error retrieving features")
+
+
+@app.get("/job/{job_id}/cfg")
+async def get_job_cfg(job_id: str):
+    """Get control flow graph visualization and analysis data for a job"""
+    try:
+        # Get job data from job storage
+        job_storage_dir = Path(__file__).parent / "job_storage"
+        job_file = job_storage_dir / f"{job_id}.json"
+        
+        if not job_file.exists():
+            raise HTTPException(status_code=404, detail="Job not found")
+        
+        # Read job data
+        with open(job_file, 'r') as f:
+            job_data = json.load(f)
+        
+        # Extract control flow analysis data
+        control_flow_data = None
+        if "analysis_results" in job_data:
+            if "hard_target_info" in job_data["analysis_results"]:
+                control_flow_data = job_data["analysis_results"]["hard_target_info"].get("control_flow_analysis")
+            elif "control_flow_analysis" in job_data["analysis_results"]:
+                control_flow_data = job_data["analysis_results"]["control_flow_analysis"]
+        
+        if not control_flow_data:
+            raise HTTPException(status_code=404, detail="Control flow analysis not available for this job")
+        
+        # Get the CFG directory and latest PNG
+        cfg_directory = control_flow_data.get("cfg_directory")
+        latest_cfg_png = control_flow_data.get("latest_cfg_png")
+        
+        # Handle path mismatch (file generated on different machine)
+        if not latest_cfg_png or not os.path.exists(latest_cfg_png):
+            # Try to find the PNG in the current job's CFG directory
+            cfg_dir = job_storage_dir / f"{job_id}_cfg"
+            if cfg_dir.exists():
+                png_files = list(cfg_dir.glob("cfg_*.png"))
+                dot_files = list(cfg_dir.glob("cfg_*.dot"))
+                
+                if png_files:
+                    # Use the largest PNG (likely the most detailed)
+                    latest_cfg_png = str(max(png_files, key=lambda f: f.stat().st_size))
+                    cfg_directory = str(cfg_dir)
+                    logger.info(f"Found CFG PNG in local storage: {latest_cfg_png}")
+                elif dot_files:
+                    # DOT files exist but no PNGs - graphviz conversion failed
+                    raise HTTPException(
+                        status_code=404, 
+                        detail=f"CFG generation incomplete: {len(dot_files)} .dot files found but no PNG images. GraphViz may not be installed or conversion failed."
+                    )
+                else:
+                    # Directory exists but is empty
+                    raise HTTPException(
+                        status_code=404, 
+                        detail="CFG directory exists but contains no visualization files. Analysis may have failed."
+                    )
+            else:
+                # Check the status to provide better error message
+                status = control_flow_data.get("status", "unknown")
+                exit_code = control_flow_data.get("exit_code", 0)
+                if exit_code == 127:
+                    raise HTTPException(
+                        status_code=404, 
+                        detail="CFG analysis failed: radare2 not found (exit code 127). Please install radare2 to generate control flow graphs."
+                    )
+                elif status == "completed_with_warnings" or exit_code != 0:
+                    raise HTTPException(
+                        status_code=404, 
+                        detail=f"CFG analysis incomplete (status: {status}, exit code: {exit_code}). No visualization files were generated."
+                    )
+                else:
+                    raise HTTPException(status_code=404, detail="CFG directory not found")
+        
+        return {
+            "jobId": job_id,
+            "status": control_flow_data.get("status"),
+            "analysis_output": control_flow_data.get("analysis_output"),
+            "architecture": control_flow_data.get("architecture"),
+            "cfg_directory": cfg_directory,
+            "latest_cfg_png": latest_cfg_png,
+            "generated_files": control_flow_data.get("generated_files"),
+            "exit_code": control_flow_data.get("exit_code")
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving CFG for job {job_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error retrieving CFG data")
+
+
+@app.get("/job/{job_id}/cfg/image")
+async def get_job_cfg_image(job_id: str):
+    """Serve the CFG PNG image file for a job"""
+    try:
+        # Get job data from job storage
+        job_storage_dir = Path(__file__).parent / "job_storage"
+        job_file = job_storage_dir / f"{job_id}.json"
+        
+        if not job_file.exists():
+            raise HTTPException(status_code=404, detail="Job not found")
+        
+        # Read job data
+        with open(job_file, 'r') as f:
+            job_data = json.load(f)
+        
+        # Extract control flow analysis data
+        control_flow_data = None
+        if "analysis_results" in job_data:
+            if "hard_target_info" in job_data["analysis_results"]:
+                control_flow_data = job_data["analysis_results"]["hard_target_info"].get("control_flow_analysis")
+            elif "control_flow_analysis" in job_data["analysis_results"]:
+                control_flow_data = job_data["analysis_results"]["control_flow_analysis"]
+        
+        if not control_flow_data:
+            raise HTTPException(status_code=404, detail="Control flow analysis not available for this job")
+        
+        latest_cfg_png = control_flow_data.get("latest_cfg_png")
+        
+        # Handle path mismatch (file generated on different machine)
+        if not latest_cfg_png or not os.path.exists(latest_cfg_png):
+            # Try to find the PNG in the current job's CFG directory
+            cfg_dir = job_storage_dir / f"{job_id}_cfg"
+            if cfg_dir.exists():
+                png_files = list(cfg_dir.glob("cfg_*.png"))
+                dot_files = list(cfg_dir.glob("cfg_*.dot"))
+                
+                if png_files:
+                    # Use the largest PNG (likely the most detailed)
+                    latest_cfg_png = str(max(png_files, key=lambda f: f.stat().st_size))
+                    logger.info(f"Found CFG PNG in local storage: {latest_cfg_png}")
+                elif dot_files:
+                    raise HTTPException(
+                        status_code=404, 
+                        detail=f"CFG PNG not available: {len(dot_files)} .dot files found but GraphViz conversion failed"
+                    )
+                else:
+                    raise HTTPException(
+                        status_code=404, 
+                        detail="CFG directory is empty - analysis may have failed"
+                    )
+            else:
+                status = control_flow_data.get("status", "unknown")
+                exit_code = control_flow_data.get("exit_code", 0)
+                if exit_code == 127:
+                    raise HTTPException(
+                        status_code=404, 
+                        detail="radare2 not found (exit code 127)"
+                    )
+                else:
+                    raise HTTPException(status_code=404, detail="CFG directory not found")
+        
+        return FileResponse(
+            latest_cfg_png,
+            media_type="image/png",
+            headers={"Content-Disposition": f"inline; filename=cfg_{job_id}.png"}
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error serving CFG image for job {job_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error serving CFG image")
 
 
 @app.post("/job/{job_id}/extract-features")
