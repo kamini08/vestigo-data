@@ -1,0 +1,38 @@
+digraph code {
+	graph [fontsize=8 fontname="Courier" bgcolor=azure splines="ortho"];
+	node [fillcolor=white style=filled shape=box];
+	edge [arrowhead="normal"];
+	"0x0013f6e8" [URL="fcn.0013f6e8/0x0013f6e8", fillcolor="#c19c00", fontname="Courier", label="  ; XREFS: CALL 0x0013f818  CALL 0x0013f848  CALL 0x0013f878  \l  ; XREFS: CALL 0x0013f8a8  CALL 0x0013f8d8  CALL 0x0013f908  \l  ; XREFS: CALL 0x0013f938  CALL 0x0013f968  CALL 0x0013f998  \l  ; XREFS: CALL 0x0013f9c8  CALL 0x0013f9f8  CALL 0x0013fa28  \l248: fcn.0013f6e8 ();\lafv: vars(3:sp[0x10..0x30])\l0x0013f6e8      stp x29, x30, [sp, -0x40]!\l0x0013f6ec      adrp x3, 0x1d3000\l0x0013f6f0      add x3, x3, 0xb48\l0x0013f6f4      mov x29, sp\l0x0013f6f8      stp x19, x20, [var_10h]\l0x0013f6fc      sxtw x20, w0\l0x0013f700      cmp x2, x1\l0x0013f704      stp x21, x22, [var_20h]\l0x0013f708      mov x21, x2\l0x0013f70c      ldr x19, [x3, x20, lsl 3]\l0x0013f710      b.eq 0x13f774\l"]
+	"0x0013f714" [URL="fcn.0013f6e8/0x0013f714", fillcolor="#c19c00", fontname="Courier", label="0x0013f714      adrp x0, 0x15c000\l0x0013f718      add x0, x0, 0xd00\l0x0013f71c      add x1, x0, 0xa0\l0x0013f720      str x23, [var_30h]\l0x0013f724      adrp x22, 0x1c4000\l0x0013f728      add x22, x22, 0x8a0\l0x0013f72c      ldr x1, [x1, x20, lsl 3]\l0x0013f730      cbz x1, 0x13f750\l"]
+	"0x0013f734" [URL="fcn.0013f6e8/0x0013f734", fillcolor="#c19c00", fontname="Courier", label="0x0013f734      add x0, x0, 0x108\l0x0013f738      adrp x22, 0x1c4000\l0x0013f73c      add x22, x22, 0x8a0\l0x0013f740      ldr x0, [x0, x20, lsl 3]\l0x0013f744      str x2, [x22, x20, lsl 3]\l0x0013f748      cbz x0, 0x13f750\l"]
+	"0x0013f74c" [URL="fcn.0013f6e8/0x0013f74c", fontcolor="#767676", fontname="Courier", label="0x0013f74c      blr x0\l"]
+	"0x0013f750" [URL="fcn.0013f6e8/0x0013f750", fillcolor="#c19c00", fontname="Courier", label="; CODE XREFS from fcn.0013f6e8 @ 0x13f730(x), 0x13f748(x)\l0x0013f750      add x20, x20, 0x10\l0x0013f754      adrp x23, 0x145000\l0x0013f758      add x23, x23, 0x78\l0x0013f75c      ldr x0, [x22, x20, lsl 3]\l0x0013f760      cmp x0, x23\l0x0013f764      b.eq 0x13f7d8\l"]
+	"0x0013f768" [URL="fcn.0013f6e8/0x0013f768", fontcolor="#767676", fontname="Courier", label="0x0013f768      bl fcn.000e6e50\l0x0013f76c      str x23, [x22, x20, lsl 3]\l0x0013f770      ldr x23, [var_30h]\l"]
+	"0x0013f774" [URL="fcn.0013f6e8/0x0013f774", fontcolor="#767676", fontname="Courier", label="; CODE XREFS from fcn.0013f6e8 @ 0x13f710(x), 0x13f7dc(x)\l0x0013f774      cbnz x19, 0x13f798\l"]
+	"0x0013f778" [URL="fcn.0013f6e8/0x0013f778", fontcolor="#767676", fontname="Courier", label="0x0013f778      b 0x13f7c8\l"]
+	"0x0013f77c" [URL="fcn.0013f6e8/0x0013f77c", fillcolor="#c19c00", fontname="Courier", label="; CODE XREF from fcn.0013f6e8 @ 0x13f7a4(x)\l0x0013f77c      ldr x0, [x19]\l0x0013f780      ldr x20, [x19, 0x18]\l0x0013f784      bl fcn.000e6e50\l0x0013f788      mov x0, x19\l0x0013f78c      mov x19, x20\l0x0013f790      bl fcn.000e6e50\l0x0013f794      cbz x20, 0x13f7c8\l"]
+	"0x0013f798" [URL="fcn.0013f6e8/0x0013f798", fillcolor="#c19c00", fontname="Courier", label="; CODE XREFS from fcn.0013f6e8 @ 0x13f774(x), 0x13f7c4(x)\l0x0013f798      ldr x0, [x19, 0x10]\l0x0013f79c      cmp x0, 0\l0x0013f7a0      ccmp x21, x0, 4, ne\l0x0013f7a4      b.eq 0x13f77c\l"]
+	"0x0013f7a8" [URL="fcn.0013f6e8/0x0013f7a8", fontcolor="#767676", fontname="Courier", label="0x0013f7a8      bl fcn.00109ab8\l0x0013f7ac      ldr x0, [x19]\l0x0013f7b0      ldr x20, [x19, 0x18]\l0x0013f7b4      bl fcn.000e6e50\l0x0013f7b8      mov x0, x19\l0x0013f7bc      mov x19, x20\l0x0013f7c0      bl fcn.000e6e50\l0x0013f7c4      cbnz x20, 0x13f798\l"]
+	"0x0013f7c8" [URL="fcn.0013f6e8/0x0013f7c8", fillcolor="#c19c00", fontname="Courier", label="; CODE XREFS from fcn.0013f6e8 @ 0x13f778(x), 0x13f794(x)\l0x0013f7c8      ldp x19, x20, [var_10h]\l0x0013f7cc      ldp x21, x22, [var_20h]\l0x0013f7d0      ldp x29, x30, [sp], 0x40\l0x0013f7d4      ret\l"]
+	"0x0013f7d8" [URL="fcn.0013f6e8/0x0013f7d8", fillcolor="#c19c00", fontname="Courier", label="; CODE XREF from fcn.0013f6e8 @ 0x13f764(x)\l0x0013f7d8      ldr x23, [var_30h]\l0x0013f7dc      b 0x13f774\l"]
+        "0x0013f6e8" -> "0x0013f774" [color="#13a10e"];
+        "0x0013f6e8" -> "0x0013f714" [color="#c50f1f"];
+        "0x0013f714" -> "0x0013f750" [color="#13a10e"];
+        "0x0013f714" -> "0x0013f734" [color="#c50f1f"];
+        "0x0013f734" -> "0x0013f750" [color="#13a10e"];
+        "0x0013f734" -> "0x0013f74c" [color="#c50f1f"];
+        "0x0013f74c" -> "0x0013f750" [color="#3a96dd"];
+        "0x0013f750" -> "0x0013f7d8" [color="#13a10e"];
+        "0x0013f750" -> "0x0013f768" [color="#c50f1f"];
+        "0x0013f768" -> "0x0013f774" [color="#3a96dd"];
+        "0x0013f774" -> "0x0013f798" [color="#13a10e"];
+        "0x0013f774" -> "0x0013f778" [color="#c50f1f"];
+        "0x0013f778" -> "0x0013f7c8" [color="#3a96dd"];
+        "0x0013f77c" -> "0x0013f7c8" [color="#13a10e"];
+        "0x0013f77c" -> "0x0013f798" [color="#c50f1f"];
+        "0x0013f798" -> "0x0013f77c" [color="#13a10e"];
+        "0x0013f798" -> "0x0013f7a8" [color="#c50f1f"];
+        "0x0013f7a8" -> "0x0013f798" [color="#13a10e"];
+        "0x0013f7a8" -> "0x0013f7c8" [color="#c50f1f"];
+        "0x0013f7d8" -> "0x0013f774" [color="#3a96dd"];
+}

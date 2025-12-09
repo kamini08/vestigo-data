@@ -18,6 +18,7 @@ sys.path.append(str(parent_dir))
 from ingest import IngestionModule
 from config.logging_config import logger
 from services.crypto_string_detector import crypto_string_detector
+from services.control_flow_analyzer import control_flow_analyzer
 
 class IngestService:
     """Service for handling file ingestion and routing decisions"""
@@ -211,6 +212,7 @@ class IngestService:
         # For PATH_C, run crypto string detection on the original binary
         workspace_path = ingest_result.get("analysis_workspace")
         crypto_strings_result = None
+        control_flow_result = None
         
         if workspace_path and os.path.exists(workspace_path):
             # Find the binary file in workspace
@@ -231,11 +233,20 @@ class IngestService:
                     file_type=file_type,
                     use_llm=True
                 )
+                
+                # Run control flow analysis using test1.sh
+                logger.info(f"Running control flow analysis on PATH_C binary - JobID: {response['jobId']}")
+                control_flow_result = control_flow_analyzer.analyze_binary(
+                    binary_path,
+                    job_id=response['jobId'],
+                    architecture="arm64"  # Default, can be detected from file type
+                )
         
         response["analysis"]["hard_target_info"] = {
             "is_encrypted": True,
             "extraction_failed": not ingest_result["extraction"]["was_extracted"],
-            "crypto_strings": crypto_strings_result
+            "crypto_strings": crypto_strings_result,
+            "control_flow_analysis": control_flow_result
         }
         
         response["next_actions"] = [

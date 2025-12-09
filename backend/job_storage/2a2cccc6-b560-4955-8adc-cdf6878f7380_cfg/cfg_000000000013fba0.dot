@@ -1,0 +1,23 @@
+digraph code {
+	graph [fontsize=8 fontname="Courier" bgcolor=azure splines="ortho"];
+	node [fillcolor=white style=filled shape=box];
+	edge [arrowhead="normal"];
+	"0x0013fba0" [URL="fcn.0013fba0/0x0013fba0", fillcolor="#c19c00", fontname="Courier", label="100: fcn.0013fba0 ();\lafv: vars(2:sp[0x10..0x20])\l0x0013fba0      stp x29, x30, [sp, -0x30]!\l0x0013fba4      mov x29, sp\l0x0013fba8      str x21, [var_20h]\l0x0013fbac      adrp x21, 0x1d3000\l0x0013fbb0      ldr x0, [x21, 0xbb8]\l0x0013fbb4      cbz x0, 0x13fbf8\l"]
+	"0x0013fbb8" [URL="fcn.0013fba0/0x0013fbb8", fillcolor="#c19c00", fontname="Courier", label="0x0013fbb8      stp x19, x20, [var_10h]\l0x0013fbbc      mov x20, 0\l"]
+	"0x0013fbc0" [URL="fcn.0013fba0/0x0013fbc0", fillcolor="#c19c00", fontname="Courier", label="; CODE XREF from fcn.0013fba0 @ 0x13fbe4(x)\l0x0013fbc0      ldr x19, [x0, x20]\l0x0013fbc4      cbz x19, 0x13fbdc\l"]
+	"0x0013fbc8" [URL="fcn.0013fba0/0x0013fbc8", fillcolor="#c19c00", fontname="Courier", label="; CODE XREF from fcn.0013fba0 @ 0x13fbd4(x)\l0x0013fbc8      mov x0, x19\l0x0013fbcc      ldr x19, [x19]\l0x0013fbd0      bl fcn.000e6e50\l0x0013fbd4      cbnz x19, 0x13fbc8\l"]
+	"0x0013fbd8" [URL="fcn.0013fba0/0x0013fbd8", fillcolor="#c19c00", fontname="Courier", label="; CODE XREF from fcn.0013fba0 @ +0x3994(x)\l0x0013fbd8      ldr x0, [x21, 0xbb8]\l"]
+	"0x0013fbdc" [URL="fcn.0013fba0/0x0013fbdc", fillcolor="#c19c00", fontname="Courier", label="; CODE XREF from fcn.0013fba0 @ 0x13fbc4(x)\l0x0013fbdc      add x20, x20, 8\l0x0013fbe0      cmp x20, 0x7f8\l0x0013fbe4      b.ne 0x13fbc0\l"]
+	"0x0013fbe8" [URL="fcn.0013fba0/0x0013fbe8", fillcolor="#c19c00", fontname="Courier", label="0x0013fbe8      ldp x19, x20, [var_10h]\l0x0013fbec      ldr x21, [var_20h]\l0x0013fbf0      ldp x29, x30, [sp], 0x30\l0x0013fbf4      b fcn.000e6e50\l"]
+	"0x0013fbf8" [URL="fcn.0013fba0/0x0013fbf8", fillcolor="#c19c00", fontname="Courier", label="; CODE XREF from fcn.0013fba0 @ 0x13fbb4(x)\l0x0013fbf8      ldr x21, [var_20h]\l0x0013fbfc      ldp x29, x30, [sp], 0x30\l0x0013fc00      ret\l"]
+        "0x0013fba0" -> "0x0013fbf8" [color="#13a10e"];
+        "0x0013fba0" -> "0x0013fbb8" [color="#c50f1f"];
+        "0x0013fbb8" -> "0x0013fbc0" [color="#3a96dd"];
+        "0x0013fbc0" -> "0x0013fbdc" [color="#13a10e"];
+        "0x0013fbc0" -> "0x0013fbc8" [color="#c50f1f"];
+        "0x0013fbc8" -> "0x0013fbc8" [color="#13a10e"];
+        "0x0013fbc8" -> "0x0013fbd8" [color="#c50f1f"];
+        "0x0013fbd8" -> "0x0013fbdc" [color="#3a96dd"];
+        "0x0013fbdc" -> "0x0013fbc0" [color="#13a10e"];
+        "0x0013fbdc" -> "0x0013fbe8" [color="#c50f1f"];
+}
