@@ -75,12 +75,52 @@ class LLMAnalysisService:
             
             strace_content = self._load_text(strace_log_path)
             
-            # Build prompt and call LLM
+            # Find and load analysis log (raw analysis output)
+            analysis_log_content = None
+            analysis_log_path = None
+            try:
+                # Convert strace log path to analysis log path
+                # strace_logs/strace_binary_TIMESTAMP.log -> analysis_logs/analysis_binary_TIMESTAMP.log
+                strace_path_obj = Path(strace_log_path)
+                analysis_log_dir = strace_path_obj.parent.parent / "analysis_logs"
+                
+                # Get the binary identifier from strace log name
+                strace_name = strace_path_obj.stem  # e.g., strace_binary_TIMESTAMP
+                if strace_name.startswith("strace_"):
+                    binary_identifier = strace_name[7:]  # Remove "strace_" prefix
+                    analysis_pattern = f"analysis_{binary_identifier}*.log"
+                    
+                    # Find matching analysis logs
+                    matching_logs = list(analysis_log_dir.glob(analysis_pattern))
+                    if matching_logs:
+                        # Use the most recent analysis log
+                        analysis_log_path_obj = sorted(matching_logs)[-1]
+                        analysis_log_path = str(analysis_log_path_obj)
+                        analysis_log_content = self._load_text(analysis_log_path)
+                        logger.info(f"Found analysis log: {analysis_log_path}")
+                    else:
+                        logger.warning(f"No analysis log found with pattern: {analysis_pattern}")
+            except Exception as e:
+                logger.warning(f"Could not load analysis log: {str(e)}")
+            
+            # Build prompt and call LLM (only sends strace to LLM as per engine.py)
             prompt = self._build_strace_prompt(strace_content, qiling_results)
             llm_response = await self._call_llm(prompt)
             
-            # Structure the result
+            # Structure the result matching engine.py output format
+            import datetime
             result = {
+                "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
+                "analysis_file": analysis_log_path if analysis_log_path else "not_found",
+                "strace_file": strace_log_path,
+                
+                # RAW analysis section (preserved as text, not processed by LLM)
+                "analysis_section": analysis_log_content if analysis_log_content else "Analysis log not available",
+                
+                # LLM-evaluated STRACE section
+                "strace_section": llm_response,
+                
+                # Legacy fields for backward compatibility
                 "job_id": job_id,
                 "analysis_timestamp": time.time(),
                 "analysis_tool": "llm_crypto_classifier",

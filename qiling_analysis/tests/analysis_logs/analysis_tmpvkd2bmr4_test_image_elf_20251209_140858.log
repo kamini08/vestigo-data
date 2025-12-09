@@ -1,0 +1,100 @@
+[*] Analysis output will be saved to: /home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/tests/analysis_logs/analysis_tmpvkd2bmr4_test_image_elf_20251209_140858.log
+[*] Starting analysis at: 2025-12-09 14:08:58
+
+======= FILE DESCRIPTON ======
+
+============================================================
+[*] PHASE -1: Checking for packed binary...
+[-] No packer detected
+[+] Detected architecture: x86_64
+[*] Target: tmpvkd2bmr4_test_image.elf
+[*] Rootfs: /home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/rootfs/x8664_linux
+
+============================================================
+[*] PHASE 0: YARA static analysis
+[✓] YARA detected: AES, RC4/ARC4
+    Total matches: 3
+    Scan time: 0.003s
+    High-confidence rules:
+      - AES_Sbox (AES, 95%)
+      - RC4_Identity_Permutation (RC4/ARC4, 90%)
+
+============================================================
+[*] PHASE 1: Scanning for crypto constants...
+[✓] Found constants for 1 algorithm(s)
+    - AES
+
+============================================================
+[*] PHASE 2: Checking for function symbols...
+[*] Found 3 crypto candidate(s):
+    - aes_encrypt_block @ 0x401d20
+    - aes_shift_rows @ 0x401ce0
+    - aes_sub_bytes @ 0x401b80
+
+============================================================
+[*] PHASE 3: Running binary to test crypto functions...
+
+======================================================================
+   NATIVE STRACE ANALYSIS (Optional)
+======================================================================
+[*] Running native strace on binary...
+    Strace log: /home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/tests/strace_logs/strace_tmpvkd2bmr4_test_image_elf_20251209_140858.log
+    Terminal output: /home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/tests/strace_logs/terminal_tmpvkd2bmr4_test_image_elf_20251209_140858.log
+[✓] strace log captured: 5103 bytes
+[✓] Terminal output captured: 32 bytes
+[*] Analyzing strace log...
+[*] Strace Statistics:
+    Total syscalls: 2
+[*] Installing syscall hooks (getrandom, read)...
+[*] Executing binary with basic block profiling...
+[SYSCALL] getrandom() called: 8 bytes (0x8)
+          Data: 104b4de02988dcf5
+          Likely: XOR-based cipher (8-byte key)
+
+============================================================
+   ENHANCED ANALYSIS RESULTS (v2.0)
+============================================================
+
+[!] Binary execution failed or crashed early
+[*] Falling back to static analysis results only
+
+
+[*] Constant Detection (FindCrypt):
+    [✓] Detected 1 algorithm(s), 1 constant(s)
+      AES: AES_SBOX
+
+[*] Avalanche Effect Analysis:
+    [-] Note: Functions may be inlined or not called during this execution
+    [-] Unable to capture I/O through function hooks
+    [-] Note: Binary executed and produced output (check console above)
+    [*] Avalanche testing requires multiple runs with different inputs
+    [*] Alternative: Test manually by running binary multiple times
+
+[*] Basic Block Analysis:
+    Total Basic Blocks: 1114
+    Crypto Loops: 33
+    Total Instructions: 150235
+    Crypto Operations: 19934
+    Crypto-Op Ratio: 13.27%
+
+[*] ADAPTIVE Confidence Scoring (0-100):
+    - Constants evidence : 35 pts (0-40)
+    - Function names     : 25 pts (0-40, adaptive)
+    - Crypto loops       : 20 pts (0-20)
+    - Crypto-op ratio    : 15 pts (0-15)
+    - Avalanche effect   : 0 pts (0-15, optional)
+    - YARA detection     : 0 pts (0-30)
+    -> RAW TOTAL: 95
+    -> FINAL SCORE: 100/100  => HIGH
+    Evidence sources: 4/5 available
+
+
+[*] Strace log saved to: /home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/tests/strace_logs/strace_tmpvkd2bmr4_test_image_elf_20251209_140858.log
+[*] Terminal output saved to: /home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/tests/strace_logs/terminal_tmpvkd2bmr4_test_image_elf_20251209_140858.log
+
+======================================================================
+   STRACE LOG CONTENTS
+======================================================================
+
+[*] Analysis completed at: 2025-12-09 14:08:58
+[✓] Full analysis log saved to: /home/shinichi/Documents/VSC/vestigo-data/qiling_analysis/tests/analysis_logs/analysis_tmpvkd2bmr4_test_image_elf_20251209_140858.log

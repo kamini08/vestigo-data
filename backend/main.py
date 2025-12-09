@@ -1187,6 +1187,93 @@ async def get_strace_logs(job_id: str):
         raise HTTPException(status_code=500, detail="Error retrieving strace logs")
 
 
+@app.get("/job/{job_id}/analysis-logs")
+async def get_analysis_logs(job_id: str):
+    """Get analysis logs for a job's binary analysis"""
+    try:
+        job = job_manager.get_job(job_id)
+        if not job:
+            raise HTTPException(status_code=404, detail="Job not found")
+        
+        # Get binary path from qiling results
+        qiling_results = job.qiling_dynamic_results
+        if not qiling_results:
+            raise HTTPException(status_code=404, detail="No Qiling analysis results available")
+        
+        binary_name = qiling_results.get("binary_name", "")
+        
+        if not binary_name:
+            raise HTTPException(status_code=404, detail="Binary name not found in analysis results")
+        
+        # Find analysis logs
+        project_root = Path(__file__).parent.parent
+        analysis_log_dir = project_root / "qiling_analysis" / "tests" / "analysis_logs"
+        
+        if not analysis_log_dir.exists():
+            raise HTTPException(status_code=404, detail="Analysis logs directory not found")
+        
+        # Extract binary basename for matching analysis log
+        # The analysis log naming convention: analysis_{binary_basename}_TIMESTAMP.log
+        binary_basename = binary_name
+        binary_basename_normalized = binary_basename.replace('.', '_')
+        
+        # Look for analysis log matching this binary
+        patterns_to_try = [
+            f"analysis_{binary_basename_normalized}*.log",  # Normalized (dots -> underscores)
+            f"analysis_{binary_basename}*.log",              # Original basename (fallback)
+            f"analysis_*{binary_basename.split('_')[0]}*.log" if '_' in binary_basename else None  # Temp prefix
+        ]
+        patterns_to_try = [p for p in patterns_to_try if p]  # Remove None values
+        
+        matching_logs = []
+        for pattern in patterns_to_try:
+            matching_logs = list(analysis_log_dir.glob(pattern))
+            if matching_logs:
+                logger.info(f"Found analysis logs with pattern: {pattern}")
+                break
+        
+        if not matching_logs:
+            logger.warning(f"No analysis logs found for binary: {binary_name}")
+            logger.warning(f"Tried patterns: {patterns_to_try}")
+            logger.warning(f"Available analysis logs in directory:")
+            for log_file in analysis_log_dir.glob("analysis_*.log"):
+                logger.warning(f"  - {log_file.name}")
+            raise HTTPException(status_code=404, detail=f"No analysis logs found for binary: {binary_name}")
+        
+        # Use the most recent analysis log
+        analysis_log_path = sorted(matching_logs)[-1]
+        logger.info(f"Using analysis log: {analysis_log_path.name}")
+        
+        # Read the log file
+        try:
+            with open(analysis_log_path, 'r', encoding='utf-8', errors='ignore') as f:
+                analysis_content = f.read()
+        except Exception as e:
+            logger.error(f"Error reading analysis log {analysis_log_path}: {str(e)}")
+            raise HTTPException(status_code=500, detail="Error reading analysis log file")
+        
+        # Get file stats
+        file_stats = analysis_log_path.stat()
+        
+        return {
+            "job_id": job_id,
+            "binary_name": binary_name,
+            "analysis_log_path": str(analysis_log_path),
+            "analysis_log_name": analysis_log_path.name,
+            "file_size": file_stats.st_size,
+            "file_modified": file_stats.st_mtime,
+            "content": analysis_content,
+            "lines": len(analysis_content.split('\n')),
+            "available_logs": [str(log.name) for log in matching_logs]
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving analysis logs for job {job_id}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Error retrieving analysis logs")
+
+
 # ==========================================================
 # LEGACY ENDPOINTS (For backward compatibility)
 # ==========================================================

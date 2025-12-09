@@ -24,12 +24,26 @@ interface StraceLogData {
   available_logs: string[];
 }
 
+interface AnalysisLogData {
+  job_id: string;
+  binary_name: string;
+  analysis_log_path: string;
+  analysis_log_name: string;
+  file_size: number;
+  content: string;
+  lines: number;
+  available_logs: string[];
+}
+
 const API_URL = "http://localhost:8000";
 
 export const LLMAnalysisCard = ({ llmData, qilingData, jobId }: LLMAnalysisProps) => {
   const [straceLog, setStraceLog] = useState<StraceLogData | null>(null);
+  const [analysisLog, setAnalysisLog] = useState<AnalysisLogData | null>(null);
   const [loadingStrace, setLoadingStrace] = useState(false);
+  const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const [straceError, setStraceError] = useState<string | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   // Fetch strace logs when component mounts
   useEffect(() => {
@@ -63,6 +77,38 @@ export const LLMAnalysisCard = ({ llmData, qilingData, jobId }: LLMAnalysisProps
     fetchStraceLogs();
   }, [jobId]);
 
+  // Fetch analysis logs when component mounts
+  useEffect(() => {
+    const fetchAnalysisLogs = async () => {
+      if (!jobId) return;
+      
+      setLoadingAnalysis(true);
+      setAnalysisError(null);
+      
+      try {
+        const response = await fetch(`${API_URL}/job/${jobId}/analysis-logs`);
+        if (!response.ok) {
+          if (response.status === 404) {
+            setAnalysisError("No analysis logs found for this binary");
+          } else {
+            setAnalysisError("Failed to fetch analysis logs");
+          }
+          return;
+        }
+        
+        const data = await response.json();
+        setAnalysisLog(data);
+      } catch (error) {
+        console.error("Error fetching analysis logs:", error);
+        setAnalysisError("Error loading analysis logs");
+      } finally {
+        setLoadingAnalysis(false);
+      }
+    };
+
+    fetchAnalysisLogs();
+  }, [jobId]);
+
   // Download strace log
   const downloadStraceLog = () => {
     if (!straceLog) return;
@@ -72,6 +118,21 @@ export const LLMAnalysisCard = ({ llmData, qilingData, jobId }: LLMAnalysisProps
     const a = document.createElement('a');
     a.href = url;
     a.download = straceLog.strace_log_name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // Download analysis log
+  const downloadAnalysisLog = () => {
+    if (!analysisLog) return;
+    
+    const blob = new Blob([analysisLog.content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = analysisLog.analysis_log_name;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -313,6 +374,120 @@ export const LLMAnalysisCard = ({ llmData, qilingData, jobId }: LLMAnalysisProps
           </Card>
         )} */}
 
+        {/* Analysis Logs from API */}
+        {analysisLog && (
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-purple-500" />
+                    Raw Analysis Output
+                  </CardTitle>
+                  <CardDescription>
+                    Complete analysis output including YARA, constants, and memory dumps for {analysisLog.binary_name}
+                  </CardDescription>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={downloadAnalysisLog}
+                  className="gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-secondary/30 rounded-lg">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Log File</p>
+                  <p className="text-sm font-mono truncate">{analysisLog.analysis_log_name}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">File Size</p>
+                  <p className="text-sm">{(analysisLog.file_size / 1024).toFixed(2)} KB</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Total Lines</p>
+                  <p className="text-sm font-bold">{analysisLog.lines.toLocaleString()}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Available Logs</p>
+                  <p className="text-sm">{analysisLog.available_logs.length}</p>
+                </div>
+              </div>
+
+              <Alert className="bg-purple-500/10 border-purple-500/20">
+                <FileSearch className="h-4 w-4 text-purple-500" />
+                <AlertTitle className="text-purple-500">Multi-Phase Analysis</AlertTitle>
+                <AlertDescription className="text-purple-500/80">
+                  This log contains YARA rule matches, cryptographic constant detection, function analysis, and memory dump analysis.
+                </AlertDescription>
+              </Alert>
+
+              <Tabs defaultValue="preview" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="preview">Preview (First 200 lines)</TabsTrigger>
+                  <TabsTrigger value="full">Full Log</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="preview">
+                  <ScrollArea className="h-96 w-full rounded-md border">
+                    <pre className="p-4 text-xs font-mono whitespace-pre-wrap">
+                      {analysisLog.content.split('\n').slice(0, 200).join('\n')}
+                      {analysisLog.lines > 200 && '\n\n... (showing first 200 lines, switch to Full Log tab or download for complete content)'}
+                    </pre>
+                  </ScrollArea>
+                </TabsContent>
+
+                <TabsContent value="full">
+                  <ScrollArea className="h-96 w-full rounded-md border">
+                    <pre className="p-4 text-xs font-mono whitespace-pre-wrap">
+                      {analysisLog.content}
+                    </pre>
+                  </ScrollArea>
+                </TabsContent>
+              </Tabs>
+
+              <p className="text-xs text-muted-foreground">
+                <span className="font-semibold">Path:</span> {analysisLog.analysis_log_path}
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Loading Analysis */}
+        {loadingAnalysis && (
+          <Card className="bg-card border-border">
+            <CardContent className="pt-6">
+              <Alert>
+                <Activity className="h-4 w-4 animate-pulse" />
+                <AlertTitle>Loading Analysis Logs</AlertTitle>
+                <AlertDescription>
+                  Fetching raw analysis output...
+                </AlertDescription>
+              </Alert>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Analysis Error */}
+        {analysisError && !loadingAnalysis && (
+          <Card className="bg-card border-border">
+            <CardContent className="pt-6">
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Analysis Logs Not Available</AlertTitle>
+                <AlertDescription>
+                  {analysisError}
+                </AlertDescription>
+              </Alert>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Strace Logs from API */}
         {straceLog && (
           <Card className="bg-card border-border">
@@ -492,6 +667,50 @@ export const LLMAnalysisCard = ({ llmData, qilingData, jobId }: LLMAnalysisProps
 
   return (
     <div className="space-y-6">
+      {/* LLM Analysis Metadata */}
+      {llmData.timestamp && (
+        <Card className="bg-card border-border">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Brain className="w-5 h-5 text-muted-foreground" />
+              Analysis Metadata
+            </CardTitle>
+            <CardDescription>
+              Two-stage analysis combining raw analysis output with AI-powered strace classification
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-secondary/30 rounded-lg">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Analysis Timestamp</p>
+                <p className="text-sm font-mono">
+                  {llmData.timestamp ? new Date(llmData.timestamp as string).toLocaleString() : 'N/A'}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Analysis File</p>
+                <p className="text-sm font-mono truncate" title={llmData.analysis_file as string}>
+                  {llmData.analysis_file ? (llmData.analysis_file as string).split('/').pop() : 'N/A'}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Strace File</p>
+                <p className="text-sm font-mono truncate" title={llmData.strace_file as string}>
+                  {llmData.strace_file ? (llmData.strace_file as string).split('/').pop() : 'N/A'}
+                </p>
+              </div>
+            </div>
+            <Alert className="bg-blue-500/10 border-blue-500/20">
+              <FileSearch className="h-4 w-4 text-blue-500" />
+              <AlertTitle className="text-blue-500">Two-Stage Analysis</AlertTitle>
+              <AlertDescription className="text-blue-500/80">
+                This analysis combines raw static analysis output (YARA, constants, memory dumps) with AI-powered runtime trace classification.
+              </AlertDescription>
+            </Alert>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Main Classification Card */}
       <Card className="bg-card border-border">
         <CardHeader>
@@ -679,6 +898,90 @@ export const LLMAnalysisCard = ({ llmData, qilingData, jobId }: LLMAnalysisProps
                 </AlertDescription>
               </Alert>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Analysis Logs */}
+      {analysisLog && (
+        <Card className="bg-card border-border">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-purple-500" />
+                  Raw Analysis Output
+                </CardTitle>
+                <CardDescription>
+                  Complete multi-phase analysis including YARA, constants, and memory analysis
+                </CardDescription>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={downloadAnalysisLog}
+                className="gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Download
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert className="bg-purple-500/10 border-purple-500/20">
+              <FileSearch className="h-4 w-4 text-purple-500" />
+              <AlertTitle className="text-purple-500">Static Analysis Baseline</AlertTitle>
+              <AlertDescription className="text-purple-500/80">
+                This raw analysis output was combined with strace logs to generate the Agent classification.
+              </AlertDescription>
+            </Alert>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-secondary/30 rounded-lg">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Log File</p>
+                <p className="text-sm font-mono truncate">{analysisLog.analysis_log_name}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">File Size</p>
+                <p className="text-sm">{(analysisLog.file_size / 1024).toFixed(2)} KB</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Total Lines</p>
+                <p className="text-sm font-bold">{analysisLog.lines.toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Available Logs</p>
+                <p className="text-sm">{analysisLog.available_logs.length}</p>
+              </div>
+            </div>
+
+            <Tabs defaultValue="preview" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="preview">Preview (First 200 lines)</TabsTrigger>
+                <TabsTrigger value="full">Full Log</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="preview">
+                <ScrollArea className="h-96 w-full rounded-md border">
+                  <pre className="p-4 text-xs font-mono whitespace-pre-wrap">
+                    {analysisLog.content.split('\n').slice(0, 200).join('\n')}
+                    {analysisLog.lines > 200 && '\n\n... (showing first 200 lines, switch to Full Log tab or download for complete content)'}
+                  </pre>
+                </ScrollArea>
+              </TabsContent>
+
+              <TabsContent value="full">
+                <ScrollArea className="h-96 w-full rounded-md border">
+                  <pre className="p-4 text-xs font-mono whitespace-pre-wrap">
+                    {analysisLog.content}
+                  </pre>
+                </ScrollArea>
+              </TabsContent>
+            </Tabs>
+
+            <p className="text-xs text-muted-foreground">
+              <span className="font-semibold">Source:</span> {analysisLog.analysis_log_path}
+            </p>
           </CardContent>
         </Card>
       )}
