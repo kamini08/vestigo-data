@@ -263,10 +263,8 @@ EXTRACTION GUIDELINES:
 3. TLS VERSIONS: Look for TLS/SSL/DTLS version strings
    - Examples: "TLSv1.2", "TLSv1.3", "DTLSv1", "SSLv3"
 
-4. TLS HANDSHAKE STATES: Look for handshake message types
-   - Server side: "Server Hello", "Server Certificate", "Server Key Exchange", "Server Finished"
-   - Client side: "Client Hello", "Client Certificate", "Client Key Exchange", "Client Finished"
-   - Other: "Certificate Request", "Certificate Status", "Change CipherSpec", "Session Ticket"
+4. TLS HANDSHAKE STATES: **ONLY include if these exact strings are present in the crypto strings above**
+  - **If none of these handshake strings are found, leave tls_handshake_states as empty array []**
 
 5. CRYPTO LIBRARIES: Identify library names and versions
    - Look for: "wolfSSL", "OpenSSL", "mbedTLS", "BoringSSL"
@@ -306,7 +304,7 @@ CRITICAL RULES:
 - Empty categories: use [] for arrays, "" for strings
 - Don't invent data - extract only what's visible
 - For architecture: check for arch-specific strings (armv7, x86_64, mips, etc.)
-- For TLS handshake: look for "Hello", "Certificate", "Finished", "Key Exchange" phrases
+- For TLS handshake: **ONLY include if actual handshake strings like "Hello", "Certificate", "Finished", "Key Exchange" are found in the strings above. If not found, tls_handshake_states must be []**
 - verdict.summary: ONE sentence, max 100 chars
 
 Return ONLY the JSON object now:"""
